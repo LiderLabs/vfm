@@ -1,104 +1,206 @@
+import { useState, useEffect } from "react";
+
 export default function Hero() {
-  const pageData = {
-    headlinePart1: "Ensuring Value for",
-    headlinePart2: "Every Cedi",
-    subheadline: "The independent guardian of efficiency, accountability, and fiscal integrity in Ghana's public spending.",
-    primaryBtn: "Apply for VfM Certificate",
-    secondaryBtn: "Learn More",
-    backgroundImage: "/hero-bg.jpg" 
-  };
+  const slides = [
+    {
+      tabName: "PURPOSE",
+      headline1: "Every Cedi Counts.",
+      headline2: "Every Outcome Matters.",
+      subheadline: "Advancing a culture of responsible spending, measurable results, and value-driven public service delivery across national infrastructure.",
+      btnText: "Our Purpose",
+      bgPosition: "center 20%" 
+    },
+    {
+      tabName: "ACTION",
+      headline1: "Securing Value Before",
+      headline2: "The First Cedi is Spent.",
+      subheadline: "Conducting mandatory VfM certifications and enforcing strict cost benchmarks to prevent contract inflation and protect the public purse.",
+      btnText: "Our Approach",
+      bgPosition: "center 30%"
+    },
+    {
+      tabName: "OUTCOMES",
+      headline1: "Delivering Results.",
+      headline2: "Ensuring Accountability.",
+      subheadline: "Tracking major infrastructure projects across Ghana to eliminate cost overruns, prevent abandoned projects, and guarantee citizen value.",
+      btnText: "View Impact",
+      bgPosition: "center 40%"
+    }
+  ];
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Auto-advance every 8 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    }, 8000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
 
   return (
     <section style={{ 
       position: "relative",
       backgroundColor: "#001F3F", 
       color: "#FFFFFF", 
-      padding: "120px 40px",
       overflow: "hidden",
+      minHeight: "700px",
       display: "flex",
-      alignItems: "center",
-      minHeight: "600px"
+      alignItems: "center"
     }}>
       
+      {/* RESPONSIVE CSS */}
+      <style>
+        {`
+          .hero-bg {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('/hero-bg.jpg');
+            background-size: cover;
+            opacity: 0.85;
+            z-index: 0;
+            transition: background-position 4s ease-in-out;
+          }
+
+          .hero-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, rgba(0,31,63,0.98) 30%, rgba(0,31,63,0.6) 60%, rgba(0,31,63,0.1) 100%);
+            z-index: 1;
+          }
+
+          .hero-container {
+            max-width: 1200px; margin: 0 auto; position: relative; z-index: 2;
+            width: 100%; padding: 0 40px;
+          }
+
+          .hero-mask {
+            width: 100%; overflow: hidden;
+          }
+
+          .hero-track {
+            display: flex;
+            transition: transform 2s cubic-bezier(0.22, 1, 0.36, 1);
+          }
+
+          .hero-slide {
+            min-width: 100%; width: 100%; box-sizing: border-box; max-width: 850px;
+          }
+
+          .hero-heading {
+            font-size: 56px; font-weight: 800; margin: 0 0 24px 0; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+          }
+
+          .hero-subheadline {
+            font-size: 20px; line-height: 1.6; color: #E2E8F0; margin-bottom: 40px; text-shadow: 0 1px 5px rgba(0,0,0,0.5);
+          }
+
+          /* --- MOBILE RESPONSIVENESS --- */
+          @media (max-width: 768px) {
+            .hero-bg {
+              /* Zooms out slightly on mobile so the image isn't too tight */
+              background-size: 150% auto; 
+              background-position: center top !important;
+              opacity: 0.6; /* Darken image slightly so text is readable */
+            }
+            .hero-overlay {
+              /* Stronger gradient on mobile because the screen is narrow */
+              background: linear-gradient(180deg, rgba(0,31,63,0.9) 0%, rgba(0,31,63,0.95) 100%);
+            }
+            .hero-container {
+              padding: 0 24px;
+            }
+            .hero-heading {
+              font-size: 38px; /* Much smaller for phones */
+              margin-bottom: 16px;
+            }
+            .hero-subheadline {
+              font-size: 16px; 
+              line-height: 1.5;
+              margin-bottom: 32px;
+            }
+            .hero-slide {
+              /* Remove the width restriction on mobile so text uses full width */
+              max-width: 100%;
+            }
+          }
+        `}
+      </style>
+
       {/* BACKGROUND IMAGE */}
-      <div style={{
-        position: "absolute", 
-        top: 0, left: 0, right: 0, bottom: 0,
-        backgroundImage: `url(${pageData.backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        opacity: 0.8, 
-        zIndex: 0
-      }} />
+      <div 
+        className="hero-bg"
+        style={{ backgroundPosition: slides[currentSlide].bgPosition }} 
+      />
 
       {/* GRADIENT OVERLAY */}
-      <div style={{
-        position: "absolute", 
-        top: 0, left: 0, right: 0, bottom: 0,
-        background: "linear-gradient(90deg, rgba(0,31,63,0.95) 40%, rgba(0,31,63,0.3) 100%)",
-        zIndex: 1
-      }} />
+      <div className="hero-overlay" />
 
-      {/* MAIN CONTENT */}
-      <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 2, width: "100%" }}>
+      {/* MAIN CONTENT CONTAINER */}
+      <div className="hero-container">
         
-        <style>
-          {`
-            @keyframes fadeUp {
-              from { opacity: 0; transform: translateY(20px); }
-              to { opacity: 1; transform: translateY(0); }
-            }
-            .animate-fade-up { animation: fadeUp 0.8s ease-out forwards; }
-            .delay-2 { animation-delay: 0.2s; opacity: 0; }
-            .delay-3 { animation-delay: 0.3s; opacity: 0; }
-            .delay-4 { animation-delay: 0.4s; opacity: 0; }
-          `}
-        </style>
-
-        <h1 className="animate-fade-up delay-2" style={{ fontSize: "56px", fontWeight: "bold", margin: "0 0 24px 0", lineHeight: "1.1", maxWidth: "800px" }}>
-          {pageData.headlinePart1} <span style={{ color: "#FCD116" }}>{pageData.headlinePart2}</span>
-        </h1>
-
-        <p className="animate-fade-up delay-3" style={{ fontSize: "18px", lineHeight: "1.6", maxWidth: "600px", opacity: 0.9, marginBottom: "40px" }}>
-          {pageData.subheadline}
-        </p>
-
-        <div className="animate-fade-up delay-4" style={{ display: "flex", gap: "16px" }}>
-          <button style={{ 
-            backgroundColor: "#FCD116", 
-            color: "#001F3F", 
-            border: "none", 
-            padding: "14px 28px", 
-            borderRadius: "6px", 
-            fontSize: "16px", 
-            fontWeight: "bold", 
-            cursor: "pointer", 
-            transition: "transform 0.2s ease"
-          }}
-          onMouseEnter={(e) => e.target.style.transform = "scale(1.05)"}
-          onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
-          >
-            {pageData.primaryBtn}
-          </button>
+        {/* THE MASK */}
+        <div className="hero-mask">
           
-          <button style={{ 
-            backgroundColor: "rgba(255,255,255,0.1)", 
-            color: "#FFFFFF", 
-            border: "1px solid rgba(255,255,255,0.5)", 
-            padding: "14px 28px", 
-            borderRadius: "6px", 
-            fontSize: "16px", 
-            fontWeight: "bold", 
-            cursor: "pointer", 
-            transition: "background-color 0.2s ease",
-            backdropFilter: "blur(4px)"
-          }}
-          onMouseEnter={(e) => e.target.style.backgroundColor = "rgba(255,255,255,0.2)"}
-          onMouseLeave={(e) => e.target.style.backgroundColor = "rgba(255,255,255,0.1)"}
+          {/* THE SLIDER TRACK */}
+          <div 
+            className="hero-track"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
-            {pageData.secondaryBtn}
-          </button>
+            
+            {slides.map((slide, index) => (
+              <div key={index} className="hero-slide">
+                <div>
+                  <div style={{ 
+                    fontSize: "13px", fontWeight: "800", letterSpacing: "2px", 
+                    marginBottom: "24px", color: "#FCD116" 
+                  }}>
+                    {slide.tabName}
+                  </div>
+
+                  <h1 className="hero-heading">
+                    {slide.headline1} <br/> <span style={{ color: "#FFFFFF" }}>{slide.headline2}</span>
+                  </h1>
+                  
+                  <p className="hero-subheadline">
+                    {slide.subheadline}
+                  </p>
+                  
+                  <button style={{ 
+                    backgroundColor: "#FCD116", color: "#001F3F", border: "none", 
+                    padding: "16px 32px", borderRadius: "6px", fontSize: "16px", 
+                    fontWeight: "bold", cursor: "pointer", transition: "transform 0.2s ease"
+                  }}
+                  onMouseEnter={(e) => e.target.style.transform = "scale(1.05)"}
+                  onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
+                  >
+                    {slide.btnText}
+                  </button>
+                </div>
+              </div>
+            ))}
+
+          </div>
         </div>
+
+        {/* BOTTOM CONTROLS (Dots) */}
+        <div style={{ display: "flex", gap: "12px", marginTop: "60px" }}>
+          {slides.map((slide, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              style={{
+                width: index === currentSlide ? "40px" : "12px",
+                height: "12px",
+                borderRadius: "6px",
+                backgroundColor: index === currentSlide ? "#FCD116" : "rgba(255,255,255,0.3)",
+                border: "none",
+                cursor: "pointer",
+                transition: "all 0.4s ease",
+                padding: 0
+              }}
+            />
+          ))}
+        </div>
+
       </div>
     </section>
   );

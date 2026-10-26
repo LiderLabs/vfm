@@ -11,12 +11,17 @@ export default function Navbar() {
             style={{ width: "55px", height: "55px", objectFit: "contain", backgroundColor: "white", borderRadius: "50%", padding: "2px" }} 
           />
           <div>
-            <h1 style={{ margin: 0, fontSize: "20px", fontWeight: "bold" }}>Value for Money Office</h1>
-            <p style={{ margin: 0, fontSize: "12px", opacity: 0.8 }}>Republic of Ghana</p>
+            {/* ALL CAPS HERE */}
+            <h1 style={{ margin: 0, fontSize: "18px", fontWeight: "bold", letterSpacing: "1px" }}>
+              VALUE FOR MONEY OFFICE
+            </h1>
+            <p style={{ margin: 0, fontSize: "12px", opacity: 0.8, letterSpacing: "1px" }}>
+              REPUBLIC OF GHANA
+            </p>
           </div>
         </div>
 
-        {/* Navigation Links - Home Removed */}
+        {/* Navigation Links */}
         <nav style={{ display: "flex", gap: "24px", fontSize: "14px", fontWeight: "500" }}>
           <a href="#" style={{ color: "#FFFFFF", textDecoration: "none" }}>About Us</a>
           <a href="#" style={{ color: "#FFFFFF", textDecoration: "none" }}>Mandate</a>
