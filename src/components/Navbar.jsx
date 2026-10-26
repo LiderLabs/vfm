@@ -4,11 +4,15 @@ export default function Navbar() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: "1200px", margin: "0 auto" }}>
         
         {/* Logo area */}
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div style={{ width: "40px", height: "40px", backgroundColor: "#FFFFFF", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            {/* Placeholder for the Ghana Coat of Arms or Logo */}
-            <span style={{ color: "#001F3F", fontWeight: "bold" }}>VfM</span>
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          
+          {/* Updated Logo Image */}
+          <img 
+            src="/vfm-logo.png" 
+            alt="VfM Office Logo" 
+            style={{ width: "55px", height: "55px", objectFit: "contain", backgroundColor: "white", borderRadius: "50%", padding: "2px" }} 
+          />
+          
           <div>
             <h1 style={{ margin: 0, fontSize: "20px", fontWeight: "bold" }}>Value for Money Office</h1>
             <p style={{ margin: 0, fontSize: "12px", opacity: 0.8 }}>Republic of Ghana</p>
