@@ -6,7 +6,7 @@ export default function Hero() {
     subheadline: "The independent guardian of efficiency, accountability, and fiscal integrity in Ghana's public spending.",
     primaryBtn: "Apply for VfM Certificate",
     secondaryBtn: "Learn More",
-    backgroundImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" 
+    backgroundImage: "/hero-bg.jpg" 
   };
 
   return (
@@ -14,26 +14,29 @@ export default function Hero() {
       position: "relative",
       backgroundColor: "#001F3F", 
       color: "#FFFFFF", 
-      padding: "100px 40px",
+      padding: "120px 40px",
       overflow: "hidden",
       display: "flex",
-      alignItems: "center"
+      alignItems: "center",
+      minHeight: "600px"
     }}>
       
-      {/* BACKGROUND IMAGE & OVERLAY */}
+      {/* BACKGROUND IMAGE */}
       <div style={{
-        position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+        position: "absolute", 
+        top: 0, left: 0, right: 0, bottom: 0,
         backgroundImage: `url(${pageData.backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        opacity: 0.15,
+        opacity: 0.8, 
         zIndex: 0
       }} />
 
-      {/* GRADIENT OVERLAY */}
+      {/* GRADIENT OVERLAY - Makes text readable while showing the image */}
       <div style={{
-        position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
-        background: "linear-gradient(90deg, #001F3F 30%, rgba(0,31,63,0.7) 100%)",
+        position: "absolute", 
+        top: 0, left: 0, right: 0, bottom: 0,
+        background: "linear-gradient(90deg, rgba(0,31,63,0.95) 40%, rgba(0,31,63,0.3) 100%)",
         zIndex: 1
       }} />
 
@@ -55,9 +58,16 @@ export default function Hero() {
         </style>
 
         <div className="animate-fade-up delay-1" style={{ 
-          display: "inline-block", border: "1px solid rgba(255,255,255,0.3)", 
-          padding: "6px 12px", borderRadius: "4px", fontSize: "12px", 
-          fontWeight: "bold", marginBottom: "24px", letterSpacing: "1px"
+          display: "inline-block", 
+          border: "1px solid rgba(255,255,255,0.4)", 
+          backgroundColor: "rgba(255,255,255,0.1)",
+          padding: "6px 12px", 
+          borderRadius: "4px", 
+          fontSize: "12px", 
+          fontWeight: "bold", 
+          marginBottom: "24px", 
+          letterSpacing: "1px",
+          backdropFilter: "blur(4px)"
         }}>
           {pageData.badgeText}
         </div>
@@ -72,9 +82,15 @@ export default function Hero() {
 
         <div className="animate-fade-up delay-4" style={{ display: "flex", gap: "16px" }}>
           <button style={{ 
-            backgroundColor: "#FCD116", color: "#001F3F", border: "none", 
-            padding: "14px 28px", borderRadius: "6px", fontSize: "16px", 
-            fontWeight: "bold", cursor: "pointer", transition: "transform 0.2s ease"
+            backgroundColor: "#FCD116", 
+            color: "#001F3F", 
+            border: "none", 
+            padding: "14px 28px", 
+            borderRadius: "6px", 
+            fontSize: "16px", 
+            fontWeight: "bold", 
+            cursor: "pointer", 
+            transition: "transform 0.2s ease"
           }}
           onMouseEnter={(e) => e.target.style.transform = "scale(1.05)"}
           onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
@@ -83,12 +99,19 @@ export default function Hero() {
           </button>
           
           <button style={{ 
-            backgroundColor: "transparent", color: "#FFFFFF", border: "1px solid rgba(255,255,255,0.4)", 
-            padding: "14px 28px", borderRadius: "6px", fontSize: "16px", 
-            fontWeight: "bold", cursor: "pointer", transition: "background-color 0.2s ease"
+            backgroundColor: "rgba(255,255,255,0.1)", 
+            color: "#FFFFFF", 
+            border: "1px solid rgba(255,255,255,0.5)", 
+            padding: "14px 28px", 
+            borderRadius: "6px", 
+            fontSize: "16px", 
+            fontWeight: "bold", 
+            cursor: "pointer", 
+            transition: "background-color 0.2s ease",
+            backdropFilter: "blur(4px)"
           }}
-          onMouseEnter={(e) => e.target.style.backgroundColor = "rgba(255,255,255,0.1)"}
-          onMouseLeave={(e) => e.target.style.backgroundColor = "transparent"}
+          onMouseEnter={(e) => e.target.style.backgroundColor = "rgba(255,255,255,0.2)"}
+          onMouseLeave={(e) => e.target.style.backgroundColor = "rgba(255,255,255,0.1)"}
           >
             {pageData.secondaryBtn}
           </button>
