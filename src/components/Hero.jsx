@@ -1,6 +1,5 @@
 export default function Hero() {
   const pageData = {
-    badgeText: "ESTABLISHED UNDER ACT 1172",
     headlinePart1: "Ensuring Value for",
     headlinePart2: "Every Cedi",
     subheadline: "The independent guardian of efficiency, accountability, and fiscal integrity in Ghana's public spending.",
@@ -32,7 +31,7 @@ export default function Hero() {
         zIndex: 0
       }} />
 
-      {/* GRADIENT OVERLAY - Makes text readable while showing the image */}
+      {/* GRADIENT OVERLAY */}
       <div style={{
         position: "absolute", 
         top: 0, left: 0, right: 0, bottom: 0,
@@ -50,27 +49,11 @@ export default function Hero() {
               to { opacity: 1; transform: translateY(0); }
             }
             .animate-fade-up { animation: fadeUp 0.8s ease-out forwards; }
-            .delay-1 { animation-delay: 0.1s; opacity: 0; }
             .delay-2 { animation-delay: 0.2s; opacity: 0; }
             .delay-3 { animation-delay: 0.3s; opacity: 0; }
             .delay-4 { animation-delay: 0.4s; opacity: 0; }
           `}
         </style>
-
-        <div className="animate-fade-up delay-1" style={{ 
-          display: "inline-block", 
-          border: "1px solid rgba(255,255,255,0.4)", 
-          backgroundColor: "rgba(255,255,255,0.1)",
-          padding: "6px 12px", 
-          borderRadius: "4px", 
-          fontSize: "12px", 
-          fontWeight: "bold", 
-          marginBottom: "24px", 
-          letterSpacing: "1px",
-          backdropFilter: "blur(4px)"
-        }}>
-          {pageData.badgeText}
-        </div>
 
         <h1 className="animate-fade-up delay-2" style={{ fontSize: "56px", fontWeight: "bold", margin: "0 0 24px 0", lineHeight: "1.1", maxWidth: "800px" }}>
           {pageData.headlinePart1} <span style={{ color: "#FCD116" }}>{pageData.headlinePart2}</span>
