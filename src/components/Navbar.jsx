@@ -46,8 +46,17 @@ export default function Navbar() {
           /* MOBILE STYLES */
           @media (max-width: 1150px) {
             .nav-links { display: none; }
-            .desktop-actions { display: none; }
+            
+            /* HIDE the big Publications button on mobile */
+            .desktop-pub-btn { display: none; } 
+            
+            /* Show the Portal Icon and Hamburger */
+            .mobile-actions { display: flex; align-items: center; gap: 16px; }
             .mobile-menu-btn { display: block; }
+
+            /* Logo Text Fix */
+            .logo-title { font-size: 15px !important; }
+            .logo-subtitle { font-size: 9px !important; }
             
             .mobile-dropdown {
               position: absolute; top: 100%; left: 0; right: 0;
@@ -67,7 +76,7 @@ export default function Navbar() {
               color: #FFFFFF; text-decoration: none; font-size: 16px; font-weight: 600;
               padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05);
             }
-            .mobile-actions {
+            .mobile-menu-actions {
               display: flex; flex-direction: column; gap: 12px; margin-top: 12px;
             }
           }
@@ -81,13 +90,14 @@ export default function Navbar() {
           <img 
             src="/vfm-logo.png" 
             alt="VfM Office Logo" 
-            style={{ width: "50px", height: "50px", objectFit: "contain", backgroundColor: "white", borderRadius: "50%", padding: "2px" }} 
+            style={{ width: "45px", height: "45px", objectFit: "contain", backgroundColor: "white", borderRadius: "50%", padding: "2px" }} 
           />
           <div>
-            <h1 style={{ margin: 0, fontSize: "18px", fontWeight: "800", letterSpacing: "1px", lineHeight: "1.2" }}>
-              VALUE FOR MONEY<br/>OFFICE
+            {/* Notice we removed the <br/> so it sits on one line now */}
+            <h1 className="logo-title" style={{ margin: 0, fontSize: "18px", fontWeight: "800", letterSpacing: "0.5px", lineHeight: "1.2" }}>
+              VALUE FOR MONEY OFFICE
             </h1>
-            <p style={{ margin: 0, fontSize: "10px", color: "#FCD116", fontWeight: "700", letterSpacing: "1px", marginTop: "4px" }}>
+            <p className="logo-subtitle" style={{ margin: 0, fontSize: "10px", color: "#FCD116", fontWeight: "700", letterSpacing: "1px", marginTop: "2px" }}>
               REPUBLIC OF GHANA
             </p>
           </div>
@@ -97,7 +107,6 @@ export default function Navbar() {
         <nav className="nav-links">
           <Link to="/" className="nav-link" onClick={() => handleNavClick("/")}>Home</Link>
           
-          {/* About Us Dropdown */}
           <div className="dropdown-container" onMouseEnter={() => setActiveDropdown("about")} onMouseLeave={() => setActiveDropdown(null)}>
             <span className="nav-link" onClick={() => handleNavClick("/about")}>
               About Us <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -113,7 +122,6 @@ export default function Navbar() {
 
           <Link to="/mandate" className="nav-link" onClick={() => handleNavClick("/mandate")}>Our Mandate</Link>
 
-          {/* What We Do Dropdown */}
           <div className="dropdown-container" onMouseEnter={() => setActiveDropdown("whatWeDo")} onMouseLeave={() => setActiveDropdown(null)}>
             <span className="nav-link" onClick={() => handleNavClick("/what-we-do")}>
               What We Do <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -132,9 +140,10 @@ export default function Navbar() {
           <Link to="/contact" className="nav-link" onClick={() => handleNavClick("/contact")}>Contact</Link>
         </nav>
 
-        {/* Desktop Right Actions */}
-        <div className="desktop-actions" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <button onClick={() => handleNavClick("/publications")} style={{ 
+        {/* Right Actions (Desktop only for the big button) */}
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          
+          <button onClick={() => handleNavClick("/publications")} className="desktop-pub-btn" style={{ 
             backgroundColor: "#001F3F", border: "1px solid #FFFFFF", color: "#FFFFFF", 
             padding: "10px 16px", borderRadius: "4px", fontWeight: "600", 
             cursor: "pointer", fontSize: "14px", lineHeight: "1.2", textAlign: "left",
@@ -146,26 +155,28 @@ export default function Navbar() {
             Publications &<br/>Reports
           </button>
           
+          {/* Portal Icon (Visible on Mobile) */}
           <button onClick={() => handleNavClick("/portal")} style={{ 
             backgroundColor: "#001F3F", color: "#FFFFFF", border: "1px solid rgba(255,255,255,0.4)", 
-            width: "44px", height: "44px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+            width: "40px", height: "40px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
             cursor: "pointer", transition: "background-color 0.2s"
           }}
           onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"}
           onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#001F3F"}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
+          </button>
+          
+          {/* Hamburger Icon (Visible on Mobile) */}
+          <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? (
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            ) : (
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            )}
           </button>
         </div>
 
-        {/* Mobile Hamburger Icon */}
-        <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          {isMobileMenuOpen ? (
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          ) : (
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-          )}
-        </button>
       </div>
 
       {/* Mobile Dropdown Menu */}
@@ -175,7 +186,6 @@ export default function Navbar() {
           <Link to="/about" onClick={() => handleNavClick("/about")}>About Us</Link>
           <Link to="/mandate" onClick={() => handleNavClick("/mandate")}>Our Mandate</Link>
           
-          {/* Mobile Sub-menu for What We Do */}
           <div style={{ display: "flex", flexDirection: "column", gap: "12px", paddingLeft: "16px", borderLeft: "2px solid rgba(255,255,255,0.1)" }}>
             <span style={{ fontSize: "12px", fontWeight: "700", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1px" }}>What We Do</span>
             <Link to="/what-we-do#assessments" onClick={() => handleNavClick("/what-we-do")} style={{ fontSize: "14px", borderBottom: "none" }}>VfM Assessments</Link>
@@ -187,13 +197,9 @@ export default function Navbar() {
           <Link to="/news" onClick={() => handleNavClick("/news")}>News & Insights</Link>
           <Link to="/contact" onClick={() => handleNavClick("/contact")}>Contact</Link>
           
-          <div className="mobile-actions">
+          <div className="mobile-menu-actions">
             <button onClick={() => handleNavClick("/publications")} style={{ backgroundColor: "rgba(255,255,255,0.1)", color: "#FFFFFF", border: "1px solid #FFFFFF", padding: "14px", borderRadius: "4px", fontWeight: "bold", fontSize: "16px", cursor: "pointer" }}>
               Publications & Reports
-            </button>
-            <button onClick={() => handleNavClick("/portal")} style={{ backgroundColor: "#FCD116", color: "#001F3F", border: "none", padding: "14px", borderRadius: "4px", fontWeight: "bold", fontSize: "16px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
-              Portal Login
             </button>
           </div>
         </div>
