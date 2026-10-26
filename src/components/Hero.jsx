@@ -30,7 +30,6 @@ export default function Hero() {
 
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Auto-advance every 8 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
@@ -39,23 +38,27 @@ export default function Hero() {
   }, [slides.length]);
 
   return (
-    <section style={{ 
-      position: "relative",
-      backgroundColor: "#001F3F", 
-      color: "#FFFFFF", 
-      overflow: "hidden",
-      minHeight: "700px",
-      display: "flex",
-      alignItems: "center"
-    }}>
+    <section className="hero-section">
       
-      {/* RESPONSIVE CSS */}
       <style>
         {`
+          /* DESKTOP STYLES */
+          .hero-section {
+            position: relative;
+            background-color: #001F3F; 
+            color: #FFFFFF; 
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            min-height: 100vh; /* Takes full screen height on desktop */
+            padding: 100px 0;
+          }
+
           .hero-bg {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background-image: url('/hero-bg.jpg');
             background-size: cover;
+            background-position: center;
             opacity: 0.85;
             z-index: 0;
             transition: background-position 4s ease-in-out;
@@ -72,9 +75,7 @@ export default function Hero() {
             width: 100%; padding: 0 40px;
           }
 
-          .hero-mask {
-            width: 100%; overflow: hidden;
-          }
+          .hero-mask { width: 100%; overflow: hidden; }
 
           .hero-track {
             display: flex;
@@ -86,66 +87,59 @@ export default function Hero() {
           }
 
           .hero-heading {
-            font-size: 56px; font-weight: 800; margin: 0 0 24px 0; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-size: 64px; font-weight: 800; margin: 0 0 24px 0; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.3);
           }
 
           .hero-subheadline {
-            font-size: 20px; line-height: 1.6; color: #E2E8F0; margin-bottom: 40px; text-shadow: 0 1px 5px rgba(0,0,0,0.5);
+            font-size: 20px; line-height: 1.6; color: #E2E8F0; margin-bottom: 48px; text-shadow: 0 1px 5px rgba(0,0,0,0.5);
           }
 
-          /* --- MOBILE RESPONSIVENESS --- */
+          /* MOBILE STYLES */
           @media (max-width: 768px) {
+            .hero-section {
+              min-height: 100vh;
+              padding: 120px 0 60px 0; /* Extra padding at top to clear the navbar */
+              align-items: flex-start; /* Pushes content up on mobile */
+            }
             .hero-bg {
-              /* Zooms out slightly on mobile so the image isn't too tight */
-              background-size: 150% auto; 
-              background-position: center top !important;
-              opacity: 0.6; /* Darken image slightly so text is readable */
+              background-position: center top !important; /* Shows the engineers' faces */
             }
             .hero-overlay {
-              /* Stronger gradient on mobile because the screen is narrow */
-              background: linear-gradient(180deg, rgba(0,31,63,0.9) 0%, rgba(0,31,63,0.95) 100%);
+              /* Strong solid gradient on mobile for readability */
+              background: linear-gradient(180deg, rgba(0,31,63,0.8) 0%, rgba(0,31,63,1) 80%);
             }
             .hero-container {
               padding: 0 24px;
             }
             .hero-heading {
-              font-size: 38px; /* Much smaller for phones */
-              margin-bottom: 16px;
+              font-size: 42px; /* Slightly larger than before for better balance */
+              margin-bottom: 20px;
             }
             .hero-subheadline {
-              font-size: 16px; 
-              line-height: 1.5;
-              margin-bottom: 32px;
+              font-size: 17px; 
+              line-height: 1.6;
+              margin-bottom: 40px;
             }
             .hero-slide {
-              /* Remove the width restriction on mobile so text uses full width */
               max-width: 100%;
             }
           }
         `}
       </style>
 
-      {/* BACKGROUND IMAGE */}
       <div 
         className="hero-bg"
         style={{ backgroundPosition: slides[currentSlide].bgPosition }} 
       />
 
-      {/* GRADIENT OVERLAY */}
       <div className="hero-overlay" />
 
-      {/* MAIN CONTENT CONTAINER */}
       <div className="hero-container">
-        
-        {/* THE MASK */}
         <div className="hero-mask">
-          
-          {/* THE SLIDER TRACK */}
           <div 
             className="hero-track"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
-            
             {slides.map((slide, index) => (
               <div key={index} className="hero-slide">
                 <div>
@@ -181,7 +175,6 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* BOTTOM CONTROLS (Dots) */}
         <div style={{ display: "flex", gap: "12px", marginTop: "60px" }}>
           {slides.map((slide, index) => (
             <button
