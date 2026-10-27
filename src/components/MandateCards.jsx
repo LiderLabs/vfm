@@ -64,18 +64,16 @@ export default function MandateCards() {
   ];
 
   return (
-    <div style={{ overflow: "hidden" }}>
+    <div style={{ overflowX: "hidden" }}>
       
       {/* 1. CORE MANDATE CARDS */}
-      <section style={{ position: "relative", padding: "100px 40px", backgroundColor: "#F8F9FA" }}>
+      <section style={{ position: "relative", padding: "100px 24px", backgroundColor: "#F8F9FA" }}>
         
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
           backgroundImage: "url(/building-bg.jpg)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          opacity: 0.35,
-          zIndex: 0
+          backgroundSize: "cover", backgroundPosition: "center",
+          opacity: 0.35, zIndex: 0
         }} />
         
         <div style={{
@@ -97,7 +95,7 @@ export default function MandateCards() {
             </div>
           </ZoomReveal>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "30px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "30px" }}>
             {mandates.map((item, index) => (
               <ZoomReveal key={index} delay={index * 0.1}>
                 <div 
@@ -133,7 +131,7 @@ export default function MandateCards() {
       </section>
 
       {/* 2. THE TRIPARTITE STANDARD */}
-      <section style={{ position: "relative", backgroundColor: "#001F3F", padding: "100px 40px" }}>
+      <section style={{ position: "relative", backgroundColor: "#001F3F", padding: "100px 24px" }}>
         
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
@@ -152,7 +150,6 @@ export default function MandateCards() {
           
           <ZoomReveal>
             <div style={{ textAlign: "center", marginBottom: "60px" }}>
-              {/* "THE TRIPARTITE STANDARD" label removed from here */}
               <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 16px 0", lineHeight: "1.1" }}>
                 The Three Pillars of Public Value
               </h2>
@@ -196,8 +193,8 @@ export default function MandateCards() {
       </section>
 
       {/* 3. INSTITUTIONAL CTA */}
-      <section style={{ backgroundColor: "#F4F5F0", padding: "100px 40px" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "60px", alignItems: "center" }}>
+      <section style={{ backgroundColor: "#F4F5F0", padding: "100px 24px" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "60px", alignItems: "center" }}>
           
           <ZoomReveal>
             <div style={{ position: "relative", height: "500px", borderRadius: "24px", overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}>
@@ -208,7 +205,6 @@ export default function MandateCards() {
 
           <ZoomReveal delay={0.2}>
             <div>
-              {/* "INSTITUTIONAL STEWARDSHIP" label removed from here */}
               <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", margin: "0 0 24px 0", lineHeight: "1.1" }}>
                 Safeguarding Ghana's Development Capital.
               </h2>
@@ -234,7 +230,7 @@ export default function MandateCards() {
       </section>
 
       {/* 4. LATEST NEWS PREVIEW */}
-      <section style={{ backgroundColor: "#FFFFFF", padding: "100px 40px" }}>
+      <section style={{ backgroundColor: "#FFFFFF", padding: "100px 24px" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           
           <ZoomReveal>
@@ -254,7 +250,7 @@ export default function MandateCards() {
             </div>
           </ZoomReveal>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "30px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "30px" }}>
             
             <ZoomReveal delay={0.1}>
               <div style={{ borderRadius: "12px", overflow: "hidden", backgroundColor: "#F8F9FA", border: "1px solid #E2E8F0", transition: "transform 0.3s ease", cursor: "pointer", height: "100%", display: "flex", flexDirection: "column" }}
@@ -318,7 +314,7 @@ export default function MandateCards() {
       </section>
 
       {/* 5. PORTAL CTA */}
-      <section style={{ position: "relative", backgroundColor: "#001F3F", padding: "100px 40px", overflow: "hidden" }}>
+      <section style={{ position: "relative", backgroundColor: "#001F3F", padding: "100px 24px", overflow: "hidden" }}>
         
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
