@@ -7,7 +7,6 @@ export default function Portal() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // In a real app, this would hit an authentication API
     alert("Authentication service is currently under construction.");
   };
 
@@ -17,7 +16,7 @@ export default function Portal() {
       {/* LEFT SIDE: VISUAL & BRANDING (Hidden on Mobile) */}
       <div style={{ 
         flex: "1", 
-        display: "none", // Hidden on small screens
+        display: "none", 
         flexDirection: "column",
         justifyContent: "center",
         padding: "80px",
@@ -27,7 +26,6 @@ export default function Portal() {
       }}
       className="desktop-portal-visual"
       >
-        {/* Background Image */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
           backgroundImage: "url(/building-bg.jpg)",
@@ -70,17 +68,18 @@ export default function Portal() {
         alignItems: "center", 
         justifyContent: "center", 
         padding: "40px 24px",
-        backgroundColor: "#FFFFFF" // White background for the form on desktop
+        backgroundColor: "#FFFFFF"
       }}>
         <div style={{ width: "100%", maxWidth: "420px" }}>
           
           {/* Mobile Logo (Only visible on mobile) */}
           <div className="mobile-portal-logo" style={{ display: "none", textAlign: "center", marginBottom: "40px" }}>
-            <img src="/vfm-logo.png" alt="VfM Logo" style={{ width: "60px", height: "60px", marginBottom: "16px" }} />
-            <h2 style={{ fontSize: "24px", fontWeight: "800", color: "#001F3F" }}>VfM Portal</h2>
+            <img src="/vfm-logo.png" alt="VfM Logo" style={{ width: "70px", height: "70px", marginBottom: "16px" }} />
+            <h2 style={{ fontSize: "28px", fontWeight: "800", color: "#001F3F" }}>VfM Portal</h2>
           </div>
 
-          <div style={{ textAlign: "center", marginBottom: "40px" }}>
+          {/* DESKTOP HEADER (Hidden on mobile) */}
+          <div className="desktop-portal-header" style={{ textAlign: "center", marginBottom: "40px" }}>
             <div style={{ width: "64px", height: "64px", backgroundColor: "rgba(0,31,63,0.05)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px auto" }}>
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#001F3F" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             </div>
@@ -90,7 +89,6 @@ export default function Portal() {
 
           <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
             
-            {/* Email Input */}
             <div>
               <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Official Email Address</label>
               <input 
@@ -105,7 +103,6 @@ export default function Portal() {
               />
             </div>
 
-            {/* Password Input */}
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                 <label style={{ fontSize: "14px", fontWeight: "700", color: "#0F172A" }}>Password</label>
@@ -123,15 +120,6 @@ export default function Portal() {
               />
             </div>
 
-            {/* Security Note */}
-            <div style={{ display: "flex", gap: "12px", backgroundColor: "#F8FAFC", padding: "16px", borderRadius: "8px", border: "1px solid #E2E8F0" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B8860B" strokeWidth="2" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-              <p style={{ fontSize: "13px", color: "#475569", margin: 0, lineHeight: "1.5" }}>
-                You will be required to verify your identity via Multi-Factor Authentication (MFA) on the next screen.
-              </p>
-            </div>
-
-            {/* Submit Button */}
             <button type="submit" style={{ 
               backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", 
               padding: "16px", borderRadius: "8px", fontSize: "16px", fontWeight: "800", 
@@ -145,19 +133,11 @@ export default function Portal() {
 
           </form>
 
-          {/* Footer Links */}
           <div style={{ textAlign: "center", marginTop: "40px" }}>
             <Link to="/" style={{ fontSize: "14px", color: "#64748B", textDecoration: "none", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "8px" }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
               Return to Public Site
             </Link>
-          </div>
-
-          {/* Warning Notice */}
-          <div style={{ textAlign: "center", marginTop: "32px", padding: "0 20px" }}>
-            <p style={{ fontSize: "11px", color: "#94A3B8", lineHeight: "1.5" }}>
-              WARNING: Unauthorized access to this system is strictly prohibited and subject to criminal prosecution under the Electronic Communications Act, 2008 (Act 775).
-            </p>
           </div>
 
         </div>
@@ -168,10 +148,11 @@ export default function Portal() {
         {`
           @media (min-width: 1024px) {
             .desktop-portal-visual { display: flex !important; }
+            .desktop-portal-header { display: block !important; }
           }
           @media (max-width: 1023px) {
             .mobile-portal-logo { display: block !important; }
-            /* On mobile, we make the whole screen white, and the form takes center stage */
+            .desktop-portal-header { display: none !important; }
           }
         `}
       </style>
