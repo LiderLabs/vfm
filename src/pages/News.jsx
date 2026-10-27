@@ -1,29 +1,47 @@
 export default function News() {
   return (
-    <div style={{ backgroundColor: "#F4F5F0", minHeight: "100vh", padding: "100px 24px" }}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+    <div style={{ backgroundColor: "#F4F5F0", minHeight: "100vh" }}>
+      
+      {/* HEADER SECTION WITH BACKGROUND IMAGE */}
+      <section style={{ 
+        position: "relative", 
+        padding: "100px 24px 80px", 
+        backgroundColor: "#001F3F", 
+        overflow: "hidden"
+      }}>
+        {/* Background Image */}
+        <div style={{
+          position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+          backgroundImage: "url(/building-bg.jpg)", // Using the building image
+          backgroundSize: "cover", backgroundPosition: "center",
+          opacity: 0.15, zIndex: 0
+        }} />
         
-        {/* HEADER SECTION */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "24px", marginBottom: "60px" }}>
+        {/* Gradient Overlay for Text Readability */}
+        <div style={{
+          position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+          background: "linear-gradient(180deg, rgba(0,31,63,0.7) 0%, rgba(0,31,63,0.95) 100%)",
+          zIndex: 1
+        }} />
+
+        <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 2, display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "24px" }}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-              <div style={{ width: "30px", height: "2px", backgroundColor: "#8B7355" }}></div>
-              <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "1.5px", color: "#8B7355", textTransform: "uppercase" }}>
-                Policy & Engagements
-              </span>
-            </div>
-            <h1 style={{ fontSize: "52px", fontWeight: "800", color: "#0F172A", margin: 0, lineHeight: "1.1" }}>
+            {/* Removed the "POLICY & ENGAGEMENTS" label and dashes */}
+            <h1 style={{ fontSize: "52px", fontWeight: "800", color: "#FFFFFF", margin: 0, lineHeight: "1.1" }}>
               News & Institutional<br/>Insights
             </h1>
           </div>
           
-          <a href="#all-news" style={{ display: "flex", alignItems: "center", gap: "8px", color: "#0F172A", fontWeight: "700", fontSize: "15px", textDecoration: "none", borderBottom: "2px solid #0F172A", paddingBottom: "4px" }}>
+          <a href="#all-news" style={{ display: "flex", alignItems: "center", gap: "8px", color: "#FCD116", fontWeight: "700", fontSize: "15px", textDecoration: "none", borderBottom: "2px solid #FCD116", paddingBottom: "4px" }}>
             View All Policy News
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </a>
         </div>
+      </section>
 
-        {/* 2-COLUMN GRID */}
+      {/* MAIN CONTENT AREA */}
+      <section style={{ padding: "80px 24px", maxWidth: "1200px", margin: "0 auto" }}>
+        
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "32px", alignItems: "start" }}>
           
           {/* LEFT COLUMN: FEATURED ARTICLE */}
@@ -33,11 +51,12 @@ export default function News() {
             <div style={{ position: "relative", height: "350px" }}>
               <div style={{ 
                 position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
-                backgroundColor: "#E2E8F0", // Placeholder color if image fails
-                backgroundImage: "url(/symposium.jpg)", // Replace with your image in public folder
+                backgroundColor: "#E2E8F0",
+                backgroundImage: "url(/boardroom.jpg)", // Using the boardroom image for the featured article
                 backgroundSize: "cover", 
                 backgroundPosition: "center" 
               }} />
+              
               {/* The gradient fade from the image into the white card */}
               <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "150px", background: "linear-gradient(to top, #FFFFFF, transparent)" }} />
               
@@ -134,7 +153,7 @@ export default function News() {
           </div>
         </div>
 
-      </div>
+      </section>
     </div>
   );
 }
