@@ -26,37 +26,39 @@ export default function Navbar() {
           
           /* DESKTOP DROPDOWNS */
           .dropdown-container { position: relative; padding: 10px 0; }
-          
           .dropdown-menu {
             position: absolute; top: 100%; left: 0; margin-top: 0px;
             background-color: #FFFFFF; min-width: 220px; border-radius: 4px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3); padding: 8px 0;
-            display: flex; flex-direction: column;
-            z-index: 9999; 
+            display: flex; flex-direction: column; z-index: 9999; 
           }
-          
           .dropdown-item {
             color: #001F3F; text-decoration: none; padding: 12px 20px; font-weight: 600; font-size: 14px;
             transition: background-color 0.2s;
           }
           .dropdown-item:hover { background-color: #F0F4F8; }
 
+          /* PROMINENT PORTAL BUTTON */
+          .portal-btn {
+            display: flex; align-items: center; gap: 8px;
+            background-color: #FCD116; color: #001F3F;
+            padding: "12px 24px"; border-radius: 4px; font-weight: 800; font-size: 14px;
+            text-decoration: none; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(252, 209, 22, 0.2);
+          }
+          .portal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(252, 209, 22, 0.4);
+            background-color: #FFDE45;
+          }
+
           .mobile-menu-btn { display: none; background: none; border: none; color: white; cursor: pointer; }
 
           /* MOBILE STYLES */
           @media (max-width: 1150px) {
             .nav-links { display: none; }
-            
-            /* HIDE the big Publications button on mobile */
-            .desktop-pub-btn { display: none; } 
-            
-            /* Show the Portal Icon and Hamburger */
-            .mobile-actions { display: flex; align-items: center; gap: 16px; }
+            .desktop-portal { display: none; }
             .mobile-menu-btn { display: block; }
-
-            /* Logo Text Fix */
-            .logo-title { font-size: 15px !important; }
-            .logo-subtitle { font-size: 9px !important; }
             
             .mobile-dropdown {
               position: absolute; top: 100%; left: 0; right: 0;
@@ -76,8 +78,14 @@ export default function Navbar() {
               color: #FFFFFF; text-decoration: none; font-size: 16px; font-weight: 600;
               padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05);
             }
-            .mobile-menu-actions {
-              display: flex; flex-direction: column; gap: 12px; margin-top: 12px;
+            
+            /* Mobile Portal Button Styling */
+            .mobile-portal-btn {
+              display: flex; align-items: center; justify-content: center; gap: 8px;
+              background-color: #FCD116; color: #001F3F; border: none;
+              padding: 16px; border-radius: 6px; font-weight: 800; font-size: 16px;
+              cursor: pointer; margin-top: 12px; width: 100%;
+              box-shadow: 0 4px 15px rgba(252, 209, 22, 0.2);
             }
           }
         `}
@@ -90,14 +98,13 @@ export default function Navbar() {
           <img 
             src="/vfm-logo.png" 
             alt="VfM Office Logo" 
-            style={{ width: "45px", height: "45px", objectFit: "contain", backgroundColor: "white", borderRadius: "50%", padding: "2px" }} 
+            style={{ width: "50px", height: "50px", objectFit: "contain", backgroundColor: "white", borderRadius: "50%", padding: "2px" }} 
           />
           <div>
-            {/* Notice we removed the <br/> so it sits on one line now */}
-            <h1 className="logo-title" style={{ margin: 0, fontSize: "18px", fontWeight: "800", letterSpacing: "0.5px", lineHeight: "1.2" }}>
-              VALUE FOR MONEY OFFICE
+            <h1 style={{ margin: 0, fontSize: "18px", fontWeight: "800", letterSpacing: "1px", lineHeight: "1.2" }}>
+              VALUE FOR MONEY<br/>OFFICE
             </h1>
-            <p className="logo-subtitle" style={{ margin: 0, fontSize: "10px", color: "#FCD116", fontWeight: "700", letterSpacing: "1px", marginTop: "2px" }}>
+            <p style={{ margin: 0, fontSize: "10px", color: "#FCD116", fontWeight: "700", letterSpacing: "1px", marginTop: "4px" }}>
               REPUBLIC OF GHANA
             </p>
           </div>
@@ -140,43 +147,39 @@ export default function Navbar() {
           <Link to="/contact" className="nav-link" onClick={() => handleNavClick("/contact")}>Contact</Link>
         </nav>
 
-        {/* Right Actions (Desktop only for the big button) */}
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          
-          <button onClick={() => handleNavClick("/publications")} className="desktop-pub-btn" style={{ 
-            backgroundColor: "#001F3F", border: "1px solid #FFFFFF", color: "#FFFFFF", 
-            padding: "10px 16px", borderRadius: "4px", fontWeight: "600", 
-            cursor: "pointer", fontSize: "14px", lineHeight: "1.2", textAlign: "left",
-            transition: "background-color 0.2s"
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#001F3F"}
-          >
-            Publications &<br/>Reports
-          </button>
-          
-          {/* Portal Icon (Visible on Mobile) */}
+        {/* Desktop Right Actions (Only Portal Login now) */}
+        <div className="desktop-portal">
           <button onClick={() => handleNavClick("/portal")} style={{ 
-            backgroundColor: "#001F3F", color: "#FFFFFF", border: "1px solid rgba(255,255,255,0.4)", 
-            width: "40px", height: "40px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", transition: "background-color 0.2s"
+            display: "flex", alignItems: "center", gap: "8px",
+            backgroundColor: "#FCD116", color: "#001F3F", border: "none",
+            padding: "14px 28px", borderRadius: "4px", fontWeight: "800", fontSize: "15px",
+            cursor: "pointer", transition: "all 0.3s ease",
+            boxShadow: "0 4px 15px rgba(252, 209, 22, 0.2)"
           }}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#001F3F"}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-2px)";
+            e.currentTarget.style.boxShadow = "0 6px 20px rgba(252, 209, 22, 0.4)";
+            e.currentTarget.style.backgroundColor = "#FFDE45";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "0 4px 15px rgba(252, 209, 22, 0.2)";
+            e.currentTarget.style.backgroundColor = "#FCD116";
+          }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
-          </button>
-          
-          {/* Hamburger Icon (Visible on Mobile) */}
-          <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? (
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            ) : (
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-            )}
+            Secure Portal Login
           </button>
         </div>
 
+        {/* Mobile Hamburger Icon */}
+        <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+          {isMobileMenuOpen ? (
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          ) : (
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          )}
+        </button>
       </div>
 
       {/* Mobile Dropdown Menu */}
@@ -197,11 +200,11 @@ export default function Navbar() {
           <Link to="/news" onClick={() => handleNavClick("/news")}>News & Insights</Link>
           <Link to="/contact" onClick={() => handleNavClick("/contact")}>Contact</Link>
           
-          <div className="mobile-menu-actions">
-            <button onClick={() => handleNavClick("/publications")} style={{ backgroundColor: "rgba(255,255,255,0.1)", color: "#FFFFFF", border: "1px solid #FFFFFF", padding: "14px", borderRadius: "4px", fontWeight: "bold", fontSize: "16px", cursor: "pointer" }}>
-              Publications & Reports
-            </button>
-          </div>
+          {/* Prominent Mobile Portal Button */}
+          <button className="mobile-portal-btn" onClick={() => handleNavClick("/portal")}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
+            Secure Portal Login
+          </button>
         </div>
       )}
     </header>
