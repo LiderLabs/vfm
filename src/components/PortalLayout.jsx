@@ -68,97 +68,120 @@ export default function PortalLayout({ children, pageTitle, pageSubtitle }) {
   );
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#F8FAFC", fontFamily: "sans-serif" }}>
+    <div className="portal-layout-wrapper">
       
       <style>
         {`
-          /* DEFAULT MOBILE STYLES */
-          .portal-sidebar {
-            display: none; /* Hide sidebar on mobile */
+          /* MOBILE FIRST (Default) */
+          .portal-layout-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #F8FAFC;
+            font-family: sans-serif;
           }
 
-          .mobile-header {
-            display: flex; /* Show mobile header */
+          .desktop-sidebar {
+            display: none;
+          }
+
+          .mobile-top-bar {
+            display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 24px;
+            padding: 16px 20px;
             background-color: #001F3F;
-            color: white;
+            color: #FFFFFF;
+            position: sticky;
+            top: 0;
+            z-index: 50;
           }
 
-          .main-content {
+          .portal-main-content {
             flex: 1;
-            padding: 24px;
-            overflow-x: hidden; /* Prevent page-wide horizontal scroll */
+            padding: 24px 16px;
+            width: 100%;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
           }
 
-          .desktop-header-actions {
-            display: none; /* Hide top right actions on mobile */
+          .mobile-menu-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 999;
+            display: flex;
           }
 
-          /* DESKTOP STYLES */
+          .mobile-menu-drawer {
+            width: 280px;
+            height: 100%;
+            background-color: #001F3F;
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.3s ease-out forwards;
+          }
+
+          @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+          }
+
+          /* DESKTOP (1024px and up) */
           @media (min-width: 1024px) {
-            .portal-sidebar {
-              display: flex; /* Show sidebar */
+            .portal-layout-wrapper {
+              display: grid;
+              grid-template-columns: 260px 1fr; /* Fixed sidebar, fluid content */
+            }
+
+            .desktop-sidebar {
+              display: flex;
               flex-direction: column;
-              width: 260px;
               background-color: #001F3F;
               padding: 24px 0;
-              flex-shrink: 0;
+              height: 100vh;
+              position: sticky;
+              top: 0;
             }
 
-            .mobile-header {
-              display: none; /* Hide mobile header */
+            .mobile-top-bar {
+              display: none;
             }
 
-            .main-content {
+            .portal-main-content {
               padding: 40px;
               overflow-y: auto;
-            }
-
-            .desktop-header-actions {
-              display: flex; /* Show actions */
-              gap: 16px;
-              align-items: center;
             }
           }
         `}
       </style>
 
       {/* DESKTOP SIDEBAR */}
-      <aside className="portal-sidebar">
+      <aside className="desktop-sidebar">
         <SidebarContent />
       </aside>
 
-      {/* MOBILE HEADER */}
-      <div className="mobile-header" style={{ position: "sticky", top: 0, zIndex: 50 }}>
+      {/* MOBILE TOP BAR */}
+      <div className="mobile-top-bar">
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <img src="/vfm-logo.png" alt="Logo" style={{ width: "32px", height: "32px", backgroundColor: "white", borderRadius: "50%", padding: "2px" }} />
           <span style={{ fontWeight: "800", fontSize: "16px" }}>VfM Portal</span>
         </div>
-        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ background: "none", border: "none", color: "white", cursor: "pointer" }}>
-          {isMobileMenuOpen ? (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          ) : (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-          )}
+        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ background: "none", border: "none", color: "white", cursor: "pointer", padding: "4px" }}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
       </div>
 
-      {/* MOBILE SIDEBAR OVERLAY */}
+      {/* MOBILE DRAWER OVERLAY */}
       {isMobileMenuOpen && (
-        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 100 }} onClick={() => setIsMobileMenuOpen(false)}>
-          <aside 
-            style={{ width: "280px", height: "100%", backgroundColor: "#001F3F", display: "flex", flexDirection: "column", padding: "24px 0" }}
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-          >
+        <div className="mobile-menu-overlay" onClick={() => setIsMobileMenuOpen(false)}>
+          <div className="mobile-menu-drawer" onClick={(e) => e.stopPropagation()}>
             <SidebarContent />
-          </aside>
+          </div>
         </div>
       )}
 
       {/* MAIN CONTENT AREA */}
-      <main className="main-content">
+      <main className="portal-main-content">
         
         {/* Page Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "32px", flexWrap: "wrap", gap: "16px" }}>
@@ -167,11 +190,8 @@ export default function PortalLayout({ children, pageTitle, pageSubtitle }) {
             <p style={{ fontSize: "14px", color: "#64748B", margin: 0 }}>{pageSubtitle}</p>
           </div>
           
-          <div className="desktop-header-actions">
-            <button style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "#FFFFFF", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", position: "relative" }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F172A" strokeWidth="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-              <span style={{ position: "absolute", top: "8px", right: "10px", width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#EF4444", border: "2px solid #FFFFFF" }}></span>
-            </button>
+          {/* Desktop-only action buttons */}
+          <div style={{ display: "none" }} className="desktop-actions">
             <button style={{ padding: "10px 20px", backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", borderRadius: "8px", fontSize: "14px", fontWeight: "700", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
               New Assessment
