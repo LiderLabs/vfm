@@ -3,7 +3,8 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
-import WhatWeDo from "./pages/WhatWeDo"; // <-- IMPORT THE NEW PAGE
+import WhatWeDo from "./pages/WhatWeDo";
+import Publications from "./pages/Publications"; // <-- IMPORT PUBLICATIONS
 import Placeholder from "./pages/Placeholder";
 
 export default function App() {
@@ -16,12 +17,12 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<AboutUs />} />
+            <Route path="/what-we-do" element={<WhatWeDo />} />
             
-            {/* THIS IS THE FIX: Pointing to the real page now */}
-            <Route path="/what-we-do" element={<WhatWeDo />} /> 
+            {/* WIRE UP PUBLICATIONS HERE */}
+            <Route path="/publications" element={<Publications />} />
             
             <Route path="/mandate" element={<Placeholder />} />
-            <Route path="/publications" element={<Placeholder />} />
             <Route path="/news" element={<Placeholder />} />
             <Route path="/contact" element={<Placeholder />} />
           </Routes>

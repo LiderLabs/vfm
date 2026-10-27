@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-// --- CUSTOM SCROLL ANIMATION HOOK ---
+// --- FIXED SCROLL ANIMATION HOOK ---
 function useScrollReveal() {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef(null);
@@ -9,13 +9,11 @@ function useScrollReveal() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          // Once it's visible, we don't need to keep observing
-          if (ref.current) observer.unobserve(ref.current);
-        }
+        // This updates the state to TRUE when scrolling down into view
+        // and FALSE when scrolling up out of view.
+        setIsVisible(entry.isIntersecting);
       },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" } // Triggers slightly before the element hits the viewport
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
     );
 
     if (ref.current) observer.observe(ref.current);
@@ -27,7 +25,6 @@ function useScrollReveal() {
   return [ref, isVisible];
 }
 
-// --- REUSABLE ANIMATION WRAPPER ---
 const Reveal = ({ children, delay = 0 }) => {
   const [ref, isVisible] = useScrollReveal();
 
@@ -37,7 +34,8 @@ const Reveal = ({ children, delay = 0 }) => {
       style={{
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? "translateY(0)" : "translateY(40px)",
-        transition: `opacity 0.8s ease-out ${delay}s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s`,
+        // Adjusted transition so it fades out slightly faster than it fades in
+        transition: `opacity 0.6s ease-out ${delay}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s`,
         width: "100%"
       }}
     >
@@ -72,28 +70,19 @@ export default function AboutUs() {
       title: "Economy",
       desc: "Ensuring that public resources are acquired at appropriate cost and with due regard for quality, eliminating unjustified premiums and inflation in procurement.",
       tag1: "Benchmark Auditing",
-      tag2: "Procurement Tier",
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v18"></path><path d="M3 9l9-6 9 6"></path><path d="M3 15h18"></path></svg>
-      )
+      tag2: "Procurement Tier"
     },
     {
       title: "Efficiency",
       desc: "Promoting the responsible use of human, capital, and material resources to maximise programmatic outputs and systematically eliminate systemic waste.",
       tag1: "Process Optimization",
-      tag2: "Execution Tier",
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg>
-      )
+      tag2: "Execution Tier"
     },
     {
       title: "Effectiveness",
       desc: "Evaluating whether public programmes and infrastructure actually achieve intended socio-economic objectives and yield durable, meaningful results.",
       tag1: "Outcome Realisation",
-      tag2: "Impact Tier",
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-      )
+      tag2: "Impact Tier"
     }
   ];
 
@@ -108,14 +97,16 @@ export default function AboutUs() {
     <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflowX: "hidden" }}>
       
       {/* 1. PAGE HEADER */}
-      <section style={{ position: "relative", backgroundColor: "#001F3F", padding: "120px 24px", textAlign: "center", color: "white", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url(/about-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.6, zIndex: 0 }} />
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "linear-gradient(180deg, rgba(0,31,63,0.4) 0%, rgba(0,31,63,0.9) 100%)", zIndex: 1 }} />
+      <section style={{ position: "relative", backgroundColor: "#001F3F", padding: "140px 24px", textAlign: "center", color: "white", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url(/about-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.7, zIndex: 0 }} />
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "linear-gradient(180deg, rgba(0,31,63,0.2) 0%, rgba(0,31,63,0.95) 100%)", zIndex: 1 }} />
         
         <Reveal>
           <div style={{ position: "relative", zIndex: 2 }}>
-            <h1 style={{ fontSize: "48px", fontWeight: "800", margin: "0 0 16px 0" }}>About Us</h1>
-            <p style={{ fontSize: "18px", color: "#E2E8F0", maxWidth: "600px", margin: "0 auto" }}>Learn more about our mandate, our leadership, and the values that drive us to ensure value for every Cedi.</p>
+            <h1 style={{ fontSize: "56px", fontWeight: "900", margin: "0 0 16px 0", letterSpacing: "-1px", textShadow: "0 2px 10px rgba(0,0,0,0.8)" }}>About Us</h1>
+            <p style={{ fontSize: "20px", color: "#FFFFFF", maxWidth: "650px", margin: "0 auto", fontWeight: "600", lineHeight: "1.6", textShadow: "0 1px 5px rgba(0,0,0,0.8)" }}>
+              Learn more about our mandate, our leadership, and the values that drive us to ensure value for every Cedi.
+            </p>
           </div>
         </Reveal>
       </section>
@@ -152,7 +143,6 @@ export default function AboutUs() {
             </Reveal>
           </div>
 
-          {/* STATS BAR */}
           <Reveal delay={0.1}>
             <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "40px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "32px", border: "1px solid #E2E8F0", marginBottom: "100px" }}>
               {stats.map((stat, index) => (
@@ -165,7 +155,6 @@ export default function AboutUs() {
             </div>
           </Reveal>
 
-          {/* THREE PILLARS HEADER */}
           <Reveal>
             <div style={{ marginBottom: "24px" }}>
               <div style={{ marginBottom: "16px" }}>
@@ -178,19 +167,12 @@ export default function AboutUs() {
             </div>
           </Reveal>
 
-          {/* THREE PILLARS CARDS */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px", marginBottom: "24px" }}>
             {pillars.map((pillar, index) => (
               <Reveal key={index} delay={index * 0.15}>
                 <div style={{ backgroundColor: "#FFFFFF", borderRadius: "12px", padding: "40px 32px", borderTop: "4px solid #8B7355", boxShadow: "0 10px 30px rgba(0,0,0,0.03)", display: "flex", flexDirection: "column", height: "100%" }}>
-                  
-                  <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-start", marginBottom: "32px" }}>
-                    <div style={{ width: "48px", height: "48px", backgroundColor: "#F1F5F9", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>{pillar.icon}</div>
-                  </div>
-
                   <h3 style={{ fontSize: "24px", fontWeight: "700", color: "#0F172A", margin: "0 0 16px 0" }}>{pillar.title}</h3>
                   <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", margin: "0 0 32px 0", flex: 1 }}>{pillar.desc}</p>
-
                   <div style={{ borderTop: "1px solid #E2E8F0", paddingTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px", fontWeight: "600" }}>
                     <div style={{ color: "#0F172A", backgroundColor: "#F1F5F9", padding: "6px 12px", borderRadius: "4px" }}>{pillar.tag1}</div>
                     <span style={{ color: "#64748B" }}>{pillar.tag2}</span>
