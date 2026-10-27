@@ -329,10 +329,10 @@ export default function MandateCards() {
         <ZoomReveal>
           <div style={{ maxWidth: "800px", margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
             <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#FFFFFF", marginBottom: "24px", lineHeight: "1.1" }}>
-              Access the VfM Internal Portal
+              Access the VFM Internal Portal
             </h2>
             <p style={{ fontSize: "18px", color: "#CBD5E1", marginBottom: "40px", lineHeight: "1.6" }}>
-              Authorized government agencies and VfM staff can log in to manage assessments, upload procurement documents, and track project evaluations in real-time.
+              Authorized government agencies and VFM staff can log in to manage assessments, upload procurement documents, and track project evaluations in real-time.
             </p>
             <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
               <Link to="/portal" style={{ 
