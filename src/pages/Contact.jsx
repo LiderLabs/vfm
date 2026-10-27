@@ -19,75 +19,77 @@ export default function Contact() {
   };
 
   return (
-    <div style={{ backgroundColor: "#F4F5F0", minHeight: "100vh", padding: "100px 24px" }}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+    <div style={{ backgroundColor: "#F4F5F0", minHeight: "100vh", overflowX: "hidden" }}>
+      
+      {/* HEADER SECTION WITH BACKGROUND IMAGE */}
+      <section style={{ 
+        position: "relative", 
+        padding: "100px 24px 80px", 
+        backgroundColor: "#001F3F", 
+        overflow: "hidden",
+        textAlign: "center"
+      }}>
+        {/* Background Image */}
+        <div style={{
+          position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+          backgroundImage: "url(/contact-bg.jpg)", // Add a nice contact/office image here
+          backgroundSize: "cover", backgroundPosition: "center",
+          opacity: 0.2, zIndex: 0
+        }} />
         
-        {/* HEADER */}
-        <div style={{ textAlign: "center", marginBottom: "60px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginBottom: "16px" }}>
-            <div style={{ width: "30px", height: "2px", backgroundColor: "#8B7355" }}></div>
-            <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "1.5px", color: "#8B7355", textTransform: "uppercase" }}>
-              Official Correspondence
-            </span>
-            <div style={{ width: "30px", height: "2px", backgroundColor: "#8B7355" }}></div>
-          </div>
-          <h1 style={{ fontSize: "52px", fontWeight: "800", color: "#0F172A", margin: "0 0 16px 0", lineHeight: "1.1" }}>
-            Contact the VfM Office
+        {/* Gradient Overlay for Text Readability */}
+        <div style={{
+          position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+          background: "linear-gradient(180deg, rgba(0,31,63,0.6) 0%, rgba(0,31,63,1) 100%)",
+          zIndex: 1
+        }} />
+
+        <div style={{ maxWidth: "800px", margin: "0 auto", position: "relative", zIndex: 2 }}>
+          <h1 style={{ fontSize: "52px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 16px 0", lineHeight: "1.1" }}>
+            Contact the VFM Office
           </h1>
-          <p style={{ fontSize: "18px", color: "#475569", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
+          <p style={{ fontSize: "18px", color: "#CBD5E1", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
             Whether you are a government agency, a supplier, or a concerned citizen, our team is ready to assist you.
           </p>
         </div>
+      </section>
 
-        {/* MAIN GRID */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "60px", alignItems: "start" }}>
+      {/* MAIN CONTENT AREA */}
+      <section style={{ padding: "80px 24px", maxWidth: "1200px", margin: "0 auto" }}>
+        
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "40px", alignItems: "start" }}>
           
           {/* LEFT: CONTACT FORM */}
-          <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "48px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", border: "1px solid #E2E8F0" }}>
+          <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "40px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", border: "1px solid #E2E8F0" }}>
             <h2 style={{ fontSize: "28px", fontWeight: "800", color: "#001F3F", margin: "0 0 32px 0" }}>Send a Message</h2>
             
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
               
-              {/* Name */}
               <div>
                 <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Full Name</label>
                 <input 
-                  type="text" 
-                  name="name" 
-                  value={formData.name} 
-                  onChange={handleChange} 
-                  required
-                  placeholder="John Doe"
-                  style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "16px", outline: "none", transition: "border 0.2s" }}
+                  type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="John Doe"
+                  style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "16px", outline: "none", transition: "border 0.2s", boxSizing: "border-box" }}
                   onFocus={(e) => e.target.style.border = "1px solid #001F3F"}
                   onBlur={(e) => e.target.style.border = "1px solid #CBD5E1"}
                 />
               </div>
 
-              {/* Email */}
               <div>
                 <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Email Address</label>
                 <input 
-                  type="email" 
-                  name="email" 
-                  value={formData.email} 
-                  onChange={handleChange} 
-                  required
-                  placeholder="john@example.com"
-                  style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "16px", outline: "none", transition: "border 0.2s" }}
+                  type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="john@example.com"
+                  style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "16px", outline: "none", transition: "border 0.2s", boxSizing: "border-box" }}
                   onFocus={(e) => e.target.style.border = "1px solid #001F3F"}
                   onBlur={(e) => e.target.style.border = "1px solid #CBD5E1"}
                 />
               </div>
 
-              {/* Department */}
               <div>
                 <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Department</label>
                 <select 
-                  name="department" 
-                  value={formData.department} 
-                  onChange={handleChange}
-                  style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "16px", outline: "none", backgroundColor: "#FFFFFF", cursor: "pointer" }}
+                  name="department" value={formData.department} onChange={handleChange}
+                  style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "16px", outline: "none", backgroundColor: "#FFFFFF", cursor: "pointer", boxSizing: "border-box" }}
                 >
                   <option value="General Inquiry">General Inquiry</option>
                   <option value="VfM Assessments">VfM Assessments</option>
@@ -97,26 +99,19 @@ export default function Contact() {
                 </select>
               </div>
 
-              {/* Message */}
               <div>
                 <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Message</label>
                 <textarea 
-                  name="message" 
-                  value={formData.message} 
-                  onChange={handleChange} 
-                  required
-                  rows="5"
-                  placeholder="How can we help you?"
-                  style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "16px", outline: "none", resize: "vertical", transition: "border 0.2s" }}
+                  name="message" value={formData.message} onChange={handleChange} required rows="5" placeholder="How can we help you?"
+                  style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "16px", outline: "none", resize: "vertical", transition: "border 0.2s", boxSizing: "border-box" }}
                   onFocus={(e) => e.target.style.border = "1px solid #001F3F"}
                   onBlur={(e) => e.target.style.border = "1px solid #CBD5E1"}
                 />
               </div>
 
               <button type="submit" style={{ 
-                backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", 
-                padding: "16px", borderRadius: "8px", fontSize: "16px", fontWeight: "700", 
-                cursor: "pointer", transition: "background-color 0.2s ease", marginTop: "8px"
+                backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", padding: "16px", borderRadius: "8px", 
+                fontSize: "16px", fontWeight: "700", cursor: "pointer", transition: "background-color 0.2s ease", marginTop: "8px" 
               }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#0A2E4D"}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#001F3F"}
@@ -129,8 +124,7 @@ export default function Contact() {
           {/* RIGHT: CONTACT INFO & LOCATION */}
           <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
             
-            {/* Contact Details Card */}
-            <div style={{ backgroundColor: "#001F3F", borderRadius: "16px", padding: "48px", color: "#FFFFFF", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}>
+            <div style={{ backgroundColor: "#001F3F", borderRadius: "16px", padding: "40px", color: "#FFFFFF", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}>
               <h3 style={{ fontSize: "24px", fontWeight: "800", margin: "0 0 24px 0" }}>Head Office</h3>
               
               <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -151,7 +145,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <div style={{ fontWeight: "700", marginBottom: "4px" }}>Email</div>
-                    <div style={{ color: "#CBD5E1", lineHeight: "1.5" }}>info@vfm.gov.gh<br/>support@vfm.gov.gh</div>
+                    <div style={{ color: "#CBD5E1", lineHeight: "1.5", wordBreak: "break-all" }}>info@vfm.gov.gh<br/>support@vfm.gov.gh</div>
                   </div>
                 </div>
 
@@ -180,7 +174,7 @@ export default function Contact() {
           </div>
         </div>
 
-      </div>
+      </section>
     </div>
   );
 }
