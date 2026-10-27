@@ -5,7 +5,9 @@ import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import WhatWeDo from "./pages/WhatWeDo";
 import Publications from "./pages/Publications";
-import News from "./pages/News"; // <-- NEWS IMPORTED
+import News from "./pages/News";
+import Mandate from "./pages/Mandate"; 
+import Contact from "./pages/Contact"; // <-- IMPORT CONTACT
 import Placeholder from "./pages/Placeholder";
 
 export default function App() {
@@ -16,24 +18,16 @@ export default function App() {
         
         <div style={{ flex: 1 }}>
           <Routes>
-            {/* Home Page */}
             <Route path="/" element={<Home />} />
-            
-            {/* About Us Page */}
             <Route path="/about" element={<AboutUs />} />
-            
-            {/* What We Do Page */}
+            <Route path="/mandate" element={<Mandate />} />
             <Route path="/what-we-do" element={<WhatWeDo />} />
-            
-            {/* Publications Page */}
             <Route path="/publications" element={<Publications />} />
-            
-            {/* News & Insights Page */}
             <Route path="/news" element={<News />} />
             
-            {/* Placeholder Pages (To be built later) */}
-            <Route path="/mandate" element={<Placeholder />} />
-            <Route path="/contact" element={<Placeholder />} />
+            {/* WIRE UP CONTACT HERE */}
+            <Route path="/contact" element={<Contact />} />
+            
             <Route path="/portal" element={<Placeholder />} />
           </Routes>
         </div>
