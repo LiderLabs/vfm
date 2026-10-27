@@ -1,6 +1,6 @@
 export default function News() {
   return (
-    <div style={{ backgroundColor: "#F4F5F0", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "#F4F5F0", minHeight: "100vh", overflowX: "hidden" }}>
       
       {/* HEADER SECTION WITH BACKGROUND IMAGE */}
       <section style={{ 
@@ -12,7 +12,7 @@ export default function News() {
         {/* Background Image */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
-          backgroundImage: "url(/building-bg.jpg)", // Using the building image
+          backgroundImage: "url(/building-bg.jpg)",
           backgroundSize: "cover", backgroundPosition: "center",
           opacity: 0.15, zIndex: 0
         }} />
@@ -26,7 +26,6 @@ export default function News() {
 
         <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 2, display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "24px" }}>
           <div>
-            {/* Removed the "POLICY & ENGAGEMENTS" label and dashes */}
             <h1 style={{ fontSize: "52px", fontWeight: "800", color: "#FFFFFF", margin: 0, lineHeight: "1.1" }}>
               News & Institutional<br/>Insights
             </h1>
@@ -42,7 +41,8 @@ export default function News() {
       {/* MAIN CONTENT AREA */}
       <section style={{ padding: "80px 24px", maxWidth: "1200px", margin: "0 auto" }}>
         
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "32px", alignItems: "start" }}>
+        {/* Changed to 300px so it stacks properly on mobile */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "32px", alignItems: "start" }}>
           
           {/* LEFT COLUMN: FEATURED ARTICLE */}
           <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", overflow: "hidden", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", border: "1px solid #E2E8F0" }}>
@@ -52,7 +52,7 @@ export default function News() {
               <div style={{ 
                 position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
                 backgroundColor: "#E2E8F0",
-                backgroundImage: "url(/boardroom.jpg)", // Using the boardroom image for the featured article
+                backgroundImage: "url(/boardroom.jpg)",
                 backgroundSize: "cover", 
                 backgroundPosition: "center" 
               }} />
@@ -68,7 +68,7 @@ export default function News() {
 
             {/* Text Content */}
             <div style={{ padding: "0 32px 40px" }}>
-              <div style={{ display: "flex", gap: "8px", alignItems: "center", fontSize: "13px", color: "#64748B", fontWeight: "600", marginBottom: "16px" }}>
+              <div style={{ display: "flex", gap: "8px", alignItems: "center", fontSize: "13px", color: "#64748B", fontWeight: "600", marginBottom: "16px", flexWrap: "wrap" }}>
                 <span>Accra, Ghana</span>
                 <span style={{ fontSize: "8px" }}>●</span>
                 <span>November 18, 2024</span>
@@ -99,7 +99,7 @@ export default function News() {
               onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-4px)"}
               onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
                 <span style={{ backgroundColor: "#F1F5F9", color: "#0F172A", padding: "6px 12px", borderRadius: "4px", fontSize: "12px", fontWeight: "700" }}>
                   Technical Advisory
                 </span>
@@ -127,7 +127,7 @@ export default function News() {
               onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-4px)"}
               onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
                 <span style={{ backgroundColor: "#F1F5F9", color: "#0F172A", padding: "6px 12px", borderRadius: "4px", fontSize: "12px", fontWeight: "700" }}>
                   Quarterly Bulletin
                 </span>
