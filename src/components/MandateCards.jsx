@@ -25,7 +25,7 @@ const ZoomReveal = ({ children, delay = 0 }) => {
       ref={ref}
       style={{
         opacity: isVisible ? 1 : 0,
-        transform: isVisible ? "scale(1)" : "scale(0.95)", // Zooms in instead of sliding up
+        transform: isVisible ? "scale(1)" : "scale(0.95)",
         transition: `opacity 0.8s ease-out ${delay}s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
         width: "100%"
       }}
@@ -69,17 +69,15 @@ export default function MandateCards() {
       {/* 1. CORE MANDATE CARDS */}
       <section style={{ position: "relative", padding: "100px 40px", backgroundColor: "#F8F9FA" }}>
         
-        {/* CLEARER BACKGROUND IMAGE */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
           backgroundImage: "url(/building-bg.jpg)",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          opacity: 0.35, // Image is much clearer
+          opacity: 0.35,
           zIndex: 0
         }} />
         
-        {/* VERY LIGHT WASH - Just enough contrast for the cards to pop */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
           background: "linear-gradient(180deg, rgba(248,249,250,0.8) 0%, rgba(248,249,250,0.4) 50%, rgba(248,249,250,0.8) 100%)",
@@ -105,7 +103,7 @@ export default function MandateCards() {
                 <div 
                   style={{ 
                     backgroundColor: "#FFFFFF", padding: "40px", borderRadius: "12px",
-                    boxShadow: "0 15px 35px rgba(0,0,0,0.1)", // Stronger shadow to float above the image
+                    boxShadow: "0 15px 35px rgba(0,0,0,0.1)",
                     border: "1px solid rgba(0,0,0,0.04)",
                     transition: "all 0.4s cubic-bezier(0.22, 1, 0.36, 1)", cursor: "pointer",
                     display: "flex", flexDirection: "column", height: "100%"
@@ -154,9 +152,7 @@ export default function MandateCards() {
           
           <ZoomReveal>
             <div style={{ textAlign: "center", marginBottom: "60px" }}>
-              <span style={{ fontSize: "13px", fontWeight: "800", letterSpacing: "2px", color: "#FCD116", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>
-                The Tripartite Standard
-              </span>
+              {/* "THE TRIPARTITE STANDARD" label removed from here */}
               <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 16px 0", lineHeight: "1.1" }}>
                 The Three Pillars of Public Value
               </h2>
@@ -212,13 +208,7 @@ export default function MandateCards() {
 
           <ZoomReveal delay={0.2}>
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
-                <div style={{ width: "30px", height: "2px", backgroundColor: "#8B7355" }}></div>
-                <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "1.5px", color: "#8B7355", textTransform: "uppercase" }}>
-                  Institutional Stewardship
-                </span>
-              </div>
-              
+              {/* "INSTITUTIONAL STEWARDSHIP" label removed from here */}
               <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", margin: "0 0 24px 0", lineHeight: "1.1" }}>
                 Safeguarding Ghana's Development Capital.
               </h2>
@@ -266,7 +256,6 @@ export default function MandateCards() {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "30px" }}>
             
-            {/* CARD 1: Uses boardroom.jpg */}
             <ZoomReveal delay={0.1}>
               <div style={{ borderRadius: "12px", overflow: "hidden", backgroundColor: "#F8F9FA", border: "1px solid #E2E8F0", transition: "transform 0.3s ease", cursor: "pointer", height: "100%", display: "flex", flexDirection: "column" }}
                 onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
@@ -286,7 +275,6 @@ export default function MandateCards() {
               </div>
             </ZoomReveal>
 
-            {/* CARD 2: Uses building-bg.jpg */}
             <ZoomReveal delay={0.2}>
               <div style={{ borderRadius: "12px", overflow: "hidden", backgroundColor: "#F8F9FA", border: "1px solid #E2E8F0", transition: "transform 0.3s ease", cursor: "pointer", height: "100%", display: "flex", flexDirection: "column" }}
                 onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
@@ -306,7 +294,6 @@ export default function MandateCards() {
               </div>
             </ZoomReveal>
 
-            {/* CARD 3: Uses about-bg.jpg */}
             <ZoomReveal delay={0.3}>
               <div style={{ borderRadius: "12px", overflow: "hidden", backgroundColor: "#F8F9FA", border: "1px solid #E2E8F0", transition: "transform 0.3s ease", cursor: "pointer", height: "100%", display: "flex", flexDirection: "column" }}
                 onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
@@ -372,7 +359,6 @@ export default function MandateCards() {
         </ZoomReveal>
       </section>
 
-      {/* CSS for the hover accent line */}
       <style>
         {`
           div:hover > .card-accent {

@@ -200,10 +200,9 @@ export default function Navbar() {
           <Link to="/news" onClick={() => handleNavClick("/news")}>News & Insights</Link>
           <Link to="/contact" onClick={() => handleNavClick("/contact")}>Contact</Link>
           
-          {/* Prominent Mobile Portal Button */}
+          {/* Prominent Mobile Portal Button - Icon and "Secure" text removed */}
           <button className="mobile-portal-btn" onClick={() => handleNavClick("/portal")}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
-            Secure Portal Login
+            Portal Login
           </button>
         </div>
       )}

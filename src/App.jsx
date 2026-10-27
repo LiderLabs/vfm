@@ -8,24 +8,27 @@ import Publications from "./pages/Publications";
 import News from "./pages/News";
 import Mandate from "./pages/Mandate";
 import Contact from "./pages/Contact";
-import Portal from "./pages/Portal"; // <-- IMPORT PORTAL
+import Portal from "./pages/Portal";
+import Dashboard from "./pages/Dashboard";
+import Assessments from "./pages/Assessments"; // <-- IMPORTED ASSESSMENTS
 import Placeholder from "./pages/Placeholder";
 
-// We create a layout component to handle the Navbar/Footer visibility
 function Layout() {
   const location = useLocation();
   
-  // Check if the current URL is the portal page
+  // Hide Navbar/Footer on Portal and ANY Dashboard sub-page
   const isPortal = location.pathname === "/portal";
+  const isDashboard = location.pathname.startsWith("/dashboard");
 
   return (
     <div style={{ fontFamily: "sans-serif", margin: 0, padding: 0, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       
-      {/* Hide Navbar on Portal page */}
-      {!isPortal && <Navbar />}
+      {/* Only show Navbar if NOT on portal or dashboard */}
+      {!isPortal && !isDashboard && <Navbar />}
       
       <div style={{ flex: 1 }}>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/mandate" element={<Mandate />} />
@@ -34,15 +37,20 @@ function Layout() {
           <Route path="/news" element={<News />} />
           <Route path="/contact" element={<Contact />} />
           
-          {/* The Portal Route */}
+          {/* Secure Portal Routes */}
           <Route path="/portal" element={<Portal />} />
           
+          {/* Internal Dashboard Routes */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/assessments" element={<Assessments />} /> {/* <-- ADDED ROUTE */}
+          
+          {/* Fallback */}
           <Route path="*" element={<Placeholder />} />
         </Routes>
       </div>
 
-      {/* Hide Footer on Portal page */}
-      {!isPortal && <Footer />}
+      {/* Only show Footer if NOT on portal or dashboard */}
+      {!isPortal && !isDashboard && <Footer />}
     </div>
   );
 }

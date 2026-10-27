@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 export default function Hero() {
   const slides = [
     {
-      tabName: "PURPOSE",
       headline1: "Every Cedi Counts.",
       headline2: "Every Outcome Matters.",
       subheadline: "Advancing a culture of responsible spending, measurable results, and value-driven public service delivery across national infrastructure.",
@@ -11,7 +10,6 @@ export default function Hero() {
       bgPosition: "center 20%" 
     },
     {
-      tabName: "ACTION",
       headline1: "Securing Value Before",
       headline2: "The First Cedi is Spent.",
       subheadline: "Conducting mandatory VfM certifications and enforcing strict cost benchmarks to prevent contract inflation and protect the public purse.",
@@ -19,7 +17,6 @@ export default function Hero() {
       bgPosition: "center 30%"
     },
     {
-      tabName: "OUTCOMES",
       headline1: "Delivering Results.",
       headline2: "Ensuring Accountability.",
       subheadline: "Tracking major infrastructure projects across Ghana to eliminate cost overruns, prevent abandoned projects, and guarantee citizen value.",
@@ -50,7 +47,7 @@ export default function Hero() {
             overflow: hidden;
             display: flex;
             align-items: center;
-            min-height: 100vh; /* Takes full screen height on desktop */
+            min-height: 100vh;
             padding: 100px 0;
           }
 
@@ -98,21 +95,20 @@ export default function Hero() {
           @media (max-width: 768px) {
             .hero-section {
               min-height: 100vh;
-              padding: 120px 0 60px 0; /* Extra padding at top to clear the navbar */
-              align-items: flex-start; /* Pushes content up on mobile */
+              padding: 120px 0 60px 0;
+              align-items: flex-start;
             }
             .hero-bg {
-              background-position: center top !important; /* Shows the engineers' faces */
+              background-position: center top !important;
             }
             .hero-overlay {
-              /* Strong solid gradient on mobile for readability */
               background: linear-gradient(180deg, rgba(0,31,63,0.8) 0%, rgba(0,31,63,1) 80%);
             }
             .hero-container {
               padding: 0 24px;
             }
             .hero-heading {
-              font-size: 42px; /* Slightly larger than before for better balance */
+              font-size: 42px;
               margin-bottom: 20px;
             }
             .hero-subheadline {
@@ -143,13 +139,8 @@ export default function Hero() {
             {slides.map((slide, index) => (
               <div key={index} className="hero-slide">
                 <div>
-                  <div style={{ 
-                    fontSize: "13px", fontWeight: "800", letterSpacing: "2px", 
-                    marginBottom: "24px", color: "#FCD116" 
-                  }}>
-                    {slide.tabName}
-                  </div>
-
+                  {/* Category label removed here */}
+                  
                   <h1 className="hero-heading">
                     {slide.headline1} <br/> <span style={{ color: "#FFFFFF" }}>{slide.headline2}</span>
                   </h1>

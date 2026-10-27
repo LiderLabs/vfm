@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Portal() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // Initialize the navigate function
 
   const handleLogin = (e) => {
     e.preventDefault();
-    alert("Authentication service is currently under construction.");
+    // In a real app, you would validate credentials here.
+    // For the prototype, we just navigate straight to the dashboard.
+    navigate("/dashboard"); 
   };
 
   return (
