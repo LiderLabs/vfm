@@ -18,10 +18,10 @@ export default function Navbar() {
         {`
           .nav-container {
             display: flex; justify-content: space-between; align-items: center; 
-            max-width: 1300px; margin: 0 auto; padding: 16px 24px;
+            max-width: 1300px; margin: 0 auto; padding: 16px 24px; gap: 20px;
           }
-          .nav-links { display: flex; gap: 24px; font-size: 14px; font-weight: 500; align-items: center; }
-          .nav-link { color: #FFFFFF; text-decoration: none; transition: color 0.2s; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+          .nav-links { display: flex; gap: 20px; font-size: 14px; font-weight: 500; align-items: center; }
+          .nav-link { color: #FFFFFF; text-decoration: none; transition: color 0.2s; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
           .nav-link:hover { color: #FCD116; }
           
           /* DESKTOP DROPDOWNS */
@@ -38,26 +38,20 @@ export default function Navbar() {
           }
           .dropdown-item:hover { background-color: #F0F4F8; }
 
-          /* PROMINENT PORTAL BUTTON */
-          .portal-btn {
-            display: flex; align-items: center; gap: 8px;
-            background-color: #FCD116; color: #001F3F;
-            padding: "12px 24px"; border-radius: 4px; font-weight: 800; font-size: 14px;
-            text-decoration: none; transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(252, 209, 22, 0.2);
+          /* LOGO FIX */
+          .logo-title {
+            margin: 0; font-size: 16px; font-weight: 800; letter-spacing: 1px; line-height: 1.2; white-space: nowrap;
           }
-          .portal-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(252, 209, 22, 0.4);
-            background-color: #FFDE45;
+          .logo-subtitle {
+            margin: 0; font-size: 10px; color: #FCD116; font-weight: 700; letter-spacing: 1px; margin-top: 4px; white-space: nowrap;
           }
 
           .mobile-menu-btn { display: none; background: none; border: none; color: white; cursor: pointer; }
 
-          /* MOBILE STYLES */
-          @media (max-width: 1150px) {
+          /* MOBILE & TABLET STYLES (Breaks earlier at 1200px to prevent squishing) */
+          @media (max-width: 1200px) {
             .nav-links { display: none; }
-            .desktop-portal { display: none; }
+            .desktop-actions { display: none !important; } /* Hide right actions completely */
             .mobile-menu-btn { display: block; }
             
             .mobile-dropdown {
@@ -79,7 +73,6 @@ export default function Navbar() {
               padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05);
             }
             
-            /* Mobile Portal Button Styling */
             .mobile-portal-btn {
               display: flex; align-items: center; justify-content: center; gap: 8px;
               background-color: #FCD116; color: #001F3F; border: none;
@@ -87,6 +80,9 @@ export default function Navbar() {
               cursor: pointer; margin-top: 12px; width: 100%;
               box-shadow: 0 4px 15px rgba(252, 209, 22, 0.2);
             }
+            
+            .logo-title { font-size: 14px; }
+            .logo-subtitle { font-size: 9px; }
           }
         `}
       </style>
@@ -94,19 +90,15 @@ export default function Navbar() {
       <div className="nav-container">
         
         {/* Logo area */}
-        <Link to="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none", color: "white" }}>
+        <Link to="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none", color: "white", flexShrink: 0 }}>
           <img 
             src="/vfm-logo.png" 
             alt="VfM Office Logo" 
-            style={{ width: "50px", height: "50px", objectFit: "contain", backgroundColor: "white", borderRadius: "50%", padding: "2px" }} 
+            style={{ width: "46px", height: "46px", objectFit: "contain", backgroundColor: "white", borderRadius: "50%", padding: "2px" }} 
           />
           <div>
-            <h1 style={{ margin: 0, fontSize: "18px", fontWeight: "800", letterSpacing: "1px", lineHeight: "1.2" }}>
-              VALUE FOR MONEY<br/>OFFICE
-            </h1>
-            <p style={{ margin: 0, fontSize: "10px", color: "#FCD116", fontWeight: "700", letterSpacing: "1px", marginTop: "4px" }}>
-              REPUBLIC OF GHANA
-            </p>
+            <h1 className="logo-title">VALUE FOR MONEY</h1>
+            <p className="logo-subtitle">REPUBLIC OF GHANA</p>
           </div>
         </Link>
 
@@ -147,12 +139,27 @@ export default function Navbar() {
           <Link to="/contact" className="nav-link" onClick={() => handleNavClick("/contact")}>Contact</Link>
         </nav>
 
-        {/* Desktop Right Actions (Only Portal Login now) */}
-        <div className="desktop-portal">
+        {/* Desktop Right Actions - Made much more compact */}
+        <div className="desktop-actions" style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+          
+          {/* Compact Submit Icon */}
+          <Link to="/submit" title="Submit a Document" style={{ 
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: "#FFFFFF", textDecoration: "none", 
+            border: "1px solid rgba(255,255,255,0.3)", width: "42px", height: "42px", borderRadius: "4px",
+            transition: "background-color 0.2s ease"
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          </Link>
+
+          {/* Shortened Portal Button */}
           <button onClick={() => handleNavClick("/portal")} style={{ 
             display: "flex", alignItems: "center", gap: "8px",
             backgroundColor: "#FCD116", color: "#001F3F", border: "none",
-            padding: "14px 28px", borderRadius: "4px", fontWeight: "800", fontSize: "15px",
+            padding: "12px 20px", borderRadius: "4px", fontWeight: "800", fontSize: "14px",
             cursor: "pointer", transition: "all 0.3s ease",
             boxShadow: "0 4px 15px rgba(252, 209, 22, 0.2)"
           }}
@@ -168,7 +175,7 @@ export default function Navbar() {
           }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
-            Secure Portal Login
+            Portal
           </button>
         </div>
 
@@ -200,7 +207,11 @@ export default function Navbar() {
           <Link to="/news" onClick={() => handleNavClick("/news")}>News & Insights</Link>
           <Link to="/contact" onClick={() => handleNavClick("/contact")}>Contact</Link>
           
-          {/* Prominent Mobile Portal Button - Icon and "Secure" text removed */}
+          <Link to="/submit" onClick={() => handleNavClick("/submit")} style={{ fontSize: "16px", fontWeight: "600", color: "#FFFFFF", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: "8px" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Submit Document
+          </Link>
+
           <button className="mobile-portal-btn" onClick={() => handleNavClick("/portal")}>
             Portal Login
           </button>

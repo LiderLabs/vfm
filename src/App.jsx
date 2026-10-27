@@ -10,7 +10,8 @@ import Mandate from "./pages/Mandate";
 import Contact from "./pages/Contact";
 import Portal from "./pages/Portal";
 import Dashboard from "./pages/Dashboard";
-import Assessments from "./pages/Assessments"; // <-- IMPORTED ASSESSMENTS
+import Assessments from "./pages/Assessments";
+import Submit from "./pages/Submit"; // <-- IMPORTED SUBMIT
 import Placeholder from "./pages/Placeholder";
 
 function Layout() {
@@ -37,12 +38,15 @@ function Layout() {
           <Route path="/news" element={<News />} />
           <Route path="/contact" element={<Contact />} />
           
+          {/* Public Submission Route */}
+          <Route path="/submit" element={<Submit />} /> {/* <-- ADDED ROUTE */}
+          
           {/* Secure Portal Routes */}
           <Route path="/portal" element={<Portal />} />
           
           {/* Internal Dashboard Routes */}
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/assessments" element={<Assessments />} /> {/* <-- ADDED ROUTE */}
+          <Route path="/dashboard/assessments" element={<Assessments />} />
           
           {/* Fallback */}
           <Route path="*" element={<Placeholder />} />
