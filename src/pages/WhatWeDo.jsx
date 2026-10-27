@@ -39,7 +39,6 @@ export default function WhatWeDo() {
     if (hash) {
       const element = document.getElementById(hash.replace("#", ""));
       if (element) {
-        // Adding a slight delay ensures the page has rendered before scrolling
         setTimeout(() => {
           element.scrollIntoView({ behavior: "smooth" });
         }, 100);
@@ -89,7 +88,7 @@ export default function WhatWeDo() {
   ];
 
   return (
-    <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflow: "hidden" }}>
+    <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflowX: "hidden" }}>
       
       {/* 1. INTERACTIVE DARK SECTION */}
       <section style={{ 
@@ -211,14 +210,14 @@ export default function WhatWeDo() {
         </div>
       </section>
 
-      {/* 2. DETAILED SECTIONS (Anchored for the Navbar) */}
+      {/* 2. DETAILED SECTIONS */}
       
       {/* VfM Assessments Section */}
       <section id="assessments" style={{ padding: "100px 24px", backgroundColor: "#F8F9FA" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "60px", alignItems: "center" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "60px", alignItems: "center" }}>
           <ZoomReveal>
             <div style={{ borderRadius: "16px", overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}>
-              <img src="/site-review.jpg" alt="VfM Technical Team On Site" style={{ width: "100%", height: "100%", minHeight: "450px", objectFit: "cover", display: "block" }} />
+              <img src="/site-review.jpg" alt="VfM Technical Team On Site" style={{ width: "100%", height: "100%", minHeight: "400px", objectFit: "cover", display: "block" }} />
             </div>
           </ZoomReveal>
           
@@ -236,8 +235,7 @@ export default function WhatWeDo() {
                   "Review of contractor submissions and material quality",
                   "Engagement with local project managers and consultants"
                 ].map((item, i) => (
-                  <li key={i} style={{ display: "flex", gap: "12px", fontSize: "16px", color: "#0F172A", fontWeight: "600" }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <li key={i} style={{ fontSize: "16px", color: "#0F172A", fontWeight: "600" }}>
                     {item}
                   </li>
                 ))}
@@ -253,7 +251,7 @@ export default function WhatWeDo() {
 
       {/* Project Evaluation Section */}
       <section id="evaluation" style={{ padding: "100px 24px", backgroundColor: "#FFFFFF" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "60px", alignItems: "center" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "60px", alignItems: "center" }}>
           <ZoomReveal>
             <div>
               <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", margin: "0 0 24px 0", lineHeight: "1.1" }}>
@@ -268,8 +266,7 @@ export default function WhatWeDo() {
                   "Auditing of actual expenditures against approved budgets",
                   "Post-implementation evaluation of citizen impact"
                 ].map((item, i) => (
-                  <li key={i} style={{ display: "flex", gap: "12px", fontSize: "16px", color: "#0F172A", fontWeight: "600" }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <li key={i} style={{ fontSize: "16px", color: "#0F172A", fontWeight: "600" }}>
                     {item}
                   </li>
                 ))}
@@ -283,7 +280,7 @@ export default function WhatWeDo() {
 
           <ZoomReveal delay={0.2}>
             <div style={{ borderRadius: "16px", overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}>
-              <img src="/boardroom.jpg" alt="VfM Project Evaluation" style={{ width: "100%", height: "100%", minHeight: "450px", objectFit: "cover", display: "block" }} />
+              <img src="/boardroom.jpg" alt="VfM Project Evaluation" style={{ width: "100%", height: "100%", minHeight: "400px", objectFit: "cover", display: "block" }} />
             </div>
           </ZoomReveal>
         </div>
@@ -291,10 +288,10 @@ export default function WhatWeDo() {
 
       {/* Standards & Capacity Section */}
       <section id="standards" style={{ padding: "100px 24px", backgroundColor: "#F8F9FA" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "60px", alignItems: "center" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "60px", alignItems: "center" }}>
           <ZoomReveal>
             <div style={{ borderRadius: "16px", overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}>
-              <img src="/about-bg.jpg" alt="VfM Standards and Capacity" style={{ width: "100%", height: "100%", minHeight: "450px", objectFit: "cover", display: "block" }} />
+              <img src="/about-bg.jpg" alt="VfM Standards and Capacity" style={{ width: "100%", height: "100%", minHeight: "400px", objectFit: "cover", display: "block" }} />
             </div>
           </ZoomReveal>
 
@@ -312,8 +309,7 @@ export default function WhatWeDo() {
                   "Developing econometric lifecycle models",
                   "Training procurement officers across all 16 regions"
                 ].map((item, i) => (
-                  <li key={i} style={{ display: "flex", gap: "12px", fontSize: "16px", color: "#0F172A", fontWeight: "600" }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <li key={i} style={{ fontSize: "16px", color: "#0F172A", fontWeight: "600" }}>
                     {item}
                   </li>
                 ))}
