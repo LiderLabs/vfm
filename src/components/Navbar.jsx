@@ -48,10 +48,10 @@ export default function Navbar() {
 
           .mobile-menu-btn { display: none; background: none; border: none; color: white; cursor: pointer; }
 
-          /* MOBILE & TABLET STYLES (Breaks earlier at 1200px to prevent squishing) */
+          /* MOBILE & TABLET STYLES */
           @media (max-width: 1200px) {
             .nav-links { display: none; }
-            .desktop-actions { display: none !important; } /* Hide right actions completely */
+            .desktop-actions { display: none !important; } 
             .mobile-menu-btn { display: block; }
             
             .mobile-dropdown {
@@ -139,7 +139,7 @@ export default function Navbar() {
           <Link to="/contact" className="nav-link" onClick={() => handleNavClick("/contact")}>Contact</Link>
         </nav>
 
-        {/* Desktop Right Actions - Made much more compact */}
+        {/* Desktop Right Actions */}
         <div className="desktop-actions" style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
           
           {/* Compact Submit Icon */}
@@ -155,11 +155,11 @@ export default function Navbar() {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           </Link>
 
-          {/* Shortened Portal Button */}
+          {/* Shortened Portal Button - Icon Removed */}
           <button onClick={() => handleNavClick("/portal")} style={{ 
-            display: "flex", alignItems: "center", gap: "8px",
+            display: "flex", alignItems: "center", justifyContent: "center",
             backgroundColor: "#FCD116", color: "#001F3F", border: "none",
-            padding: "12px 20px", borderRadius: "4px", fontWeight: "800", fontSize: "14px",
+            padding: "12px 24px", borderRadius: "4px", fontWeight: "800", fontSize: "14px",
             cursor: "pointer", transition: "all 0.3s ease",
             boxShadow: "0 4px 15px rgba(252, 209, 22, 0.2)"
           }}
@@ -174,7 +174,6 @@ export default function Navbar() {
             e.currentTarget.style.backgroundColor = "#FCD116";
           }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
             Portal
           </button>
         </div>
@@ -212,6 +211,7 @@ export default function Navbar() {
             Submit Document
           </Link>
 
+          {/* Mobile Portal Button - Icon Removed */}
           <button className="mobile-portal-btn" onClick={() => handleNavClick("/portal")}>
             Portal Login
           </button>
