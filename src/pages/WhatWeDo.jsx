@@ -87,6 +87,14 @@ export default function WhatWeDo() {
     }
   ];
 
+  // --- AUTOPLAY LOGIC ---
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActivePillar((prev) => (prev === pillars.length - 1 ? 0 : prev + 1));
+    }, 5000); // Changes every 5 seconds
+    return () => clearInterval(timer);
+  }, [pillars.length]);
+
   return (
     <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflowX: "hidden" }}>
       
@@ -116,9 +124,7 @@ export default function WhatWeDo() {
         <div style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", position: "relative", zIndex: 2, flex: 1 }}>
           
           <div style={{ marginBottom: "60px" }}>
-            <span style={{ fontSize: "13px", fontWeight: "800", letterSpacing: "2px", color: "#FCD116", textTransform: "uppercase", display: "block", marginBottom: "16px", textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}>
-              Functional Mandate
-            </span>
+            {/* "FUNCTIONAL MANDATE" label removed */}
             <h1 style={{ fontSize: "52px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 16px 0", lineHeight: "1.1", maxWidth: "800px", textShadow: "0 4px 12px rgba(0,0,0,0.6)" }}>
               Operational Scope & Focus Areas
             </h1>
@@ -136,13 +142,7 @@ export default function WhatWeDo() {
                 }
               `}</style>
 
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
-                <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#FCD116" }} />
-                <span style={{ fontSize: "14px", fontWeight: "700", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1.5px", textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}>
-                  {pillars[activePillar].category}
-                </span>
-              </div>
-
+              {/* Category label removed from here, only the title remains */}
               <h2 style={{ fontSize: "48px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 24px 0", lineHeight: "1.2", maxWidth: "900px", textShadow: "0 4px 12px rgba(0,0,0,0.6)" }}>
                 {pillars[activePillar].title}
               </h2>

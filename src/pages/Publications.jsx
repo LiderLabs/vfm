@@ -13,7 +13,6 @@ export default function Publications() {
 
   const documents = [
     {
-      type: "Guidelines",
       date: "Jan 2025",
       docNo: "GH-VFM-2025-01",
       title: "National Infrastructure VfM Assessment Framework (2025 Draft)",
@@ -21,7 +20,6 @@ export default function Publications() {
       fileSize: "2.4 MB"
     },
     {
-      type: "Technical Standards",
       date: "Nov 2024",
       docNo: "GH-VFM-2024-09",
       title: "Public Capital Expenditure Appraisal Manual — Vol. II",
@@ -29,7 +27,6 @@ export default function Publications() {
       fileSize: "4.1 MB"
     },
     {
-      type: "Research Paper",
       date: "Oct 2024",
       docNo: "GH-VFM-2024-04",
       title: "Civic Dividend Report: Enhancing Public Procurement Efficacy",
@@ -39,18 +36,12 @@ export default function Publications() {
   ];
 
   return (
-    <div style={{ backgroundColor: "#F4F5F0", minHeight: "100vh", padding: "100px 24px" }}>
+    <div style={{ backgroundColor: "#F4F5F0", minHeight: "100vh", padding: "100px 24px", overflowX: "hidden" }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         
         {/* HEADER SECTION */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "24px", marginBottom: "48px" }}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-              <div style={{ width: "30px", height: "2px", backgroundColor: "#8B7355" }}></div>
-              <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "1.5px", color: "#8B7355", textTransform: "uppercase" }}>
-                Digital Gazette & Archive
-              </span>
-            </div>
             <h1 style={{ fontSize: "52px", fontWeight: "800", color: "#0F172A", margin: 0, lineHeight: "1.1" }}>
               Publications & Technical<br/>Repository
             </h1>
@@ -89,7 +80,7 @@ export default function Publications() {
         </div>
 
         {/* DOCUMENTS GRID */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))", gap: "24px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
           {documents.map((doc, index) => (
             <div key={index} style={{ backgroundColor: "#FFFFFF", borderRadius: "12px", padding: "32px", display: "flex", flexDirection: "column", boxShadow: "0 4px 6px rgba(0,0,0,0.02)", border: "1px solid #E2E8F0", transition: "transform 0.2s ease, box-shadow 0.2s ease" }}
               onMouseEnter={(e) => {
@@ -101,20 +92,14 @@ export default function Publications() {
                 e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.02)";
               }}
             >
-              {/* Card Header */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                <span style={{ backgroundColor: "#F1F5F9", color: "#0F172A", padding: "6px 12px", borderRadius: "4px", fontSize: "12px", fontWeight: "700" }}>
-                  {doc.type}
-                </span>
-                <span style={{ fontSize: "13px", color: "#64748B", fontWeight: "500" }}>
+              {/* Card Header - Only Date remains */}
+              <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginBottom: "16px" }}>
+                <span style={{ fontSize: "13px", color: "#64748B", fontWeight: "600" }}>
                   {doc.date}
                 </span>
               </div>
 
-              {/* Document No */}
-              <div style={{ fontSize: "12px", fontWeight: "700", color: "#94A3B8", letterSpacing: "1px", marginBottom: "8px" }}>
-                DOCUMENT NO. {doc.docNo}
-              </div>
+              {/* Document No text REMOVED here */}
 
               {/* Title */}
               <h3 style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", margin: "0 0 16px 0", lineHeight: "1.4" }}>
@@ -127,12 +112,12 @@ export default function Publications() {
               </p>
 
               {/* Card Footer (Buttons) */}
-              <div style={{ borderTop: "1px solid #E2E8F0", paddingTop: "24px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px" }}>
+              <div style={{ borderTop: "1px solid #E2E8F0", paddingTop: "24px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
                 <button style={{ 
                   backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", 
                   padding: "12px 20px", borderRadius: "4px", fontSize: "14px", 
                   fontWeight: "700", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px",
-                  flex: 1, justifyContent: "center"
+                  flex: 1, justifyContent: "center", minWidth: "150px"
                 }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                   Download PDF ({doc.fileSize})

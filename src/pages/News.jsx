@@ -41,7 +41,6 @@ export default function News() {
       {/* MAIN CONTENT AREA */}
       <section style={{ padding: "80px 24px", maxWidth: "1200px", margin: "0 auto" }}>
         
-        {/* Changed to 300px so it stacks properly on mobile */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "32px", alignItems: "start" }}>
           
           {/* LEFT COLUMN: FEATURED ARTICLE */}
@@ -57,10 +56,8 @@ export default function News() {
                 backgroundPosition: "center" 
               }} />
               
-              {/* The gradient fade from the image into the white card */}
               <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "150px", background: "linear-gradient(to top, #FFFFFF, transparent)" }} />
               
-              {/* Tag positioned on the image */}
               <div style={{ position: "absolute", bottom: "24px", left: "32px", backgroundColor: "#8B7355", color: "#FFFFFF", padding: "6px 12px", borderRadius: "4px", fontSize: "12px", fontWeight: "800", letterSpacing: "1px", textTransform: "uppercase" }}>
                 Symposium Brief
               </div>
@@ -99,13 +96,7 @@ export default function News() {
               onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-4px)"}
               onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
-                <span style={{ backgroundColor: "#F1F5F9", color: "#0F172A", padding: "6px 12px", borderRadius: "4px", fontSize: "12px", fontWeight: "700" }}>
-                  Technical Advisory
-                </span>
-                <span style={{ fontSize: "13px", color: "#64748B", fontWeight: "600" }}>Oct 28, 2024</span>
-              </div>
-
+              {/* Tag and Date removed */}
               <h3 style={{ fontSize: "22px", fontWeight: "800", color: "#0F172A", margin: "0 0 12px 0", lineHeight: "1.3" }}>
                 Standardising Unit Costs in Healthcare Facility Infrastructure
               </h3>
@@ -127,13 +118,7 @@ export default function News() {
               onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-4px)"}
               onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
-                <span style={{ backgroundColor: "#F1F5F9", color: "#0F172A", padding: "6px 12px", borderRadius: "4px", fontSize: "12px", fontWeight: "700" }}>
-                  Quarterly Bulletin
-                </span>
-                <span style={{ fontSize: "13px", color: "#64748B", fontWeight: "600" }}>Sep 14, 2024</span>
-              </div>
-
+              {/* Tag and Date removed */}
               <h3 style={{ fontSize: "22px", fontWeight: "800", color: "#0F172A", margin: "0 0 12px 0", lineHeight: "1.3" }}>
                 Quarterly Briefing: Strengthening Oversight Mechanisms Across Metropolitan Assemblies
               </h3>
