@@ -2,28 +2,24 @@ export default function Mandate() {
   const scopes = [
     {
       title: "Statutory Pre-Contract Reviews",
-      desc: "Mandatory evaluation of all major capital projects and single-source procurements prior to the award of contract.",
-      icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+      desc: "Mandatory evaluation of all major capital projects and single-source procurements prior to the award of contract."
     },
     {
       title: "Compliance & Sanctions",
-      desc: "Continuous oversight of project execution, with the statutory power to halt non-compliant processes and apply administrative penalties.",
-      icon: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+      desc: "Continuous oversight of project execution, with the statutory power to halt non-compliant processes and apply administrative penalties."
     },
     {
       title: "Institutional Standards",
-      desc: "Setting national benchmarks for cost estimation, lifecycle maintenance, and value-for-money auditing across all MDAs.",
-      icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+      desc: "Setting national benchmarks for cost estimation, lifecycle maintenance, and value-for-money auditing across all MDAs."
     },
     {
       title: "Public Reporting",
-      desc: "Publishing annual value-for-money registers and gazetted findings to ensure transparency and citizen accountability.",
-      icon: "M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+      desc: "Publishing annual value-for-money registers and gazetted findings to ensure transparency and citizen accountability."
     }
   ];
 
   return (
-    <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflowX: "hidden" }}>
       
       {/* 1. HERO SECTION */}
       <section style={{ 
@@ -34,7 +30,6 @@ export default function Mandate() {
         color: "white",
         overflow: "hidden"
       }}>
-        {/* Background Image with Overlay */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
           backgroundImage: "url(/building-bg.jpg)", 
@@ -48,9 +43,7 @@ export default function Mandate() {
         }} />
 
         <div style={{ position: "relative", zIndex: 2, maxWidth: "900px", margin: "0 auto" }}>
-          <span style={{ fontSize: "13px", fontWeight: "800", letterSpacing: "2px", color: "#FCD116", textTransform: "uppercase", display: "block", marginBottom: "20px" }}>
-            Statutory Framework
-          </span>
+          {/* "STATUTORY FRAMEWORK" label removed */}
           <h1 style={{ fontSize: "56px", fontWeight: "800", margin: "0 0 24px 0", lineHeight: "1.1" }}>
             Our Mandate
           </h1>
@@ -63,7 +56,6 @@ export default function Mandate() {
       {/* 2. LEGAL FOUNDATION SECTION */}
       <section style={{ position: "relative", padding: "100px 24px", overflow: "hidden" }}>
         
-        {/* Faint Watermark Background */}
         <div style={{
           position: "absolute", right: "-5%", top: "0%", width: "600px", height: "600px",
           backgroundImage: "url(/coat-of-arms.png)", backgroundSize: "contain", backgroundRepeat: "no-repeat", backgroundPosition: "center",
@@ -72,16 +64,11 @@ export default function Mandate() {
 
         <div style={{ maxWidth: "1000px", margin: "0 auto", position: "relative", zIndex: 1 }}>
           
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))", gap: "60px", alignItems: "center" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "60px", alignItems: "center" }}>
             
             {/* Left Text */}
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
-                <div style={{ width: "30px", height: "2px", backgroundColor: "#8B7355" }}></div>
-                <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "1.5px", color: "#8B7355", textTransform: "uppercase" }}>
-                  The Legal Foundation
-                </span>
-              </div>
+              {/* "THE LEGAL FOUNDATION" label and dash removed */}
               <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", margin: "0 0 24px 0", lineHeight: "1.1" }}>
                 A Statutory Mandate for Fiscal Integrity.
               </h2>
@@ -102,11 +89,7 @@ export default function Mandate() {
               border: "1px solid #E2E8F0",
               position: "relative"
             }}>
-              {/* Decorative element representing a document */}
-              <div style={{ borderBottom: "2px solid #E2E8F0", paddingBottom: "16px", marginBottom: "24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: "12px", fontWeight: "700", color: "#94A3B8", letterSpacing: "1px" }}>OFFICIAL GAZETTE</span>
-                <span style={{ fontSize: "12px", fontWeight: "700", color: "#001F3F" }}>ACT 1172</span>
-              </div>
+              {/* "OFFICIAL GAZETTE / ACT 1172" bar removed */}
               <h3 style={{ fontSize: "24px", fontWeight: "800", color: "#001F3F", margin: "0 0 16px 0" }}>Value for Money Office Act, 2026</h3>
               <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", marginBottom: "32px" }}>
                 An Act to establish the Value for Money Office to provide for independent technical scrutiny of public expenditure, and to ensure maximum value in the procurement of public goods and infrastructure.
@@ -130,7 +113,7 @@ export default function Mandate() {
             <p style={{ color: "#64748B", fontSize: "18px", margin: 0 }}>The statutory powers granted to the VfM Office to enforce fiscal discipline.</p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "32px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "32px" }}>
             {scopes.map((scope, index) => (
               <div 
                 key={index}
@@ -152,9 +135,7 @@ export default function Mandate() {
                   e.currentTarget.style.borderColor = "#E2E8F0";
                 }}
               >
-                <div style={{ width: "56px", height: "56px", backgroundColor: "#FFFFFF", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "24px", boxShadow: "0 4px 6px rgba(0,0,0,0.05)" }}>
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#001F3F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={scope.icon}></path></svg>
-                </div>
+                {/* Icon container removed */}
                 <h3 style={{ fontSize: "22px", fontWeight: "800", color: "#001F3F", margin: "0 0 16px 0" }}>{scope.title}</h3>
                 <p style={{ fontSize: "16px", color: "#475569", lineHeight: "1.6", margin: 0 }}>{scope.desc}</p>
               </div>

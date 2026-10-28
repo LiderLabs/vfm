@@ -9,8 +9,6 @@ function useScrollReveal() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // This updates the state to TRUE when scrolling down into view
-        // and FALSE when scrolling up out of view.
         setIsVisible(entry.isIntersecting);
       },
       { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
@@ -34,7 +32,6 @@ const Reveal = ({ children, delay = 0 }) => {
       style={{
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? "translateY(0)" : "translateY(40px)",
-        // Adjusted transition so it fades out slightly faster than it fades in
         transition: `opacity 0.6s ease-out ${delay}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s`,
         width: "100%"
       }}
@@ -157,9 +154,7 @@ export default function AboutUs() {
 
           <Reveal>
             <div style={{ marginBottom: "24px" }}>
-              <div style={{ marginBottom: "16px" }}>
-                <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "1.5px", color: "#8B7355", textTransform: "uppercase" }}>The Tripartite Standard</span>
-              </div>
+              {/* "THE TRIPARTITE STANDARD" label removed */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "24px" }}>
                 <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", margin: 0, maxWidth: "500px", lineHeight: "1.1" }}>The Three Pillars of Public Value</h2>
                 <p style={{ fontSize: "16px", color: "#64748B", maxWidth: "400px", margin: 0, lineHeight: "1.6" }}>A disciplined triad applied across all public procurement, infrastructure delivery, and ministerial capital expenditures.</p>
@@ -170,7 +165,8 @@ export default function AboutUs() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px", marginBottom: "24px" }}>
             {pillars.map((pillar, index) => (
               <Reveal key={index} delay={index * 0.15}>
-                <div style={{ backgroundColor: "#FFFFFF", borderRadius: "12px", padding: "40px 32px", borderTop: "4px solid #8B7355", boxShadow: "0 10px 30px rgba(0,0,0,0.03)", display: "flex", flexDirection: "column", height: "100%" }}>
+                {/* Gold top border removed */}
+                <div style={{ backgroundColor: "#FFFFFF", borderRadius: "12px", padding: "40px 32px", boxShadow: "0 10px 30px rgba(0,0,0,0.03)", display: "flex", flexDirection: "column", height: "100%" }}>
                   <h3 style={{ fontSize: "24px", fontWeight: "700", color: "#0F172A", margin: "0 0 16px 0" }}>{pillar.title}</h3>
                   <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", margin: "0 0 32px 0", flex: 1 }}>{pillar.desc}</p>
                   <div style={{ borderTop: "1px solid #E2E8F0", paddingTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px", fontWeight: "600" }}>
@@ -247,7 +243,8 @@ export default function AboutUs() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" }}>
             {values.map((value, index) => (
               <Reveal key={index} delay={index * 0.1}>
-                <div style={{ backgroundColor: "#FFFFFF", padding: "32px", borderRadius: "8px", borderTop: "4px solid #001F3F", boxShadow: "0 4px 6px rgba(0,0,0,0.05)", height: "100%" }}>
+                {/* Blue top border removed */}
+                <div style={{ backgroundColor: "#FFFFFF", padding: "32px", borderRadius: "8px", boxShadow: "0 4px 6px rgba(0,0,0,0.05)", height: "100%" }}>
                   <h3 style={{ fontSize: "20px", fontWeight: "700", color: "#001F3F", margin: "0 0 12px 0" }}>{value.title}</h3>
                   <p style={{ fontSize: "15px", color: "#555555", lineHeight: "1.6", margin: 0 }}>{value.desc}</p>
                 </div>
