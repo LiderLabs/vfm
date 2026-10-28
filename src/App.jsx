@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop"; // <-- IMPORTED SCROLL TO TOP
 import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import WhatWeDo from "./pages/WhatWeDo";
@@ -11,13 +12,13 @@ import Contact from "./pages/Contact";
 import Portal from "./pages/Portal";
 import Dashboard from "./pages/Dashboard";
 import Assessments from "./pages/Assessments";
-import Submit from "./pages/Submit"; // <-- IMPORTED SUBMIT
+import Submit from "./pages/Submit"; 
 import Placeholder from "./pages/Placeholder";
 
 function Layout() {
   const location = useLocation();
   
-  // Hide Navbar/Footer on Portal and ANY Dashboard sub-page
+  // Hide Navbar/Footer/ScrollToTop on Portal and ANY Dashboard sub-page
   const isPortal = location.pathname === "/portal";
   const isDashboard = location.pathname.startsWith("/dashboard");
 
@@ -39,7 +40,7 @@ function Layout() {
           <Route path="/contact" element={<Contact />} />
           
           {/* Public Submission Route */}
-          <Route path="/submit" element={<Submit />} /> {/* <-- ADDED ROUTE */}
+          <Route path="/submit" element={<Submit />} />
           
           {/* Secure Portal Routes */}
           <Route path="/portal" element={<Portal />} />
@@ -55,6 +56,9 @@ function Layout() {
 
       {/* Only show Footer if NOT on portal or dashboard */}
       {!isPortal && !isDashboard && <Footer />}
+
+      {/* SCROLL TO TOP BUTTON - Only on public pages */}
+      {!isPortal && !isDashboard && <ScrollToTop />}
     </div>
   );
 }
