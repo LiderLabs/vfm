@@ -29,15 +29,13 @@ export default function Contact() {
         overflow: "hidden",
         textAlign: "center"
       }}>
-        {/* Background Image */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
-          backgroundImage: "url(/contact-bg.jpg)", // Add a nice contact/office image here
+          backgroundImage: "url(/contact-bg.jpg)", 
           backgroundSize: "cover", backgroundPosition: "center",
           opacity: 0.2, zIndex: 0
         }} />
         
-        {/* Gradient Overlay for Text Readability */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
           background: "linear-gradient(180deg, rgba(0,31,63,0.6) 0%, rgba(0,31,63,1) 100%)",
@@ -109,9 +107,21 @@ export default function Contact() {
                 />
               </div>
 
+              {/* FIXED SUBMIT BUTTON */}
               <button type="submit" style={{ 
-                backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", padding: "16px", borderRadius: "8px", 
-                fontSize: "16px", fontWeight: "700", cursor: "pointer", transition: "background-color 0.2s ease", marginTop: "8px" 
+                backgroundColor: "#001F3F", 
+                color: "#FFFFFF", 
+                border: "none", 
+                padding: "16px", 
+                borderRadius: "8px", 
+                fontSize: "16px", 
+                fontWeight: "700", 
+                cursor: "pointer", 
+                transition: "background-color 0.2s ease", 
+                marginTop: "8px",
+                width: "100%",
+                display: "block",
+                boxSizing: "border-box"
               }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#0A2E4D"}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#001F3F"}
@@ -162,7 +172,6 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* Map/Location Image */}
             <div style={{ borderRadius: "16px", overflow: "hidden", height: "300px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}>
               <img 
                 src="/building-bg.jpg" 
