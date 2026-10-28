@@ -21,6 +21,31 @@ export default function Contact() {
   return (
     <div style={{ backgroundColor: "#F4F5F0", minHeight: "100vh", overflowX: "hidden" }}>
       
+      {/* GLOBAL CSS FIX FOR THE BUTTON */}
+      <style>
+        {`
+          .submit-btn-fix {
+            width: 100% !important;
+            min-width: 100% !important;
+            display: block !important;
+            padding: 16px 20px !important;
+            white-space: nowrap !important;
+            box-sizing: border-box !important;
+            background-color: #001F3F !important;
+            color: #FFFFFF !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-size: 16px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            margin-top: 8px !important;
+          }
+          .submit-btn-fix:hover {
+            background-color: #0A2E4D !important;
+          }
+        `}
+      </style>
+
       {/* HEADER SECTION WITH BACKGROUND IMAGE */}
       <section style={{ 
         position: "relative", 
@@ -55,15 +80,15 @@ export default function Contact() {
       {/* MAIN CONTENT AREA */}
       <section style={{ padding: "80px 24px", maxWidth: "1200px", margin: "0 auto" }}>
         
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "40px", alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "40px", alignItems: "start", width: "100%" }}>
           
           {/* LEFT: CONTACT FORM */}
-          <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "40px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", border: "1px solid #E2E8F0" }}>
+          <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "40px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", border: "1px solid #E2E8F0", width: "100%", boxSizing: "border-box" }}>
             <h2 style={{ fontSize: "28px", fontWeight: "800", color: "#001F3F", margin: "0 0 32px 0" }}>Send a Message</h2>
             
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "24px", width: "100%" }}>
               
-              <div>
+              <div style={{ width: "100%" }}>
                 <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Full Name</label>
                 <input 
                   type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="John Doe"
@@ -73,7 +98,7 @@ export default function Contact() {
                 />
               </div>
 
-              <div>
+              <div style={{ width: "100%" }}>
                 <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Email Address</label>
                 <input 
                   type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="john@example.com"
@@ -83,7 +108,7 @@ export default function Contact() {
                 />
               </div>
 
-              <div>
+              <div style={{ width: "100%" }}>
                 <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Department</label>
                 <select 
                   name="department" value={formData.department} onChange={handleChange}
@@ -97,7 +122,7 @@ export default function Contact() {
                 </select>
               </div>
 
-              <div>
+              <div style={{ width: "100%" }}>
                 <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Message</label>
                 <textarea 
                   name="message" value={formData.message} onChange={handleChange} required rows="5" placeholder="How can we help you?"
@@ -107,34 +132,17 @@ export default function Contact() {
                 />
               </div>
 
-              {/* FIXED SUBMIT BUTTON */}
-              <button type="submit" style={{ 
-                backgroundColor: "#001F3F", 
-                color: "#FFFFFF", 
-                border: "none", 
-                padding: "16px", 
-                borderRadius: "8px", 
-                fontSize: "16px", 
-                fontWeight: "700", 
-                cursor: "pointer", 
-                transition: "background-color 0.2s ease", 
-                marginTop: "8px",
-                width: "100%",
-                display: "block",
-                boxSizing: "border-box"
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#0A2E4D"}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#001F3F"}
-              >
+              {/* APPLIED THE CSS CLASS HERE */}
+              <button type="submit" className="submit-btn-fix">
                 Submit Message
               </button>
             </form>
           </div>
 
           {/* RIGHT: CONTACT INFO & LOCATION */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "32px", width: "100%" }}>
             
-            <div style={{ backgroundColor: "#001F3F", borderRadius: "16px", padding: "40px", color: "#FFFFFF", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}>
+            <div style={{ backgroundColor: "#001F3F", borderRadius: "16px", padding: "40px", color: "#FFFFFF", boxShadow: "0 10px 30px rgba(0,0,0,0.1)", boxSizing: "border-box" }}>
               <h3 style={{ fontSize: "24px", fontWeight: "800", margin: "0 0 24px 0" }}>Head Office</h3>
               
               <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -172,7 +180,7 @@ export default function Contact() {
               </div>
             </div>
 
-            <div style={{ borderRadius: "16px", overflow: "hidden", height: "300px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}>
+            <div style={{ borderRadius: "16px", overflow: "hidden", height: "300px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)", width: "100%" }}>
               <img 
                 src="/building-bg.jpg" 
                 alt="VfM Office Location" 
