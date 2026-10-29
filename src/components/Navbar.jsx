@@ -130,6 +130,11 @@ export default function Navbar() {
                 <Link to="/what-we-do#assessments" className="dropdown-item" onClick={() => setActiveDropdown(null)}>VfM Assessments</Link>
                 <Link to="/what-we-do#evaluation" className="dropdown-item" onClick={() => setActiveDropdown(null)}>Project Evaluation</Link>
                 <Link to="/what-we-do#standards" className="dropdown-item" onClick={() => setActiveDropdown(null)}>Standards & Capacity</Link>
+                <Link to="/clearance" className="dropdown-item" onClick={() => setActiveDropdown(null)} style={{ borderTop: "1px solid #E2E8F0", marginTop: "4px", paddingTop: "12px" }}>Certificate of Clearance</Link>
+                <Link to="/sanctions" className="dropdown-item" onClick={() => setActiveDropdown(null)}>Sanctions & Debarment</Link>
+                <Link to="/open-data" className="dropdown-item" onClick={() => setActiveDropdown(null)}>Open Data & Transparency</Link>
+                <Link to="/engagement" className="dropdown-item" onClick={() => setActiveDropdown(null)}>Public Engagement</Link>
+                <Link to="/review-panel" className="dropdown-item" onClick={() => setActiveDropdown(null)} style={{ borderTop: "1px solid #E2E8F0", marginTop: "4px", paddingTop: "12px" }}>Review Panel</Link>
               </div>
             )}
           </div>
@@ -142,8 +147,7 @@ export default function Navbar() {
         {/* Desktop Right Actions */}
         <div className="desktop-actions" style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
           
-          {/* Compact Submit Icon */}
-          <Link to="/submit" title="Submit a Document" style={{ 
+          <Link to="/submit" title="Report a Concern" style={{ 
             display: "flex", alignItems: "center", justifyContent: "center",
             color: "#FFFFFF", textDecoration: "none", 
             border: "1px solid rgba(255,255,255,0.3)", width: "42px", height: "42px", borderRadius: "4px",
@@ -155,7 +159,6 @@ export default function Navbar() {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           </Link>
 
-          {/* Shortened Portal Button - Icon Removed */}
           <button onClick={() => handleNavClick("/portal")} style={{ 
             display: "flex", alignItems: "center", justifyContent: "center",
             backgroundColor: "#FCD116", color: "#001F3F", border: "none",
@@ -200,18 +203,26 @@ export default function Navbar() {
             <Link to="/what-we-do#assessments" onClick={() => handleNavClick("/what-we-do")} style={{ fontSize: "14px", borderBottom: "none" }}>VfM Assessments</Link>
             <Link to="/what-we-do#evaluation" onClick={() => handleNavClick("/what-we-do")} style={{ fontSize: "14px", borderBottom: "none" }}>Project Evaluation</Link>
             <Link to="/what-we-do#standards" onClick={() => handleNavClick("/what-we-do")} style={{ fontSize: "14px", borderBottom: "none" }}>Standards & Capacity</Link>
+            <Link to="/clearance" onClick={() => handleNavClick("/clearance")} style={{ fontSize: "14px", borderBottom: "none", color: "#FCD116" }}>Certificate of Clearance</Link>
+            <Link to="/sanctions" onClick={() => handleNavClick("/sanctions")} style={{ fontSize: "14px", borderBottom: "none", color: "#FCD116" }}>Sanctions & Debarment</Link>
+            <Link to="/open-data" onClick={() => handleNavClick("/open-data")} style={{ fontSize: "14px", borderBottom: "none", color: "#FCD116" }}>Open Data & Transparency</Link>
+            <Link to="/engagement" onClick={() => handleNavClick("/engagement")} style={{ fontSize: "14px", borderBottom: "none", color: "#FCD116" }}>Public Engagement</Link>
+            <Link to="/review-panel" onClick={() => handleNavClick("/review-panel")} style={{ fontSize: "14px", borderBottom: "none", color: "#FCD116" }}>Review Panel</Link>
           </div>
 
           <Link to="/publications" onClick={() => handleNavClick("/publications")}>Publications</Link>
           <Link to="/news" onClick={() => handleNavClick("/news")}>News & Insights</Link>
           <Link to="/contact" onClick={() => handleNavClick("/contact")}>Contact</Link>
           
-          <Link to="/submit" onClick={() => handleNavClick("/submit")} style={{ fontSize: "16px", fontWeight: "600", color: "#FFFFFF", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: "8px" }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            Submit Document
+          <Link to="/track" onClick={() => handleNavClick("/track")} style={{ fontSize: "16px", fontWeight: "600", color: "#FFFFFF", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+            Track a Complaint
           </Link>
 
-          {/* Mobile Portal Button - Icon Removed */}
+          <Link to="/submit" onClick={() => handleNavClick("/submit")} style={{ fontSize: "16px", fontWeight: "600", color: "#FFFFFF", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: "8px" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Report a Concern
+          </Link>
+
           <button className="mobile-portal-btn" onClick={() => handleNavClick("/portal")}>
             Portal Login
           </button>

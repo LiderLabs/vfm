@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import ScrollToTop from "./components/ScrollToTop"; // <-- IMPORTED SCROLL TO TOP
+import ScrollToTop from "./components/ScrollToTop";
 import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import WhatWeDo from "./pages/WhatWeDo";
@@ -13,6 +13,12 @@ import Portal from "./pages/Portal";
 import Dashboard from "./pages/Dashboard";
 import Assessments from "./pages/Assessments";
 import Submit from "./pages/Submit"; 
+import Track from "./pages/Track"; 
+import Clearance from "./pages/Clearance"; 
+import Sanctions from "./pages/Sanctions"; 
+import OpenData from "./pages/OpenData"; 
+import Engagement from "./pages/Engagement"; 
+import ReviewPanel from "./pages/ReviewPanel"; // <-- IMPORTED REVIEW PANEL
 import Placeholder from "./pages/Placeholder";
 
 function Layout() {
@@ -25,7 +31,6 @@ function Layout() {
   return (
     <div style={{ fontFamily: "sans-serif", margin: 0, padding: 0, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       
-      {/* Only show Navbar if NOT on portal or dashboard */}
       {!isPortal && !isDashboard && <Navbar />}
       
       <div style={{ flex: 1 }}>
@@ -39,8 +44,14 @@ function Layout() {
           <Route path="/news" element={<News />} />
           <Route path="/contact" element={<Contact />} />
           
-          {/* Public Submission Route */}
+          {/* Public Submission, Tracking, Clearance, Sanctions, Open Data & Engagement Routes */}
           <Route path="/submit" element={<Submit />} />
+          <Route path="/track" element={<Track />} />
+          <Route path="/clearance" element={<Clearance />} />
+          <Route path="/sanctions" element={<Sanctions />} />
+          <Route path="/open-data" element={<OpenData />} />
+          <Route path="/engagement" element={<Engagement />} />
+          <Route path="/review-panel" element={<ReviewPanel />} /> {/* <-- ADDED REVIEW PANEL ROUTE */}
           
           {/* Secure Portal Routes */}
           <Route path="/portal" element={<Portal />} />
@@ -54,10 +65,7 @@ function Layout() {
         </Routes>
       </div>
 
-      {/* Only show Footer if NOT on portal or dashboard */}
       {!isPortal && !isDashboard && <Footer />}
-
-      {/* SCROLL TO TOP BUTTON - Only on public pages */}
       {!isPortal && !isDashboard && <ScrollToTop />}
     </div>
   );
