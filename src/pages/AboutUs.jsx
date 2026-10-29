@@ -83,6 +83,25 @@ export default function AboutUs() {
     }
   ];
 
+  const scopes = [
+    {
+      title: "Statutory Pre-Contract Reviews",
+      desc: "Mandatory evaluation of all major capital projects and single-source procurements prior to the award of contract."
+    },
+    {
+      title: "Compliance & Sanctions",
+      desc: "Continuous oversight of project execution, with the statutory power to halt non-compliant processes and apply administrative penalties."
+    },
+    {
+      title: "Institutional Standards",
+      desc: "Setting national benchmarks for cost estimation, lifecycle maintenance, and value-for-money auditing across all MDAs."
+    },
+    {
+      title: "Public Reporting",
+      desc: "Publishing annual value-for-money registers and gazetted findings to ensure transparency and citizen accountability."
+    }
+  ];
+
   const values = [
     { title: "Integrity", desc: "Upholding the highest standards of honesty and ethical conduct in all our evaluations." },
     { title: "Transparency", desc: "Ensuring our processes and findings are open, clear, and accessible to the public." },
@@ -108,7 +127,7 @@ export default function AboutUs() {
         </Reveal>
       </section>
 
-      {/* 2. EXECUTIVE SUMMARY & THREE PILLARS */}
+      {/* 2. EXECUTIVE SUMMARY */}
       <section style={{ position: "relative", padding: "100px 24px 60px", overflow: "hidden", backgroundColor: "#F4F5F0" }}>
         
         <div style={{ position: "absolute", right: "-5%", top: "10%", width: "600px", height: "600px", backgroundImage: "url('/vfm-logo.png')", backgroundSize: "contain", backgroundRepeat: "no-repeat", backgroundPosition: "center", opacity: 0.03, zIndex: 0, pointerEvents: "none" }} />
@@ -151,10 +170,53 @@ export default function AboutUs() {
               ))}
             </div>
           </Reveal>
+        </div>
+      </section>
 
+      {/* 3. NEW MERGED SECTION: STATUTORY MANDATE */}
+      <section style={{ position: "relative", padding: "100px 24px", overflow: "hidden", backgroundColor: "#FFFFFF" }}>
+        
+        <div style={{ position: "absolute", right: "-5%", top: "0%", width: "600px", height: "600px", backgroundImage: "url(/coat-of-arms.png)", backgroundSize: "contain", backgroundRepeat: "no-repeat", backgroundPosition: "center", opacity: 0.03, zIndex: 0, pointerEvents: "none" }} />
+
+        <div style={{ maxWidth: "1000px", margin: "0 auto", position: "relative", zIndex: 1 }}>
+          
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "60px", alignItems: "center" }}>
+            <Reveal>
+              <div>
+                <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", margin: "0 0 24px 0", lineHeight: "1.1" }}>
+                  A Statutory Mandate for Fiscal Integrity.
+                </h2>
+                <p style={{ fontSize: "17px", lineHeight: "1.8", color: "#475569", marginBottom: "24px" }}>
+                  The VfM Office is not merely an advisory body; it is a statutory authority. Under Act 1172, we have the legal standing to evaluate, monitor, and enforce value-for-money standards across every government ministry, department, and agency (MDA).
+                </p>
+                <p style={{ fontSize: "17px", lineHeight: "1.8", color: "#475569" }}>
+                  Our mandate extends across all phases of the public procurement lifecycle, from the earliest feasibility studies to the final project audit and impact evaluation.
+                </p>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.2}>
+              <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "48px", boxShadow: "0 20px 40px rgba(0,0,0,0.08)", border: "1px solid #E2E8F0" }}>
+                <h3 style={{ fontSize: "24px", fontWeight: "800", color: "#001F3F", margin: "0 0 16px 0" }}>Value for Money Office Act, 2026</h3>
+                <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", marginBottom: "32px" }}>
+                  An Act to establish the Value for Money Office to provide for independent technical scrutiny of public expenditure, and to ensure maximum value in the procurement of public goods and infrastructure.
+                </p>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", color: "#001F3F", fontWeight: "700", fontSize: "14px", cursor: "pointer" }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  Download Full Act (PDF)
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. THREE PILLARS & SCOPE OF AUTHORITY */}
+      <section style={{ position: "relative", padding: "100px 24px 60px", overflow: "hidden", backgroundColor: "#F4F5F0" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 1 }}>
+          
           <Reveal>
-            <div style={{ marginBottom: "24px" }}>
-              {/* "THE TRIPARTITE STANDARD" label removed */}
+            <div style={{ marginBottom: "40px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "24px" }}>
                 <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", margin: 0, maxWidth: "500px", lineHeight: "1.1" }}>The Three Pillars of Public Value</h2>
                 <p style={{ fontSize: "16px", color: "#64748B", maxWidth: "400px", margin: 0, lineHeight: "1.6" }}>A disciplined triad applied across all public procurement, infrastructure delivery, and ministerial capital expenditures.</p>
@@ -162,10 +224,9 @@ export default function AboutUs() {
             </div>
           </Reveal>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px", marginBottom: "24px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px", marginBottom: "100px" }}>
             {pillars.map((pillar, index) => (
               <Reveal key={index} delay={index * 0.15}>
-                {/* Gold top border removed */}
                 <div style={{ backgroundColor: "#FFFFFF", borderRadius: "12px", padding: "40px 32px", boxShadow: "0 10px 30px rgba(0,0,0,0.03)", display: "flex", flexDirection: "column", height: "100%" }}>
                   <h3 style={{ fontSize: "24px", fontWeight: "700", color: "#0F172A", margin: "0 0 16px 0" }}>{pillar.title}</h3>
                   <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", margin: "0 0 32px 0", flex: 1 }}>{pillar.desc}</p>
@@ -178,16 +239,39 @@ export default function AboutUs() {
             ))}
           </div>
 
-          <Reveal delay={0.2}>
-            <p style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "#64748B", margin: "0 0 40px 0" }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-              *Proposed institutional terminology subject to official Office charter verification and gazetted standards.
-            </p>
+          <Reveal>
+            <div style={{ textAlign: "center", marginBottom: "48px" }}>
+              <h2 style={{ fontSize: "36px", fontWeight: "800", color: "#001F3F", margin: "0 0 16px 0" }}>Scope of Authority</h2>
+              <p style={{ color: "#64748B", fontSize: "18px", margin: 0 }}>The statutory powers granted to the VfM Office to enforce fiscal discipline.</p>
+            </div>
           </Reveal>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "32px" }}>
+            {scopes.map((scope, index) => (
+              <Reveal key={index} delay={index * 0.1}>
+                <div style={{ backgroundColor: "#FFFFFF", borderRadius: "12px", padding: "40px", border: "1px solid #E2E8F0", transition: "all 0.3s ease", height: "100%" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-5px)";
+                    e.currentTarget.style.boxShadow = "0 15px 30px rgba(0,0,0,0.05)";
+                    e.currentTarget.style.borderColor = "#FCD116";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.borderColor = "#E2E8F0";
+                  }}
+                >
+                  <h3 style={{ fontSize: "22px", fontWeight: "800", color: "#001F3F", margin: "0 0 16px 0" }}>{scope.title}</h3>
+                  <p style={{ fontSize: "16px", color: "#475569", lineHeight: "1.6", margin: 0 }}>{scope.desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
         </div>
       </section>
 
-      {/* 3. LEADERSHIP SECTION */}
+      {/* 5. LEADERSHIP SECTION */}
       <section id="leadership" style={{ backgroundColor: "#FFFFFF", padding: "100px 24px" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           
@@ -229,7 +313,7 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* 4. INSTITUTIONAL VALUES SECTION */}
+      {/* 6. INSTITUTIONAL VALUES SECTION */}
       <section id="values" style={{ backgroundColor: "#F5F7FA", padding: "80px 24px" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           
@@ -243,7 +327,6 @@ export default function AboutUs() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" }}>
             {values.map((value, index) => (
               <Reveal key={index} delay={index * 0.1}>
-                {/* Blue top border removed */}
                 <div style={{ backgroundColor: "#FFFFFF", padding: "32px", borderRadius: "8px", boxShadow: "0 4px 6px rgba(0,0,0,0.05)", height: "100%" }}>
                   <h3 style={{ fontSize: "20px", fontWeight: "700", color: "#001F3F", margin: "0 0 12px 0" }}>{value.title}</h3>
                   <p style={{ fontSize: "15px", color: "#555555", lineHeight: "1.6", margin: 0 }}>{value.desc}</p>

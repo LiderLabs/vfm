@@ -26,13 +26,13 @@ export default function Footer() {
           <h4 style={{ fontSize: "16px", fontWeight: "bold", margin: "0 0 16px 0", color: "#FCD116" }}>Quick Links</h4>
           <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
             <li><Link to="/about" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>About Us</Link></li>
-            <li><Link to="/mandate" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>Our Mandate</Link></li>
+            {/* "Our Mandate" link removed from here */}
             <li><Link to="/what-we-do" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>What We Do</Link></li>
             <li><Link to="/publications" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>Publications</Link></li>
           </ul>
         </div>
 
-        {/* Column 3: Compliance & Transparency (New Statutory Links) */}
+        {/* Column 3: Compliance & Transparency */}
         <div style={{ minWidth: "200px" }}>
           <h4 style={{ fontSize: "16px", fontWeight: "bold", margin: "0 0 16px 0", color: "#FCD116" }}>Compliance & Transparency</h4>
           <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>

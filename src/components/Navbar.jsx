@@ -119,7 +119,7 @@ export default function Navbar() {
             )}
           </div>
 
-          <Link to="/mandate" className="nav-link" onClick={() => handleNavClick("/mandate")}>Our Mandate</Link>
+          {/* "Our Mandate" link removed from here */}
 
           <div className="dropdown-container" onMouseEnter={() => setActiveDropdown("whatWeDo")} onMouseLeave={() => setActiveDropdown(null)}>
             <span className="nav-link" onClick={() => handleNavClick("/what-we-do")}>
@@ -196,7 +196,8 @@ export default function Navbar() {
         <div className="mobile-dropdown">
           <Link to="/" onClick={() => handleNavClick("/")}>Home</Link>
           <Link to="/about" onClick={() => handleNavClick("/about")}>About Us</Link>
-          <Link to="/mandate" onClick={() => handleNavClick("/mandate")}>Our Mandate</Link>
+          
+          {/* "Our Mandate" link removed from here */}
           
           <div style={{ display: "flex", flexDirection: "column", gap: "12px", paddingLeft: "16px", borderLeft: "2px solid rgba(255,255,255,0.1)" }}>
             <span style={{ fontSize: "12px", fontWeight: "700", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1px" }}>What We Do</span>

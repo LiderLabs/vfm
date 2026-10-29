@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
@@ -7,7 +7,6 @@ import AboutUs from "./pages/AboutUs";
 import WhatWeDo from "./pages/WhatWeDo";
 import Publications from "./pages/Publications";
 import News from "./pages/News";
-import Mandate from "./pages/Mandate";
 import Contact from "./pages/Contact";
 import Portal from "./pages/Portal";
 import Dashboard from "./pages/Dashboard";
@@ -18,13 +17,12 @@ import Clearance from "./pages/Clearance";
 import Sanctions from "./pages/Sanctions"; 
 import OpenData from "./pages/OpenData"; 
 import Engagement from "./pages/Engagement"; 
-import ReviewPanel from "./pages/ReviewPanel"; // <-- IMPORTED REVIEW PANEL
+import ReviewPanel from "./pages/ReviewPanel"; 
 import Placeholder from "./pages/Placeholder";
 
 function Layout() {
   const location = useLocation();
   
-  // Hide Navbar/Footer/ScrollToTop on Portal and ANY Dashboard sub-page
   const isPortal = location.pathname === "/portal";
   const isDashboard = location.pathname.startsWith("/dashboard");
 
@@ -38,7 +36,10 @@ function Layout() {
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
-          <Route path="/mandate" element={<Mandate />} />
+          
+          {/* REDIRECT: /mandate now goes to /about */}
+          <Route path="/mandate" element={<Navigate to="/about" replace />} />
+          
           <Route path="/what-we-do" element={<WhatWeDo />} />
           <Route path="/publications" element={<Publications />} />
           <Route path="/news" element={<News />} />
@@ -51,7 +52,7 @@ function Layout() {
           <Route path="/sanctions" element={<Sanctions />} />
           <Route path="/open-data" element={<OpenData />} />
           <Route path="/engagement" element={<Engagement />} />
-          <Route path="/review-panel" element={<ReviewPanel />} /> {/* <-- ADDED REVIEW PANEL ROUTE */}
+          <Route path="/review-panel" element={<ReviewPanel />} />
           
           {/* Secure Portal Routes */}
           <Route path="/portal" element={<Portal />} />
