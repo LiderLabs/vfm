@@ -33,6 +33,10 @@ const ZoomReveal = ({ children, delay = 0 }) => {
 export default function WhatWeDo() {
   const { hash } = useLocation();
   const [activePillar, setActivePillar] = useState(0);
+  
+  // Swipe tracking state
+  const touchStart = useRef(null);
+  const touchEnd = useRef(null);
 
   // Auto-scroll to sections if navigating via hash
   useEffect(() => {
@@ -91,12 +95,36 @@ export default function WhatWeDo() {
   useEffect(() => {
     const timer = setInterval(() => {
       setActivePillar((prev) => (prev === pillars.length - 1 ? 0 : prev + 1));
-    }, 5000); 
+    }, 6000); 
     return () => clearInterval(timer);
   }, [pillars.length]);
 
-  const handleNext = () => setActivePillar((prev) => (prev === pillars.length - 1 ? 0 : prev + 1));
-  const handlePrev = () => setActivePillar((prev) => (prev === 0 ? pillars.length - 1 : prev - 1));
+  // --- SWIPE HANDLERS ---
+  const handleTouchStart = (e) => {
+    touchStart.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEnd.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart.current || !touchEnd.current) return;
+    const distance = touchStart.current - touchEnd.current;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      setActivePillar((prev) => (prev === pillars.length - 1 ? 0 : prev + 1));
+    }
+    if (isRightSwipe) {
+      setActivePillar((prev) => (prev === 0 ? pillars.length - 1 : prev - 1));
+    }
+    
+    // Reset
+    touchStart.current = null;
+    touchEnd.current = null;
+  };
 
   return (
     <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflowX: "hidden" }}>
@@ -118,14 +146,6 @@ export default function WhatWeDo() {
               display: inline-flex !important;
             }
           }
-          /* HIDE THE BULKY DESKTOP TABS ON MOBILE */
-          .pillar-tabs-container { display: block; }
-          .mobile-controls-container { display: none; }
-
-          @media (max-width: 768px) {
-            .pillar-tabs-container { display: none !important; }
-            .mobile-controls-container { display: flex !important; }
-          }
         `}
       </style>
 
@@ -133,7 +153,7 @@ export default function WhatWeDo() {
       <section style={{ 
         position: "relative", 
         backgroundColor: "#001F3F", 
-        padding: "100px 24px 0", 
+        padding: "100px 24px 80px", // Reduced bottom padding since tabs are gone
         overflow: "hidden",
         display: "flex",
         flexDirection: "column"
@@ -163,7 +183,13 @@ export default function WhatWeDo() {
             </p>
           </div>
 
-          <div style={{ minHeight: "300px", marginBottom: "60px" }}>
+          {/* SLIDER CONTENT - ADDED SWIPE EVENTS HERE */}
+          <div 
+            style={{ minHeight: "300px" }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             <div key={activePillar} style={{ animation: "fadeSlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards" }}>
               <style>{`
                 @keyframes fadeSlideIn {
@@ -203,81 +229,28 @@ export default function WhatWeDo() {
               </button>
             </div>
           </div>
-        </div>
 
-        {/* DESKTOP BOTTOM NAVIGATION BAR */}
-        <div className="pillar-tabs-container" style={{ 
-          borderTop: "1px solid rgba(255,255,255,0.1)", backgroundColor: "rgba(0, 15, 30, 0.9)",
-          backdropFilter: "blur(10px)", position: "relative", zIndex: 2 
-        }}>
-          <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1px" }}>
-            {pillars.map((pillar, index) => {
-              const isActive = index === activePillar;
-              return (
-                <button
-                  key={index}
-                  onClick={() => setActivePillar(index)}
-                  style={{
-                    backgroundColor: isActive ? "rgba(252, 209, 22, 0.05)" : "transparent",
-                    border: "none", borderTop: isActive ? "3px solid #FCD116" : "3px solid transparent",
-                    padding: "24px 20px", textAlign: "left", cursor: "pointer", transition: "all 0.3s ease",
-                    display: "flex", flexDirection: "column", gap: "8px"
-                  }}
-                  onMouseEnter={(e) => !isActive && (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.05)")}
-                  onMouseLeave={(e) => !isActive && (e.currentTarget.style.backgroundColor = "transparent")}
-                >
-                  <span style={{ fontSize: "12px", fontWeight: "700", color: isActive ? "#FCD116" : "#94A3B8", letterSpacing: "1px", textTransform: "uppercase" }}>
-                    {pillar.category}
-                  </span>
-                  <span style={{ fontSize: "15px", fontWeight: isActive ? "700" : "500", color: isActive ? "#FFFFFF" : "#64748B" }}>
-                    {pillar.title.split(" ")[0]} {pillar.title.split(" ")[1]}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* MOBILE CONTROLS (DOTS & ARROWS) */}
-        <div className="mobile-controls-container" style={{ 
-          position: "relative", zIndex: 2, padding: "24px",
-          justifyContent: "space-between", alignItems: "center",
-          borderTop: "1px solid rgba(255,255,255,0.1)", backgroundColor: "rgba(0, 15, 30, 0.9)"
-        }}>
-          {/* Dots */}
-          <div style={{ display: "flex", gap: "8px" }}>
+          {/* DOT NAVIGATION (Replaces both Desktop Tabs and Mobile Arrows) */}
+          <div style={{ 
+            display: "flex", 
+            gap: "12px", 
+            marginTop: "60px",
+            justifyContent: "flex-start"
+          }}>
             {pillars.map((_, index) => (
               <div 
                 key={index}
                 onClick={() => setActivePillar(index)}
                 style={{
-                  width: index === activePillar ? "24px" : "8px",
-                  height: "8px",
-                  borderRadius: "4px",
+                  width: index === activePillar ? "40px" : "12px",
+                  height: "12px",
+                  borderRadius: "6px",
                   backgroundColor: index === activePillar ? "#FCD116" : "rgba(255,255,255,0.3)",
-                  transition: "all 0.3s ease",
+                  transition: "all 0.4s ease",
                   cursor: "pointer"
                 }}
               />
             ))}
-          </div>
-          
-          {/* Arrows */}
-          <div style={{ display: "flex", gap: "12px" }}>
-            <button onClick={handlePrev} style={{ 
-              width: "40px", height: "40px", borderRadius: "50%", 
-              backgroundColor: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)",
-              color: "white", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer"
-            }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            </button>
-            <button onClick={handleNext} style={{ 
-              width: "40px", height: "40px", borderRadius: "50%", 
-              backgroundColor: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)",
-              color: "white", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer"
-            }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </button>
           </div>
         </div>
       </section>
