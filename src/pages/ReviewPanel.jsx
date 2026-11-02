@@ -4,6 +4,33 @@ export default function ReviewPanel() {
   return (
     <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflowX: "hidden" }}>
       
+      {/* GLOBAL CSS FIX FOR THE DOWNLOAD BUTTON */}
+      <style>
+        {`
+          .download-btn-fix {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            white-space: nowrap !important;
+            box-sizing: border-box !important;
+            padding: 16px 24px !important;
+            border-radius: 4px !important;
+            font-size: 16px !important;
+            font-weight: 800 !important;
+            cursor: pointer !important;
+            border: none !important;
+            gap: 8px !important;
+          }
+          @media (min-width: 768px) {
+            .download-btn-fix {
+              width: auto !important;
+              display: inline-flex !important;
+            }
+          }
+        `}
+      </style>
+
       {/* 1. HERO SECTION */}
       <section style={{ position: "relative", backgroundColor: "#001F3F", padding: "100px 24px", textAlign: "center", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url(/building-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.2, zIndex: 0 }} />
@@ -43,10 +70,8 @@ export default function ReviewPanel() {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
           
+          {/* Removed numbers */}
           <div style={{ backgroundColor: "#FFFFFF", padding: "32px", borderRadius: "12px", border: "1px solid #E2E8F0", boxShadow: "0 4px 6px rgba(0,0,0,0.02)" }}>
-            <div style={{ width: "40px", height: "40px", backgroundColor: "#F1F5F9", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
-              <span style={{ fontSize: "20px", fontWeight: "800", color: "#001F3F" }}>1</span>
-            </div>
             <h3 style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A", margin: "0 0 12px 0" }}>Draft Your Grounds</h3>
             <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", margin: 0 }}>
               Set out the decision you are complaining about and the grounds for your dissatisfaction. Attach any relevant documents or information you intend to rely on (Section 50(2)).
@@ -54,9 +79,6 @@ export default function ReviewPanel() {
           </div>
 
           <div style={{ backgroundColor: "#FFFFFF", padding: "32px", borderRadius: "12px", border: "1px solid #E2E8F0", boxShadow: "0 4px 6px rgba(0,0,0,0.02)" }}>
-            <div style={{ width: "40px", height: "40px", backgroundColor: "#F1F5F9", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
-              <span style={{ fontSize: "20px", fontWeight: "800", color: "#001F3F" }}>2</span>
-            </div>
             <h3 style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A", margin: "0 0 12px 0" }}>Download & Complete Form</h3>
             <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", margin: 0 }}>
               Download the official Review Application Form, complete it, and attach your supporting documents.
@@ -64,9 +86,6 @@ export default function ReviewPanel() {
           </div>
 
           <div style={{ backgroundColor: "#FFFFFF", padding: "32px", borderRadius: "12px", border: "1px solid #E2E8F0", boxShadow: "0 4px 6px rgba(0,0,0,0.02)" }}>
-            <div style={{ width: "40px", height: "40px", backgroundColor: "#F1F5F9", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
-              <span style={{ fontSize: "20px", fontWeight: "800", color: "#001F3F" }}>3</span>
-            </div>
             <h3 style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A", margin: "0 0 12px 0" }}>Submit Application</h3>
             <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", margin: 0 }}>
               Submit the completed form and all attachments to the Secretary of the Review Panel via the VfM Office.
@@ -76,11 +95,7 @@ export default function ReviewPanel() {
         </div>
 
         <div style={{ textAlign: "center", marginTop: "48px" }}>
-          <button style={{ 
-            display: "inline-flex", alignItems: "center", gap: "8px", 
-            backgroundColor: "#001F3F", color: "#FFFFFF", padding: "16px 40px", 
-            borderRadius: "4px", fontSize: "16px", fontWeight: "800", cursor: "pointer", border: "none"
-          }}>
+          <button className="download-btn-fix" style={{ backgroundColor: "#001F3F", color: "#FFFFFF" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             Download Application Form (PDF)
           </button>

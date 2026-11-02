@@ -13,40 +13,39 @@ export default function Navbar() {
   };
 
   return (
-    <header style={{ backgroundColor: "#001F3F", color: "#FFFFFF", position: "relative", zIndex: 1000 }}>
+    <header style={{ backgroundColor: "#FFFFFF", color: "#001F3F", position: "relative", zIndex: 1000, borderBottom: "1px solid #E2E8F0" }}>
       <style>
         {`
           .nav-container {
             display: flex; justify-content: space-between; align-items: center; 
-            max-width: 1300px; margin: 0 auto; padding: 16px 24px; gap: 20px;
+            max-width: 1300px; margin: 0 auto; padding: 12px 24px; gap: 20px;
           }
-          .nav-links { display: flex; gap: 20px; font-size: 14px; font-weight: 500; align-items: center; }
-          .nav-link { color: #FFFFFF; text-decoration: none; transition: color 0.2s; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+          .nav-links { display: flex; gap: 20px; font-size: 14px; font-weight: 600; align-items: center; }
+          .nav-link { color: #001F3F; text-decoration: none; transition: color 0.2s; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
           .nav-link:hover { color: #FCD116; }
           
+          /* LOGO STYLE */
+          .logo-image {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
+          }
+
           /* DESKTOP DROPDOWNS */
           .dropdown-container { position: relative; padding: 10px 0; }
           .dropdown-menu {
             position: absolute; top: 100%; left: 0; margin-top: 0px;
             background-color: #FFFFFF; min-width: 220px; border-radius: 4px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3); padding: 8px 0;
-            display: flex; flex-direction: column; z-index: 9999; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); padding: 8px 0;
+            display: flex; flex-direction: column; z-index: 9999; border: 1px solid #E2E8F0;
           }
           .dropdown-item {
             color: #001F3F; text-decoration: none; padding: 12px 20px; font-weight: 600; font-size: 14px;
             transition: background-color 0.2s;
           }
-          .dropdown-item:hover { background-color: #F0F4F8; }
+          .dropdown-item:hover { background-color: #F0F4F8; color: #001F3F; }
 
-          /* LOGO FIX */
-          .logo-title {
-            margin: 0; font-size: 16px; font-weight: 800; letter-spacing: 1px; line-height: 1.2; white-space: nowrap;
-          }
-          .logo-subtitle {
-            margin: 0; font-size: 10px; color: #FCD116; font-weight: 700; letter-spacing: 1px; margin-top: 4px; white-space: nowrap;
-          }
-
-          .mobile-menu-btn { display: none; background: none; border: none; color: white; cursor: pointer; }
+          .mobile-menu-btn { display: none; background: none; border: none; color: #001F3F; cursor: pointer; }
 
           /* MOBILE & TABLET STYLES */
           @media (max-width: 1200px) {
@@ -56,9 +55,9 @@ export default function Navbar() {
             
             .mobile-dropdown {
               position: absolute; top: 100%; left: 0; right: 0;
-              background-color: #001F3F; border-top: 1px solid rgba(255,255,255,0.1);
+              background-color: #FFFFFF; border-top: 1px solid #E2E8F0;
               padding: 24px; display: flex; flex-direction: column; gap: 20px;
-              box-shadow: 0 10px 20px rgba(0,0,0,0.3); transform-origin: top;
+              box-shadow: 0 10px 20px rgba(0,0,0,0.1); transform-origin: top;
               animation: slideDown 0.3s ease-out forwards; z-index: 1000;
               max-height: calc(100vh - 80px); overflow-y: auto;
             }
@@ -69,8 +68,8 @@ export default function Navbar() {
             }
 
             .mobile-dropdown a {
-              color: #FFFFFF; text-decoration: none; font-size: 16px; font-weight: 600;
-              padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05);
+              color: #001F3F; text-decoration: none; font-size: 16px; font-weight: 600;
+              padding-bottom: 12px; border-bottom: 1px solid #F1F5F9;
             }
             
             .mobile-portal-btn {
@@ -81,8 +80,7 @@ export default function Navbar() {
               box-shadow: 0 4px 15px rgba(252, 209, 22, 0.2);
             }
             
-            .logo-title { font-size: 14px; }
-            .logo-subtitle { font-size: 9px; }
+            .logo-image { height: 40px; }
           }
         `}
       </style>
@@ -90,16 +88,12 @@ export default function Navbar() {
       <div className="nav-container">
         
         {/* Logo area */}
-        <Link to="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none", color: "white", flexShrink: 0 }}>
+        <Link to="/" style={{ display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 }}>
           <img 
             src="/vfm-logo.png" 
             alt="VfM Office Logo" 
-            style={{ width: "46px", height: "46px", objectFit: "contain", backgroundColor: "white", borderRadius: "50%", padding: "2px" }} 
+            className="logo-image"
           />
-          <div>
-            <h1 className="logo-title">VALUE FOR MONEY</h1>
-            <p className="logo-subtitle">REPUBLIC OF GHANA</p>
-          </div>
         </Link>
 
         {/* Desktop Links */}
@@ -118,8 +112,6 @@ export default function Navbar() {
               </div>
             )}
           </div>
-
-          {/* "Our Mandate" link removed from here */}
 
           <div className="dropdown-container" onMouseEnter={() => setActiveDropdown("whatWeDo")} onMouseLeave={() => setActiveDropdown(null)}>
             <span className="nav-link" onClick={() => handleNavClick("/what-we-do")}>
@@ -149,16 +141,17 @@ export default function Navbar() {
           
           <Link to="/submit" title="Report a Concern" style={{ 
             display: "flex", alignItems: "center", justifyContent: "center",
-            color: "#FFFFFF", textDecoration: "none", 
-            border: "1px solid rgba(255,255,255,0.3)", width: "42px", height: "42px", borderRadius: "4px",
-            transition: "background-color 0.2s ease"
+            color: "#001F3F", textDecoration: "none", 
+            border: "1px solid #CBD5E1", width: "42px", height: "42px", borderRadius: "4px",
+            transition: "all 0.2s ease"
           }}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#F8FAFC"; e.currentTarget.style.borderColor = "#001F3F"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.borderColor = "#CBD5E1"; }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           </Link>
 
+          {/* Portal Button back to Gold */}
           <button onClick={() => handleNavClick("/portal")} style={{ 
             display: "flex", alignItems: "center", justifyContent: "center",
             backgroundColor: "#FCD116", color: "#001F3F", border: "none",
@@ -197,10 +190,8 @@ export default function Navbar() {
           <Link to="/" onClick={() => handleNavClick("/")}>Home</Link>
           <Link to="/about" onClick={() => handleNavClick("/about")}>About Us</Link>
           
-          {/* "Our Mandate" link removed from here */}
-          
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px", paddingLeft: "16px", borderLeft: "2px solid rgba(255,255,255,0.1)" }}>
-            <span style={{ fontSize: "12px", fontWeight: "700", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1px" }}>What We Do</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", paddingLeft: "16px", borderLeft: "2px solid #E2E8F0" }}>
+            <span style={{ fontSize: "12px", fontWeight: "700", color: "#64748B", textTransform: "uppercase", letterSpacing: "1px" }}>What We Do</span>
             <Link to="/what-we-do#assessments" onClick={() => handleNavClick("/what-we-do")} style={{ fontSize: "14px", borderBottom: "none" }}>VfM Assessments</Link>
             <Link to="/what-we-do#evaluation" onClick={() => handleNavClick("/what-we-do")} style={{ fontSize: "14px", borderBottom: "none" }}>Project Evaluation</Link>
             <Link to="/what-we-do#standards" onClick={() => handleNavClick("/what-we-do")} style={{ fontSize: "14px", borderBottom: "none" }}>Standards & Capacity</Link>
@@ -215,11 +206,11 @@ export default function Navbar() {
           <Link to="/news" onClick={() => handleNavClick("/news")}>News & Insights</Link>
           <Link to="/contact" onClick={() => handleNavClick("/contact")}>Contact</Link>
           
-          <Link to="/track" onClick={() => handleNavClick("/track")} style={{ fontSize: "16px", fontWeight: "600", color: "#FFFFFF", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+          <Link to="/track" onClick={() => handleNavClick("/track")} style={{ fontSize: "16px", fontWeight: "600", color: "#001F3F", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid #F1F5F9" }}>
             Track a Complaint
           </Link>
 
-          <Link to="/submit" onClick={() => handleNavClick("/submit")} style={{ fontSize: "16px", fontWeight: "600", color: "#FFFFFF", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: "8px" }}>
+          <Link to="/submit" onClick={() => handleNavClick("/submit")} style={{ fontSize: "16px", fontWeight: "600", color: "#001F3F", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: "8px" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             Report a Concern
           </Link>

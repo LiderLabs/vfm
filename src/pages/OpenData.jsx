@@ -41,6 +41,32 @@ export default function OpenData() {
   return (
     <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflowX: "hidden" }}>
       
+      {/* GLOBAL CSS FIX FOR THE DOWNLOAD BUTTON */}
+      <style>
+        {`
+          .download-btn-force {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            padding: 12px 24px !important;
+            white-space: nowrap !important;
+            box-sizing: border-box !important;
+            border: none !important;
+            border-radius: 4px !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            gap: 8px !important;
+          }
+          @media (min-width: 768px) {
+            .download-btn-force {
+              width: auto !important;
+            }
+          }
+        `}
+      </style>
+
       {/* 1. HERO SECTION */}
       <section style={{ position: "relative", backgroundColor: "#001F3F", padding: "100px 24px", textAlign: "center", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url(/building-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.2, zIndex: 0 }} />
@@ -60,7 +86,6 @@ export default function OpenData() {
       <section style={{ padding: "60px 24px", maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
           
-          {/* Removed borderBottom from all cards */}
           <div style={{ backgroundColor: "#FFFFFF", padding: "32px", borderRadius: "12px", boxShadow: "0 4px 6px rgba(0,0,0,0.05)", border: "1px solid #E2E8F0" }}>
             <h3 style={{ fontSize: "14px", fontWeight: "700", color: "#64748B", textTransform: "uppercase", letterSpacing: "1px", margin: "0 0 8px 0" }}>Total Savings Identified</h3>
             <div style={{ fontSize: "42px", fontWeight: "800", color: "#001F3F", margin: 0 }}>GH₵ 250M+</div>
@@ -166,16 +191,13 @@ export default function OpenData() {
           </table>
         </div>
 
-        <div style={{ marginTop: "40px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", backgroundColor: "#F8FAFC", padding: "24px", borderRadius: "12px", border: "1px solid #E2E8F0" }}>
-          <div>
+        {/* DOWNLOAD SECTION WITH THE FIX */}
+        <div style={{ marginTop: "40px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", backgroundColor: "#F8FAFC", padding: "24px", borderRadius: "12px", border: "1px solid #E2E8F0", width: "100%", boxSizing: "border-box" }}>
+          <div style={{ flex: 1, minWidth: "200px" }}>
             <h3 style={{ fontSize: "16px", fontWeight: "800", color: "#0F172A", margin: "0 0 4px 0" }}>Download Open Data</h3>
             <p style={{ fontSize: "14px", color: "#475569", margin: 0 }}>Access anonymized datasets of all VfM assessments (CSV/Excel).</p>
           </div>
-          <button style={{ 
-            display: "flex", alignItems: "center", gap: "8px", 
-            backgroundColor: "#001F3F", color: "#FFFFFF", padding: "12px 24px", 
-            borderRadius: "4px", fontSize: "14px", fontWeight: "700", cursor: "pointer", border: "none"
-          }}>
+          <button className="download-btn-force" style={{ backgroundColor: "#001F3F", color: "#FFFFFF" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             Download Dataset (CSV)
           </button>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom"; // Added Link import
+import { Link } from "react-router-dom"; 
 
 export default function Submit() {
   const [fileName, setFileName] = useState("");
@@ -27,6 +27,28 @@ export default function Submit() {
   return (
     <div style={{ backgroundColor: "#F4F5F0", minHeight: "100vh", overflowX: "hidden" }}>
       
+      {/* GLOBAL CSS FIX FOR THE SUBMIT BUTTON */}
+      <style>
+        {`
+          .submit-btn-force {
+            width: 100% !important;
+            min-width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            padding: 18px !important;
+            white-space: nowrap !important;
+            box-sizing: border-box !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-size: 16px !important;
+            font-weight: 800 !important;
+            margin-top: 8px !important;
+            transition: background-color 0.2s ease !important;
+          }
+        `}
+      </style>
+
       {/* HEADER SECTION */}
       <section style={{ 
         position: "relative", 
@@ -68,7 +90,7 @@ export default function Submit() {
       {/* FORM SECTION */}
       <section style={{ padding: "60px 24px", maxWidth: "800px", margin: "0 auto" }}>
         
-        <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "48px", boxShadow: "0 20px 40px rgba(0,0,0,0.05)", border: "1px solid #E2E8F0" }}>
+        <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "24px", boxShadow: "0 20px 40px rgba(0,0,0,0.05)", border: "1px solid #E2E8F0", boxSizing: "border-box" }}>
           
           {isSubmitted ? (
             /* SUCCESS STATE */
@@ -104,13 +126,13 @@ export default function Submit() {
             </div>
           ) : (
             /* FORM STATE */
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "24px", width: "100%", boxSizing: "border-box" }}>
               
               {/* Section A: Reporter Info */}
-              <div>
+              <div style={{ width: "100%" }}>
                 <h3 style={{ fontSize: "18px", fontWeight: "800", color: "#001F3F", marginBottom: "16px", borderBottom: "1px solid #E2E8F0", paddingBottom: "8px" }}>Reporter Information (Optional)</h3>
                 <p style={{ fontSize: "14px", color: "#64748B", marginBottom: "16px" }}>You may submit this report anonymously. Leave these fields blank if you wish to remain unidentified.</p>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "24px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "24px", width: "100%" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Full Name</label>
                     <input type="text" placeholder="Leave blank to remain anonymous" style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "16px", outline: "none", boxSizing: "border-box" }} />
@@ -123,10 +145,10 @@ export default function Submit() {
               </div>
 
               {/* Section B: Incident Details */}
-              <div>
+              <div style={{ width: "100%" }}>
                 <h3 style={{ fontSize: "18px", fontWeight: "800", color: "#001F3F", marginBottom: "16px", borderBottom: "1px solid #E2E8F0", paddingBottom: "8px", marginTop: "16px" }}>Incident Details</h3>
                 
-                <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "24px", width: "100%" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Covered Entity / Ministry</label>
                     <input type="text" required placeholder="e.g., Ministry of Roads and Highways" style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "16px", outline: "none", boxSizing: "border-box" }} />
@@ -157,9 +179,9 @@ export default function Submit() {
               </div>
 
               {/* Section C: Evidence Upload */}
-              <div style={{ marginTop: "16px" }}>
+              <div style={{ marginTop: "16px", width: "100%" }}>
                 <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Upload Supporting Evidence</label>
-                <div style={{ border: "2px dashed #CBD5E1", borderRadius: "12px", padding: "32px", textAlign: "center", backgroundColor: "#F8FAFC", position: "relative", cursor: "pointer" }}>
+                <div style={{ border: "2px dashed #CBD5E1", borderRadius: "12px", padding: "32px", textAlign: "center", backgroundColor: "#F8FAFC", position: "relative", cursor: "pointer", width: "100%", boxSizing: "border-box" }}>
                   <input type="file" onChange={handleFileChange} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer" }} />
                   
                   <div style={{ width: "48px", height: "48px", backgroundColor: "#E2E8F0", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px auto" }}>
@@ -175,7 +197,7 @@ export default function Submit() {
               </div>
 
               {/* Section D: Legal Disclaimer */}
-              <div style={{ backgroundColor: "#FFF7ED", padding: "16px", borderRadius: "8px", border: "1px solid #FED7AA", marginTop: "16px" }}>
+              <div style={{ backgroundColor: "#FFF7ED", padding: "16px", borderRadius: "8px", border: "1px solid #FED7AA", marginTop: "16px", width: "100%", boxSizing: "border-box" }}>
                 <label style={{ display: "flex", gap: "12px", alignItems: "flex-start", cursor: "pointer" }}>
                   <input 
                     type="checkbox" 
@@ -189,15 +211,14 @@ export default function Submit() {
                 </label>
               </div>
 
-              {/* Section E: Submit Button */}
+              {/* Section E: Submit Button - APPLIED THE CSS CLASS */}
               <button 
                 type="submit" 
                 disabled={!agreedToTerms}
+                className="submit-btn-force"
                 style={{ 
                   backgroundColor: agreedToTerms ? "#001F3F" : "#94A3B8", 
-                  color: "#FFFFFF", border: "none", padding: "18px", borderRadius: "8px", 
-                  fontSize: "16px", fontWeight: "800", cursor: agreedToTerms ? "pointer" : "not-allowed", 
-                  marginTop: "8px", transition: "background-color 0.2s ease" 
+                  cursor: agreedToTerms ? "pointer" : "not-allowed"
                 }}
               >
                 Submit Report Securely

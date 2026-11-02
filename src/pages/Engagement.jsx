@@ -13,7 +13,6 @@ export default function Engagement() {
   const handleRegistrationSubmit = (e) => {
     e.preventDefault();
     setIsRegistered(true);
-    // Reset after 3 seconds so they can see the success message
     setTimeout(() => {
       setSelectedEvent(null);
       setIsRegistered(false);
@@ -62,6 +61,26 @@ export default function Engagement() {
   return (
     <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflowX: "hidden" }}>
       
+      {/* GLOBAL CSS FIX FOR BUTTONS */}
+      <style>
+        {`
+          .action-btn-fix {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            white-space: nowrap !important;
+            box-sizing: border-box !important;
+          }
+          @media (min-width: 768px) {
+            .action-btn-fix {
+              width: auto !important;
+              display: inline-flex !important;
+            }
+          }
+        `}
+      </style>
+
       {/* 1. HERO SECTION */}
       <section style={{ position: "relative", backgroundColor: "#001F3F", padding: "100px 24px", textAlign: "center", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url(/building-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.2, zIndex: 0 }} />
@@ -86,7 +105,7 @@ export default function Engagement() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           {upcomingHearings.map((hearing, index) => (
-            <div key={index} style={{ backgroundColor: "#FFFFFF", borderRadius: "12px", padding: "32px", border: "1px solid #E2E8F0", boxShadow: "0 4px 6px rgba(0,0,0,0.02)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px" }}>
+            <div key={index} style={{ backgroundColor: "#FFFFFF", borderRadius: "12px", padding: "32px", border: "1px solid #E2E8F0", boxShadow: "0 4px 6px rgba(0,0,0,0.02)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px", width: "100%", boxSizing: "border-box" }}>
               <div style={{ flex: 1, minWidth: "250px" }}>
                 <h3 style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", margin: "0 0 12px 0" }}>{hearing.title}</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px", color: "#475569", fontSize: "15px" }}>
@@ -100,16 +119,17 @@ export default function Engagement() {
                   </div>
                 </div>
               </div>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "12px" }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "12px", width: "100%" }}>
                 <span style={{ fontSize: "13px", fontWeight: "700", color: hearing.status === "Registration Open" ? "#10B981" : "#FCD116", backgroundColor: hearing.status === "Registration Open" ? "#D1FAE5" : "#FEF3C7", padding: "6px 12px", borderRadius: "20px" }}>
                   {hearing.status}
                 </span>
                 <button 
                   onClick={() => hearing.status === "Registration Open" && setSelectedEvent(hearing)}
+                  className="action-btn-fix"
                   style={{ 
                     backgroundColor: hearing.status === "Registration Open" ? "#001F3F" : "#E2E8F0", 
                     color: hearing.status === "Registration Open" ? "#FFFFFF" : "#64748B", 
-                    border: "none", padding: "10px 24px", borderRadius: "4px", fontSize: "14px", fontWeight: "700", 
+                    border: "none", padding: "12px 24px", borderRadius: "4px", fontSize: "14px", fontWeight: "700", 
                     cursor: hearing.status === "Registration Open" ? "pointer" : "not-allowed" 
                   }}
                 >
@@ -137,10 +157,10 @@ export default function Engagement() {
               </div>
               <h3 style={{ fontSize: "24px", fontWeight: "800", color: "#166534", margin: "0 0 12px 0" }}>Feedback Received</h3>
               <p style={{ fontSize: "16px", color: "#15803D", margin: 0, lineHeight: "1.6" }}>Thank you for your contribution. Your feedback has been securely routed to the relevant assessment team and will be considered in our evaluation.</p>
-              <button onClick={() => setFeedbackSubmitted(false)} style={{ marginTop: "24px", backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", padding: "12px 24px", borderRadius: "6px", fontSize: "14px", fontWeight: "700", cursor: "pointer" }}>Submit Another Feedback</button>
+              <button onClick={() => setFeedbackSubmitted(false)} className="action-btn-fix" style={{ marginTop: "24px", backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", padding: "12px 24px", borderRadius: "6px", fontSize: "14px", fontWeight: "700", cursor: "pointer" }}>Submit Another Feedback</button>
             </div>
           ) : (
-            <form onSubmit={handleFeedbackSubmit} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            <form onSubmit={handleFeedbackSubmit} style={{ display: "flex", flexDirection: "column", gap: "24px", width: "100%", boxSizing: "border-box" }}>
               <div>
                 <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Project Name</label>
                 <input type="text" required placeholder="e.g., Tema Interchange Phase 2" style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "16px", outline: "none", boxSizing: "border-box" }} />
@@ -149,7 +169,7 @@ export default function Engagement() {
                 <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Your Feedback / Concern</label>
                 <textarea required rows="5" placeholder="Describe your concern regarding this project. Please be as specific as possible." style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "16px", outline: "none", resize: "vertical", boxSizing: "border-box" }} />
               </div>
-              <button type="submit" style={{ backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", padding: "16px", borderRadius: "8px", fontSize: "16px", fontWeight: "700", cursor: "pointer", width: "100%", boxSizing: "border-box" }}>
+              <button type="submit" className="action-btn-fix" style={{ backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", padding: "16px", borderRadius: "8px", fontSize: "16px", fontWeight: "700", cursor: "pointer" }}>
                 Submit Feedback
               </button>
             </form>
@@ -191,7 +211,7 @@ export default function Engagement() {
       {/* REGISTRATION MODAL */}
       {selectedEvent && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,31,63,0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: "24px" }}>
-          <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "40px", maxWidth: "500px", width: "100%", boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}>
+          <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "32px 24px", maxWidth: "500px", width: "100%", boxShadow: "0 20px 40px rgba(0,0,0,0.2)", boxSizing: "border-box" }}>
             
             {isRegistered ? (
               <div style={{ textAlign: "center" }}>
@@ -213,7 +233,7 @@ export default function Engagement() {
                   </button>
                 </div>
 
-                <form onSubmit={handleRegistrationSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                <form onSubmit={handleRegistrationSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%", boxSizing: "border-box" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Full Name</label>
                     <input type="text" required style={{ width: "100%", padding: "12px 14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "15px", outline: "none", boxSizing: "border-box" }} />
@@ -226,7 +246,7 @@ export default function Engagement() {
                     <label style={{ display: "block", fontSize: "14px", fontWeight: "700", color: "#0F172A", marginBottom: "8px" }}>Organization (Optional)</label>
                     <input type="text" style={{ width: "100%", padding: "12px 14px", borderRadius: "8px", border: "1px solid #CBD5E1", fontSize: "15px", outline: "none", boxSizing: "border-box" }} />
                   </div>
-                  <button type="submit" style={{ backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", padding: "14px", borderRadius: "8px", fontSize: "16px", fontWeight: "700", cursor: "pointer", marginTop: "8px" }}>
+                  <button type="submit" className="action-btn-fix" style={{ backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", padding: "14px", borderRadius: "8px", fontSize: "16px", fontWeight: "700", cursor: "pointer", marginTop: "8px" }}>
                     Confirm Registration
                   </button>
                 </form>

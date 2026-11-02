@@ -18,6 +18,7 @@ import Sanctions from "./pages/Sanctions";
 import OpenData from "./pages/OpenData"; 
 import Engagement from "./pages/Engagement"; 
 import ReviewPanel from "./pages/ReviewPanel"; 
+import Whistleblower from "./pages/Whistleblower"; // <-- IMPORTED WHISTLEBLOWER
 import Placeholder from "./pages/Placeholder";
 
 function Layout() {
@@ -53,6 +54,7 @@ function Layout() {
           <Route path="/open-data" element={<OpenData />} />
           <Route path="/engagement" element={<Engagement />} />
           <Route path="/review-panel" element={<ReviewPanel />} />
+          <Route path="/whistleblower" element={<Whistleblower />} /> {/* <-- ADDED WHISTLEBLOWER ROUTE */}
           
           {/* Secure Portal Routes */}
           <Route path="/portal" element={<Portal />} />
