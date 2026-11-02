@@ -95,6 +95,9 @@ export default function WhatWeDo() {
     return () => clearInterval(timer);
   }, [pillars.length]);
 
+  const handleNext = () => setActivePillar((prev) => (prev === pillars.length - 1 ? 0 : prev + 1));
+  const handlePrev = () => setActivePillar((prev) => (prev === 0 ? pillars.length - 1 : prev - 1));
+
   return (
     <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflowX: "hidden" }}>
       
@@ -115,11 +118,13 @@ export default function WhatWeDo() {
               display: inline-flex !important;
             }
           }
-          /* HIDE THE BOTTOM TABS ON MOBILE */
+          /* HIDE THE BULKY DESKTOP TABS ON MOBILE */
+          .pillar-tabs-container { display: block; }
+          .mobile-controls-container { display: none; }
+
           @media (max-width: 768px) {
-            .pillar-tabs-container {
-              display: none !important;
-            }
+            .pillar-tabs-container { display: none !important; }
+            .mobile-controls-container { display: flex !important; }
           }
         `}
       </style>
@@ -200,7 +205,7 @@ export default function WhatWeDo() {
           </div>
         </div>
 
-        {/* BOTTOM NAVIGATION BAR - HIDDEN ON MOBILE */}
+        {/* DESKTOP BOTTOM NAVIGATION BAR */}
         <div className="pillar-tabs-container" style={{ 
           borderTop: "1px solid rgba(255,255,255,0.1)", backgroundColor: "rgba(0, 15, 30, 0.9)",
           backdropFilter: "blur(10px)", position: "relative", zIndex: 2 
@@ -230,6 +235,49 @@ export default function WhatWeDo() {
                 </button>
               );
             })}
+          </div>
+        </div>
+
+        {/* MOBILE CONTROLS (DOTS & ARROWS) */}
+        <div className="mobile-controls-container" style={{ 
+          position: "relative", zIndex: 2, padding: "24px",
+          justifyContent: "space-between", alignItems: "center",
+          borderTop: "1px solid rgba(255,255,255,0.1)", backgroundColor: "rgba(0, 15, 30, 0.9)"
+        }}>
+          {/* Dots */}
+          <div style={{ display: "flex", gap: "8px" }}>
+            {pillars.map((_, index) => (
+              <div 
+                key={index}
+                onClick={() => setActivePillar(index)}
+                style={{
+                  width: index === activePillar ? "24px" : "8px",
+                  height: "8px",
+                  borderRadius: "4px",
+                  backgroundColor: index === activePillar ? "#FCD116" : "rgba(255,255,255,0.3)",
+                  transition: "all 0.3s ease",
+                  cursor: "pointer"
+                }}
+              />
+            ))}
+          </div>
+          
+          {/* Arrows */}
+          <div style={{ display: "flex", gap: "12px" }}>
+            <button onClick={handlePrev} style={{ 
+              width: "40px", height: "40px", borderRadius: "50%", 
+              backgroundColor: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)",
+              color: "white", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer"
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button onClick={handleNext} style={{ 
+              width: "40px", height: "40px", borderRadius: "50%", 
+              backgroundColor: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)",
+              color: "white", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer"
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
           </div>
         </div>
       </section>
