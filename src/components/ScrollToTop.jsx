@@ -1,9 +1,16 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
+  const { pathname } = useLocation();
 
-  // Show button when page is scrolled down
+  // 1. Force scroll to top when the page (URL path) changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  // 2. Show floating button when scrolled down
   useEffect(() => {
     const toggleVisibility = () => {
       if (window.scrollY > 300) {
@@ -17,7 +24,7 @@ export default function ScrollToTop() {
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
-  // Scroll to top smoothly
+  // 3. Scroll to top smoothly when the floating button is clicked
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
