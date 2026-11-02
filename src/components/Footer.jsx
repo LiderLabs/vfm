@@ -2,7 +2,14 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer style={{ backgroundColor: "#001F3F", color: "#FFFFFF", padding: "60px 40px 20px", borderTop: "4px solid #FCD116" }}>
+    <footer style={{ 
+      backgroundColor: "#001F3F", 
+      color: "#FFFFFF", 
+      padding: "60px 40px 20px", 
+      borderTop: "4px solid #FCD116",
+      position: "relative", // Added to ensure it sits above page content
+      zIndex: 10 // Forces the footer above any overlapping invisible divs
+    }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", flexWrap: "wrap", gap: "40px", justifyContent: "space-between" }}>
         
         {/* Column 1: Brand */}
@@ -24,32 +31,31 @@ export default function Footer() {
         {/* Column 2: Quick Links */}
         <div style={{ minWidth: "150px" }}>
           <h4 style={{ fontSize: "16px", fontWeight: "bold", margin: "0 0 16px 0", color: "#FCD116" }}>Quick Links</h4>
-          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
-            <li><Link to="/about" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>About Us</Link></li>
-            {/* "Our Mandate" link removed from here */}
-            <li><Link to="/what-we-do" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>What We Do</Link></li>
-            <li><Link to="/publications" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>Publications</Link></li>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "4px" }}>
+            <li><Link to="/about" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>About Us</Link></li>
+            <li><Link to="/what-we-do" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>What We Do</Link></li>
+            <li><Link to="/publications" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Publications</Link></li>
           </ul>
         </div>
 
         {/* Column 3: Compliance & Transparency */}
         <div style={{ minWidth: "200px" }}>
           <h4 style={{ fontSize: "16px", fontWeight: "bold", margin: "0 0 16px 0", color: "#FCD116" }}>Compliance & Transparency</h4>
-          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
-            <li><Link to="/track" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>Track a Complaint</Link></li>
-            <li><Link to="/open-data" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>Open Data Portal</Link></li>
-            <li><Link to="/review-panel" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>Review Panel</Link></li>
-            <li><Link to="/whistleblower" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>Whistleblower Policy</Link></li>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "4px" }}>
+            <li><Link to="/track" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Track a Complaint</Link></li>
+            <li><Link to="/open-data" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Open Data Portal</Link></li>
+            <li><Link to="/review-panel" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Review Panel</Link></li>
+            <li><Link to="/whistleblower" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Whistleblower Policy</Link></li>
           </ul>
         </div>
 
         {/* Column 4: Legal & Contact */}
         <div style={{ minWidth: "200px" }}>
           <h4 style={{ fontSize: "16px", fontWeight: "bold", margin: "0 0 16px 0", color: "#FCD116" }}>Legal</h4>
-          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
-            <li><a href="/act-1172.pdf" target="_blank" rel="noopener noreferrer" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>Act 1172 (PDF)</a></li>
-            <li><Link to="/guidelines" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>VfM Guidelines</Link></li>
-            <li><Link to="/privacy" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px" }}>Privacy Policy</Link></li>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "4px", marginBottom: "24px" }}>
+            <li><a href="/act-1172.pdf" target="_blank" rel="noopener noreferrer" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Act 1172 (PDF)</a></li>
+            <li><Link to="/guidelines" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>VfM Guidelines</Link></li>
+            <li><Link to="/privacy" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Privacy Policy</Link></li>
           </ul>
           
           <h4 style={{ fontSize: "16px", fontWeight: "bold", margin: "0 0 16px 0", color: "#FCD116" }}>Contact</h4>
