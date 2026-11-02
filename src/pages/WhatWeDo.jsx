@@ -91,13 +91,39 @@ export default function WhatWeDo() {
   useEffect(() => {
     const timer = setInterval(() => {
       setActivePillar((prev) => (prev === pillars.length - 1 ? 0 : prev + 1));
-    }, 5000); // Changes every 5 seconds
+    }, 5000); 
     return () => clearInterval(timer);
   }, [pillars.length]);
 
   return (
     <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflowX: "hidden" }}>
       
+      {/* GLOBAL CSS FIX */}
+      <style>
+        {`
+          .explore-btn-fix {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            white-space: nowrap !important;
+            box-sizing: border-box !important;
+          }
+          @media (min-width: 768px) {
+            .explore-btn-fix {
+              width: auto !important;
+              display: inline-flex !important;
+            }
+          }
+          /* HIDE THE BOTTOM TABS ON MOBILE */
+          @media (max-width: 768px) {
+            .pillar-tabs-container {
+              display: none !important;
+            }
+          }
+        `}
+      </style>
+
       {/* 1. INTERACTIVE DARK SECTION */}
       <section style={{ 
         position: "relative", 
@@ -124,7 +150,6 @@ export default function WhatWeDo() {
         <div style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", position: "relative", zIndex: 2, flex: 1 }}>
           
           <div style={{ marginBottom: "60px" }}>
-            {/* "FUNCTIONAL MANDATE" label removed */}
             <h1 style={{ fontSize: "52px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 16px 0", lineHeight: "1.1", maxWidth: "800px", textShadow: "0 4px 12px rgba(0,0,0,0.6)" }}>
               Operational Scope & Focus Areas
             </h1>
@@ -142,7 +167,6 @@ export default function WhatWeDo() {
                 }
               `}</style>
 
-              {/* Category label removed from here, only the title remains */}
               <h2 style={{ fontSize: "48px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 24px 0", lineHeight: "1.2", maxWidth: "900px", textShadow: "0 4px 12px rgba(0,0,0,0.6)" }}>
                 {pillars[activePillar].title}
               </h2>
@@ -162,13 +186,13 @@ export default function WhatWeDo() {
                 ))}
               </div>
 
-              <button style={{ 
+              <button className="explore-btn-fix" style={{ 
                 backgroundColor: "#FCD116", color: "#001F3F", border: "none", padding: "16px 40px", 
                 borderRadius: "4px", fontSize: "16px", fontWeight: "800", cursor: "pointer", 
                 transition: "transform 0.2s ease", boxShadow: "0 4px 15px rgba(252, 209, 22, 0.3)"
               }}
-              onMouseEnter={(e) => e.target.style.transform = "scale(1.05)"}
-              onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
+              onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
+              onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
               >
                 Explore Focus Area
               </button>
@@ -176,8 +200,8 @@ export default function WhatWeDo() {
           </div>
         </div>
 
-        {/* BOTTOM NAVIGATION BAR */}
-        <div style={{ 
+        {/* BOTTOM NAVIGATION BAR - HIDDEN ON MOBILE */}
+        <div className="pillar-tabs-container" style={{ 
           borderTop: "1px solid rgba(255,255,255,0.1)", backgroundColor: "rgba(0, 15, 30, 0.9)",
           backdropFilter: "blur(10px)", position: "relative", zIndex: 2 
         }}>
