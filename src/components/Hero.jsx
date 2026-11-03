@@ -72,15 +72,22 @@ export default function Hero() {
             width: 100%; padding: 0 40px;
           }
 
-          .hero-mask { width: 100%; overflow: hidden; }
+          .hero-mask { 
+            width: 100%; 
+            overflow: hidden; 
+          }
 
           .hero-track {
             display: flex;
             transition: transform 2s cubic-bezier(0.22, 1, 0.36, 1);
+            align-items: stretch; /* Ensures all slides are same height */
           }
 
           .hero-slide {
             min-width: 100%; width: 100%; box-sizing: border-box; max-width: 850px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
           }
 
           .hero-heading {
@@ -91,7 +98,6 @@ export default function Hero() {
             font-size: 20px; line-height: 1.6; color: #E2E8F0; margin-bottom: 48px; text-shadow: 0 1px 5px rgba(0,0,0,0.5);
           }
 
-          /* BUTTON FIX */
           .hero-btn {
             background-color: #FCD116; 
             color: #001F3F; 
@@ -112,9 +118,10 @@ export default function Hero() {
           /* MOBILE STYLES */
           @media (max-width: 768px) {
             .hero-section {
-              /* REMOVED min-height: 100vh to prevent crushing */
-              min-height: auto;
-              padding: 120px 0 60px 0;
+              /* FIXED HEIGHT FOR MOBILE */
+              min-height: 600px; 
+              height: 100%;
+              padding: 100px 0 40px 0;
               align-items: flex-start;
             }
             .hero-bg {
@@ -138,7 +145,6 @@ export default function Hero() {
             .hero-slide {
               max-width: 100%;
             }
-            /* Make button full width on mobile */
             .hero-btn {
               width: 100% !important;
               display: flex !important;
@@ -186,7 +192,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: "12px", marginTop: "40px" }}>
+        <div style={{ display: "flex", gap: "12px", marginTop: "20px" }}>
           {slides.map((slide, index) => (
             <button
               key={index}
