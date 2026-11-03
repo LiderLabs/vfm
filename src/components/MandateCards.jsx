@@ -48,18 +48,15 @@ export default function MandateCards() {
   const pillars = [
     {
       title: "Economy",
-      desc: "Acquiring public resources at the appropriate cost, eliminating unjustified premiums and inflation.",
-      icon: "M12 3v18 M3 9l9-6 9 6 M3 15h18"
+      desc: "Acquiring public resources at the appropriate cost, eliminating unjustified premiums and inflation."
     },
     {
       title: "Efficiency",
-      desc: "Maximising programmatic outputs through responsible use of human, capital, and material resources.",
-      icon: "M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8 M21 3v5h-5"
+      desc: "Maximising programmatic outputs through responsible use of human, capital, and material resources."
     },
     {
       title: "Effectiveness",
-      desc: "Ensuring infrastructure and programmes achieve their intended socio-economic objectives.",
-      icon: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+      desc: "Ensuring infrastructure and programmes achieve their intended socio-economic objectives."
     }
   ];
 
@@ -177,11 +174,7 @@ export default function MandateCards() {
                     e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
                   }}
                 >
-                  <div style={{ width: "56px", height: "56px", backgroundColor: "rgba(252, 209, 22, 0.15)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "24px" }}>
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FCD116" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d={pillar.icon}></path>
-                    </svg>
-                  </div>
+                  {/* Icons removed from here */}
                   <h3 style={{ fontSize: "24px", fontWeight: "700", color: "#FFFFFF", margin: "0 0 16px 0" }}>{pillar.title}</h3>
                   <p style={{ fontSize: "16px", color: "#CBD5E1", lineHeight: "1.6", margin: 0 }}>{pillar.desc}</p>
                 </div>
