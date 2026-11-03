@@ -23,7 +23,7 @@ function useScrollReveal() {
   return [ref, isVisible];
 }
 
-const Reveal = ({ children, delay = 0 }) => {
+const Reveal = ({ children, delay = 0, width = "100%" }) => {
   const [ref, isVisible] = useScrollReveal();
 
   return (
@@ -33,7 +33,7 @@ const Reveal = ({ children, delay = 0 }) => {
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? "translateY(0)" : "translateY(40px)",
         transition: `opacity 0.6s ease-out ${delay}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s`,
-        width: "100%"
+        width: width
       }}
     >
       {children}
@@ -109,6 +109,19 @@ export default function AboutUs() {
     { title: "Efficiency", desc: "Maximizing the impact of every Cedi spent to deliver the best outcomes for citizens." },
   ];
 
+  const boardMembers = [
+    { title: "Director-General", desc: "Dr. Abdul-Baasit Aziz-Bamba", isDG: true, image: "/dg-aziz-bamba.jpg" },
+    { title: "Attorney-General's Rep", desc: "Chief State Attorney or above" },
+    { title: "Ministry of Finance Rep", desc: "Legal Affairs Directorate" },
+    { title: "Gender & Equity Expert", desc: "Presidential Nominee" },
+    { title: "Audit Service Rep", desc: "Director level or above" },
+    { title: "ICAG Rep", desc: "Institute of Chartered Accountants" },
+    { title: "Architects Rep", desc: "Ghana Institute of Architects" },
+    { title: "PPA Rep", desc: "Public Procurement Authority" },
+    { title: "Surveyors Rep", desc: "Ghana Institution of Surveyors" },
+    { title: "Engineers Rep", desc: "Ghana Institution of Engineering" }
+  ];
+
   return (
     <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflowX: "hidden" }}>
       
@@ -139,12 +152,18 @@ export default function AboutUs() {
               <div>
                 <div style={{ marginBottom: "24px" }}>
                   <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "1.5px", color: "#8B7355", textTransform: "uppercase" }}>
-                    Independent Technical Stewardship
+                    The Object of the Office (Section 2)
                   </span>
                 </div>
-                <h1 style={{ fontSize: "52px", fontWeight: "800", color: "#0F172A", lineHeight: "1.1", margin: "0 0 24px 0" }}>Making Public Spending Work Better for Ghana.</h1>
-                <p style={{ fontSize: "18px", lineHeight: "1.6", color: "#334155", marginBottom: "20px", fontWeight: "500" }}>Established to reinforce integrity in public expenditure, the Value for Money Office operates as an independent technical advisory body safeguarding Ghana's development capital.</p>
-                <p style={{ fontSize: "16px", lineHeight: "1.7", color: "#64748B", marginBottom: "32px" }}>We scrutinise major capital projects, establish benchmarks for public capital efficiency, and ensure every public investment translates into tangible, durable socio-economic benefits for Ghanaian citizens across all sixteen administrative regions.</p>
+                <h1 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", lineHeight: "1.2", margin: "0 0 24px 0" }}>
+                  To regulate, monitor, coordinate, promote, develop and conduct value for money assessments.
+                </h1>
+                <p style={{ fontSize: "18px", lineHeight: "1.6", color: "#334155", marginBottom: "20px", fontWeight: "500" }}>
+                  Established under Act 1172, our core object is to review procurement practices—including cost estimation methodologies, contract management processes, and expenditure control mechanisms—to ensure efficiency in public expenditure.
+                </p>
+                <p style={{ fontSize: "16px", lineHeight: "1.7", color: "#64748B", marginBottom: "32px" }}>
+                  We scrutinise major capital projects, establish benchmarks for public capital efficiency, and ensure every public investment translates into tangible, durable socio-economic benefits for Ghanaian citizens across all sixteen administrative regions.
+                </p>
                 <a href="#framework" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "#0F172A", fontWeight: "700", fontSize: "15px", textDecoration: "none", borderBottom: "2px solid #0F172A", paddingBottom: "4px" }}>
                   Learn More About Our Institutional Framework
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
@@ -173,7 +192,28 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* 3. NEW MERGED SECTION: STATUTORY MANDATE */}
+      {/* 3. STATUTORY INDEPENDENCE */}
+      <section style={{ position: "relative", padding: "80px 24px", backgroundColor: "#001F3F", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url(/building-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.2, zIndex: 0 }} />
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "linear-gradient(90deg, rgba(0,31,63,1) 40%, rgba(0,31,63,0.8) 100%)", zIndex: 1 }} />
+        
+        <div style={{ maxWidth: "1000px", margin: "0 auto", position: "relative", zIndex: 2 }}>
+          <Reveal>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+              <div style={{ width: "64px", height: "64px", backgroundColor: "rgba(252, 209, 22, 0.1)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "24px" }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FCD116" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              </div>
+              <h2 style={{ fontSize: "36px", fontWeight: "800", color: "#FFFFFF", marginBottom: "16px" }}>Statutory Independence</h2>
+              <p style={{ fontSize: "20px", color: "#E2E8F0", lineHeight: "1.6", maxWidth: "800px", margin: "0 auto" }}>
+                "Except as otherwise provided in the Constitution or by any other enactment, the Office is <strong>not subject to the direction or control of a person or an authority</strong> in the performance of the functions of the Office."
+              </p>
+              <p style={{ fontSize: "14px", fontWeight: "700", color: "#FCD116", marginTop: "16px", letterSpacing: "1px" }}>— SECTION 12, ACT 1172</p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* 4. STATUTORY MANDATE */}
       <section style={{ position: "relative", padding: "100px 24px", overflow: "hidden", backgroundColor: "#FFFFFF" }}>
         
         <div style={{ position: "absolute", right: "-5%", top: "0%", width: "600px", height: "600px", backgroundImage: "url(/coat-of-arms.png)", backgroundSize: "contain", backgroundRepeat: "no-repeat", backgroundPosition: "center", opacity: 0.03, zIndex: 0, pointerEvents: "none" }} />
@@ -187,7 +227,7 @@ export default function AboutUs() {
                   A Statutory Mandate for Fiscal Integrity.
                 </h2>
                 <p style={{ fontSize: "17px", lineHeight: "1.8", color: "#475569", marginBottom: "24px" }}>
-                  The VfM Office is not merely an advisory body; it is a statutory authority. Under Act 1172, we have the legal standing to evaluate, monitor, and enforce value-for-money standards across every government ministry, department, and agency (MDA).
+                  The VfM Office is not merely an advisory body; it is a statutory authority. Under Section 1 of Act 1172, the Office is established as a body corporate with the power to acquire and hold property, enter into contracts, and perform its functions independently.
                 </p>
                 <p style={{ fontSize: "17px", lineHeight: "1.8", color: "#475569" }}>
                   Our mandate extends across all phases of the public procurement lifecycle, from the earliest feasibility studies to the final project audit and impact evaluation.
@@ -211,7 +251,7 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* 4. THREE PILLARS & SCOPE OF AUTHORITY */}
+      {/* 5. THREE PILLARS & SCOPE OF AUTHORITY */}
       <section style={{ position: "relative", padding: "100px 24px 60px", overflow: "hidden", backgroundColor: "#F4F5F0" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 1 }}>
           
@@ -271,50 +311,81 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* 5. LEADERSHIP SECTION */}
-      <section id="leadership" style={{ backgroundColor: "#FFFFFF", padding: "100px 24px" }}>
+      {/* 6. THE GOVERNING BOARD (COMMITTEE LAYOUT) */}
+      <section id="leadership" style={{ backgroundColor: "#F8F9FA", padding: "100px 24px" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           
           <Reveal>
             <div style={{ textAlign: "center", marginBottom: "60px" }}>
-              <h2 style={{ fontSize: "36px", fontWeight: "800", color: "#001F3F", margin: "0 0 12px 0" }}>Executive Leadership</h2>
-              <p style={{ color: "#666666", fontSize: "16px", margin: 0 }}>Guiding the strategic direction of the Value for Money Office.</p>
+              <h2 style={{ fontSize: "36px", fontWeight: "800", color: "#001F3F", margin: "0 0 12px 0" }}>The Governing Board</h2>
+              <p style={{ color: "#666666", fontSize: "16px", margin: 0, maxWidth: "600px", marginLeft: "auto", marginRight: "auto" }}>
+                The Office is governed by a multidisciplinary Board appointed in accordance with Section 4 of Act 1172. The Board is led by the Chairperson, with the Director-General serving as the chief executive.
+              </p>
             </div>
           </Reveal>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))", gap: "40px", justifyContent: "center" }}>
-            
-            <Reveal delay={0.1}>
-              <div style={{ borderRadius: "16px", overflow: "hidden", backgroundColor: "#F8F9FA", border: "1px solid #E2E8F0", transition: "transform 0.3s ease", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", height: "100%" }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
-                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-              >
-                <img src="/dg-aziz-bamba.jpg" alt="Dr. Abdul-Baasit Aziz-Bamba" style={{ width: "100%", height: "450px", objectFit: "cover", objectPosition: "top", display: "block" }} />
-                <div style={{ padding: "32px" }}>
-                  <h3 style={{ fontSize: "24px", fontWeight: "800", color: "#001F3F", margin: "0 0 8px 0" }}>Dr. Abdul-Baasit Aziz-Bamba</h3>
-                  <p style={{ fontSize: "15px", color: "#B8860B", fontWeight: "700", margin: 0, letterSpacing: "1px", textTransform: "uppercase" }}>Acting Director-General</p>
+          {/* TIER 1: The Chairperson */}
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "60px" }}>
+            <Reveal width="auto">
+              <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "40px", border: "2px solid #001F3F", boxShadow: "0 20px 40px rgba(0,31,63,0.15)", textAlign: "center", width: "320px" }}>
+                <div style={{ width: "80px", height: "80px", backgroundColor: "#F1F5F9", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px auto" }}>
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#001F3F" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 </div>
+                <h3 style={{ fontSize: "22px", fontWeight: "800", color: "#001F3F", margin: "0 0 4px 0" }}>Board Chairperson</h3>
+                <p style={{ fontSize: "13px", color: "#64748B", fontWeight: "700", margin: 0, letterSpacing: "1px", textTransform: "uppercase" }}>Nominated by the Minister</p>
               </div>
             </Reveal>
-
-            <Reveal delay={0.3}>
-              <div style={{ borderRadius: "16px", backgroundColor: "#001F3F", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "48px", textAlign: "center", boxShadow: "0 10px 30px rgba(0,0,0,0.1)", height: "100%" }}>
-                <div style={{ width: "80px", height: "80px", backgroundColor: "rgba(255,255,255,0.1)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "24px" }}>
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FCD116" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                </div>
-                <h3 style={{ fontSize: "24px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 16px 0" }}>Governing Board</h3>
-                <p style={{ fontSize: "16px", color: "#B0C4DE", lineHeight: "1.6", margin: 0, maxWidth: "300px" }}>
-                  Members of the Governing Board are appointed in accordance with the Value for Money Office Act, 2026 (Act 1172).
-                </p>
-              </div>
-            </Reveal>
-
           </div>
+
+          {/* CONNECTOR */}
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "40px" }}>
+            <div style={{ width: "2px", height: "40px", backgroundColor: "#CBD5E1" }} />
+          </div>
+
+          {/* TIER 2: The Board Members Grid */}
+          <Reveal delay={0.1}>
+            <div style={{ textAlign: "center", marginBottom: "32px" }}>
+              <span style={{ fontSize: "12px", fontWeight: "800", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1.5px" }}>Statutory Members of the Board</span>
+            </div>
+          </Reveal>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px" }}>
+            {boardMembers.map((member, index) => (
+              <Reveal key={index} delay={index * 0.05} width="100%">
+                <div style={{ 
+                  backgroundColor: member.isDG ? "#001F3F" : "#FFFFFF", 
+                  borderRadius: "12px", 
+                  padding: "24px", 
+                  border: member.isDG ? "none" : "1px solid #E2E8F0", 
+                  textAlign: "center", 
+                  height: "100%", 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  alignItems: "center", 
+                  justifyContent: "center",
+                  boxShadow: member.isDG ? "0 10px 20px rgba(0,31,63,0.2)" : "0 4px 6px rgba(0,0,0,0.02)"
+                }}>
+                  
+                  {member.image ? (
+                    <img src={member.image} alt={member.title} style={{ width: "70px", height: "70px", borderRadius: "50%", objectFit: "cover", objectPosition: "top", marginBottom: "16px", border: "2px solid #FCD116" }} />
+                  ) : (
+                    <div style={{ width: "56px", height: "56px", backgroundColor: member.isDG ? "rgba(255,255,255,0.1)" : "#F8FAFC", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px", border: member.isDG ? "1px solid rgba(255,255,255,0.2)" : "1px solid #E2E8F0" }}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={member.isDG ? "#FCD116" : "#94A3B8"} strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                  )}
+
+                  <h4 style={{ fontSize: "16px", fontWeight: "800", color: member.isDG ? "#FFFFFF" : "#001F3F", margin: "0 0 4px 0" }}>{member.title}</h4>
+                  <p style={{ fontSize: "13px", color: member.isDG ? "#CBD5E1" : "#64748B", margin: 0, lineHeight: "1.4" }}>{member.desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
         </div>
       </section>
 
-      {/* 6. INSTITUTIONAL VALUES SECTION */}
-      <section id="values" style={{ backgroundColor: "#F5F7FA", padding: "80px 24px" }}>
+      {/* 7. INSTITUTIONAL VALUES SECTION */}
+      <section id="values" style={{ backgroundColor: "#FFFFFF", padding: "80px 24px" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           
           <Reveal>
@@ -327,7 +398,7 @@ export default function AboutUs() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" }}>
             {values.map((value, index) => (
               <Reveal key={index} delay={index * 0.1}>
-                <div style={{ backgroundColor: "#FFFFFF", padding: "32px", borderRadius: "8px", boxShadow: "0 4px 6px rgba(0,0,0,0.05)", height: "100%" }}>
+                <div style={{ backgroundColor: "#F8F9FA", padding: "32px", borderRadius: "8px", border: "1px solid #E2E8F0", height: "100%" }}>
                   <h3 style={{ fontSize: "20px", fontWeight: "700", color: "#001F3F", margin: "0 0 12px 0" }}>{value.title}</h3>
                   <p style={{ fontSize: "15px", color: "#555555", lineHeight: "1.6", margin: 0 }}>{value.desc}</p>
                 </div>
