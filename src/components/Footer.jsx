@@ -7,8 +7,8 @@ export default function Footer() {
       color: "#FFFFFF", 
       padding: "60px 40px 20px", 
       borderTop: "4px solid #FCD116",
-      position: "relative", // Added to ensure it sits above page content
-      zIndex: 10 // Forces the footer above any overlapping invisible divs
+      position: "relative",
+      zIndex: 10
     }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", flexWrap: "wrap", gap: "40px", justifyContent: "space-between" }}>
         
@@ -39,11 +39,14 @@ export default function Footer() {
         </div>
 
         {/* Column 3: Compliance & Transparency */}
-        <div style={{ minWidth: "200px" }}>
+        <div style={{ minWidth: "220px" }}>
           <h4 style={{ fontSize: "16px", fontWeight: "bold", margin: "0 0 16px 0", color: "#FCD116" }}>Compliance & Transparency</h4>
           <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "4px" }}>
+            <li><Link to="/clearance" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Certificate of Clearance</Link></li>
+            <li><Link to="/sanctions" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Sanctions & Debarment</Link></li>
             <li><Link to="/track" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Track a Complaint</Link></li>
             <li><Link to="/open-data" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Open Data Portal</Link></li>
+            <li><Link to="/engagement" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Public Engagement</Link></li>
             <li><Link to="/review-panel" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Review Panel</Link></li>
             <li><Link to="/whistleblower" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0" }}>Whistleblower Policy</Link></li>
           </ul>
