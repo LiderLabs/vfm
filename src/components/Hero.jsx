@@ -91,10 +91,29 @@ export default function Hero() {
             font-size: 20px; line-height: 1.6; color: #E2E8F0; margin-bottom: 48px; text-shadow: 0 1px 5px rgba(0,0,0,0.5);
           }
 
+          /* BUTTON FIX */
+          .hero-btn {
+            background-color: #FCD116; 
+            color: #001F3F; 
+            border: none; 
+            padding: 16px 32px; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: transform 0.2s ease;
+            display: inline-block !important;
+            width: auto !important;
+            min-width: 160px !important;
+            white-space: nowrap !important;
+            box-sizing: border-box !important;
+          }
+
           /* MOBILE STYLES */
           @media (max-width: 768px) {
             .hero-section {
-              min-height: 100vh;
+              /* REMOVED min-height: 100vh to prevent crushing */
+              min-height: auto;
               padding: 120px 0 60px 0;
               align-items: flex-start;
             }
@@ -119,6 +138,12 @@ export default function Hero() {
             .hero-slide {
               max-width: 100%;
             }
+            /* Make button full width on mobile */
+            .hero-btn {
+              width: 100% !important;
+              display: flex !important;
+              justify-content: center !important;
+            }
           }
         `}
       </style>
@@ -138,9 +163,7 @@ export default function Hero() {
           >
             {slides.map((slide, index) => (
               <div key={index} className="hero-slide">
-                <div>
-                  {/* Category label removed here */}
-                  
+                <div style={{ paddingBottom: "20px" }}>
                   <h1 className="hero-heading">
                     {slide.headline1} <br/> <span style={{ color: "#FFFFFF" }}>{slide.headline2}</span>
                   </h1>
@@ -149,13 +172,10 @@ export default function Hero() {
                     {slide.subheadline}
                   </p>
                   
-                  <button style={{ 
-                    backgroundColor: "#FCD116", color: "#001F3F", border: "none", 
-                    padding: "16px 32px", borderRadius: "6px", fontSize: "16px", 
-                    fontWeight: "bold", cursor: "pointer", transition: "transform 0.2s ease"
-                  }}
-                  onMouseEnter={(e) => e.target.style.transform = "scale(1.05)"}
-                  onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
+                  <button 
+                    className="hero-btn"
+                    onMouseEnter={(e) => e.target.style.transform = "scale(1.05)"}
+                    onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
                   >
                     {slide.btnText}
                   </button>
@@ -166,7 +186,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: "12px", marginTop: "60px" }}>
+        <div style={{ display: "flex", gap: "12px", marginTop: "40px" }}>
           {slides.map((slide, index) => (
             <button
               key={index}
