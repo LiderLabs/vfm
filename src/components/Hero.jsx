@@ -44,11 +44,13 @@ export default function Hero() {
             position: relative;
             background-color: #001F3F; 
             color: #FFFFFF; 
-            overflow: hidden;
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            justify-content: center;
             min-height: 100vh;
-            padding: 100px 0;
+            padding: 100px 0 60px 0;
+            overflow: hidden;
+            isolation: isolate;
           }
 
           .hero-bg {
@@ -75,19 +77,21 @@ export default function Hero() {
           .hero-mask { 
             width: 100%; 
             overflow: hidden; 
+            position: relative;
           }
 
           .hero-track {
             display: flex;
             transition: transform 2s cubic-bezier(0.22, 1, 0.36, 1);
-            align-items: stretch; /* Ensures all slides are same height */
           }
 
           .hero-slide {
-            min-width: 100%; width: 100%; box-sizing: border-box; max-width: 850px;
+            min-width: 100%; 
+            width: 100%; 
+            box-sizing: border-box; 
+            max-width: 850px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
           }
 
           .hero-heading {
@@ -118,17 +122,16 @@ export default function Hero() {
           /* MOBILE STYLES */
           @media (max-width: 768px) {
             .hero-section {
-              /* FIXED HEIGHT FOR MOBILE */
-              min-height: 600px; 
-              height: 100%;
-              padding: 100px 0 40px 0;
-              align-items: flex-start;
+              min-height: auto; 
+              height: auto;
+              padding: 120px 0 60px 0;
+              justify-content: flex-start;
             }
             .hero-bg {
               background-position: center top !important;
             }
             .hero-overlay {
-              background: linear-gradient(180deg, rgba(0,31,63,0.8) 0%, rgba(0,31,63,1) 80%);
+              background: linear-gradient(180deg, rgba(0,31,63,0.8) 0%, rgba(0,31,63,1) 100%);
             }
             .hero-container {
               padding: 0 24px;
@@ -140,15 +143,18 @@ export default function Hero() {
             .hero-subheadline {
               font-size: 17px; 
               line-height: 1.6;
-              margin-bottom: 40px;
+              margin-bottom: 32px;
             }
             .hero-slide {
               max-width: 100%;
+              /* ADDED PADDING TO PREVENT BUTTONS TOUCHING */
+              padding-right: 24px; 
             }
             .hero-btn {
               width: 100% !important;
               display: flex !important;
               justify-content: center !important;
+              margin-bottom: 20px;
             }
           }
         `}
@@ -162,6 +168,7 @@ export default function Hero() {
       <div className="hero-overlay" />
 
       <div className="hero-container">
+        
         <div className="hero-mask">
           <div 
             className="hero-track"
@@ -169,7 +176,7 @@ export default function Hero() {
           >
             {slides.map((slide, index) => (
               <div key={index} className="hero-slide">
-                <div style={{ paddingBottom: "20px" }}>
+                <div>
                   <h1 className="hero-heading">
                     {slide.headline1} <br/> <span style={{ color: "#FFFFFF" }}>{slide.headline2}</span>
                   </h1>
@@ -188,7 +195,6 @@ export default function Hero() {
                 </div>
               </div>
             ))}
-
           </div>
         </div>
 
