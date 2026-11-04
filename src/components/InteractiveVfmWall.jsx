@@ -1,14 +1,22 @@
 import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import SplitText from "./TextSplitter";
 
 export default function InteractiveVfmWall() {
+  const [isMobile, setIsMobile] = useState(false);
+  const containerRef = useRef(null);
+  
+  // Desktop Mouse Tracking
   const [hoveredWord, setHoveredWord] = useState(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isMobile, setIsMobile] = useState(false);
-  
-  const containerRef = useRef(null);
 
+  // Mobile Scroll Tracking
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  // Detect mobile
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.matchMedia("(max-width: 768px)").matches);
@@ -54,10 +62,8 @@ export default function InteractiveVfmWall() {
     const rect = containerRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
     const rotateX = ((y / rect.height) - 0.5) * -6; 
     const rotateY = ((x / rect.width) - 0.5) * 6;
-    
     setMousePos({ x: rotateX, y: rotateY });
   };
 
@@ -66,40 +72,29 @@ export default function InteractiveVfmWall() {
     setMousePos({ x: 0, y: 0 }); 
   };
 
-  const handleTouchMove = (e) => {
-    if (!isMobile) return;
-    // Prevent scrolling while interacting with the wall
-    if (e.cancelable) e.preventDefault(); 
-    
-    const touch = e.touches[0];
-    const element = document.elementFromPoint(touch.clientX, touch.clientY);
-    const wordElement = element?.closest('[data-word]');
-    
-    if (wordElement) {
-      setHoveredWord(wordElement.getAttribute('data-word'));
-    } else {
-      setHoveredWord(null);
-    }
-  };
-
   return (
-    <section style={{ backgroundColor: "#F8F9FA", padding: isMobile ? "40px 16px" : "80px 24px", overflow: "hidden", display: "flex", justifyContent: "center", perspective: "1000px" }}>
+    <section style={{ 
+      backgroundColor: "#F8F9FA", 
+      padding: isMobile ? "40px 0" : "80px 24px", 
+      overflow: "hidden", 
+      display: "flex", 
+      justifyContent: "center", 
+      perspective: "1000px" 
+    }}>
       
       <motion.div 
         ref={containerRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={() => setHoveredWord(null)}
         style={{
           position: "relative",
           width: "100%",
-          maxWidth: "1200px",
-          // Taller aspect ratio on mobile to give text more vertical breathing room
+          maxWidth: isMobile ? "100%" : "1200px", // Full width on mobile
+          // On mobile, we use a taller aspect ratio (1:1 or 4:5) so words don't compress
           aspectRatio: isMobile ? "4 / 5" : "16 / 9", 
           backgroundColor: "#FFFFFF",
-          borderRadius: "24px",
-          boxShadow: "inset 0 40px 80px -20px rgba(0,0,0,0.05), 0 30px 60px rgba(0,0,0,0.1)",
+          borderRadius: isMobile ? "0" : "24px", // Edge-to-edge on mobile
+          boxShadow: isMobile ? "none" : "inset 0 40px 80px -20px rgba(0,0,0,0.05), 0 30px 60px rgba(0,0,0,0.1)",
           overflow: "hidden",
           transformStyle: "preserve-3d",
         }}
@@ -109,7 +104,6 @@ export default function InteractiveVfmWall() {
         }}
         transition={{ type: "spring", stiffness: 100, damping: 30 }}
       >
-        
         <div style={{
           position: "absolute", top: 0, left: "10%", right: "10%", height: "250px",
           background: "radial-gradient(ellipse at top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 80%)",
@@ -117,18 +111,24 @@ export default function InteractiveVfmWall() {
         }} />
 
         {words.map((word, index) => {
-          const isHovered = hoveredWord === word.text;
-          const isDimmed = hoveredWord !== null && !isHovered;
+          const isHovered = !isMobile && hoveredWord === word.text;
+          const isDimmed = !isMobile && hoveredWord !== null && !isHovered;
 
-          // DRAMATICALLY scale down text on mobile to prevent overlap
-          const mobileScale = isMobile ? 0.45 : 1; 
+          // Adjust sizing for mobile so they don't overlap
+          const mobileScale = 0.45; 
           const parsedSize = parseInt(word.size);
-          const finalSize = `${parsedSize * mobileScale}px`;
+          const finalSize = isMobile ? `${parsedSize * mobileScale}px` : word.size;
+
+          // We use the index to stagger the scroll animation on mobile
+          const startProgress = index * (1 / words.length) * 0.5;
+          const endProgress = startProgress + 0.3;
+
+          // On mobile, the word lights up based on scroll position. On desktop, it depends on hover.
+          const mobileOpacity = useTransform(scrollYProgress, [startProgress, endProgress], [0.1, 1]);
 
           return (
-            <div
+            <motion.div
               key={index}
-              data-word={word.text}
               onMouseEnter={() => !isMobile && setHoveredWord(word.text)}
               onMouseLeave={() => !isMobile && setHoveredWord(null)}
               style={{
@@ -141,19 +141,19 @@ export default function InteractiveVfmWall() {
                 zIndex: isHovered ? 10 : 1,
                 cursor: "crosshair",
                 userSelect: "none",
-                opacity: isDimmed ? 0.2 : 1,
-                transition: "opacity 0.3s ease",
-                pointerEvents: "none" // Allow touches to pass through to the container for elementFromPoint
+                // Apply scroll-based opacity on mobile, hover-based on desktop
+                opacity: isMobile ? mobileOpacity : (isDimmed ? 0.2 : 1),
+                transition: "opacity 0.3s ease"
               }}
             >
               <SplitText 
                 text={word.text} 
-                hoveredWord={hoveredWord} 
+                hoveredWord={isMobile ? (mobileOpacity.get() > 0.5 ? word.text : null) : hoveredWord} 
                 baseColor="#4A4A4A" 
                 hoverColor="#001F3F" 
                 isMobile={isMobile}
               />
-            </div>
+            </motion.div>
           );
         })}
       </motion.div>
