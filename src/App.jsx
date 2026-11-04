@@ -6,7 +6,6 @@ import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import WhatWeDo from "./pages/WhatWeDo";
 import Publications from "./pages/Publications";
-import News from "./pages/News";
 import Contact from "./pages/Contact";
 import Portal from "./pages/Portal";
 import Dashboard from "./pages/Dashboard";
@@ -18,7 +17,7 @@ import Sanctions from "./pages/Sanctions";
 import OpenData from "./pages/OpenData"; 
 import Engagement from "./pages/Engagement"; 
 import ReviewPanel from "./pages/ReviewPanel"; 
-import Whistleblower from "./pages/Whistleblower"; // <-- IMPORTED WHISTLEBLOWER
+import Whistleblower from "./pages/Whistleblower";
 import Placeholder from "./pages/Placeholder";
 
 function Layout() {
@@ -43,7 +42,10 @@ function Layout() {
           
           <Route path="/what-we-do" element={<WhatWeDo />} />
           <Route path="/publications" element={<Publications />} />
-          <Route path="/news" element={<News />} />
+          
+          {/* REDIRECT: /news now goes to /publications */}
+          <Route path="/news" element={<Navigate to="/publications" replace />} />
+          
           <Route path="/contact" element={<Contact />} />
           
           {/* Public Submission, Tracking, Clearance, Sanctions, Open Data & Engagement Routes */}
@@ -54,7 +56,7 @@ function Layout() {
           <Route path="/open-data" element={<OpenData />} />
           <Route path="/engagement" element={<Engagement />} />
           <Route path="/review-panel" element={<ReviewPanel />} />
-          <Route path="/whistleblower" element={<Whistleblower />} /> {/* <-- ADDED WHISTLEBLOWER ROUTE */}
+          <Route path="/whistleblower" element={<Whistleblower />} />
           
           {/* Secure Portal Routes */}
           <Route path="/portal" element={<Portal />} />

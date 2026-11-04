@@ -113,8 +113,9 @@ export default function Navbar() {
           {/* WHAT WE DO - DIRECT LINK */}
           <Link to="/what-we-do" className="nav-link" onClick={() => handleNavClick("/what-we-do")}>What We Do</Link>
 
-          <Link to="/publications" className="nav-link" onClick={() => handleNavClick("/publications")}>Publications</Link>
-          <Link to="/news" className="nav-link" onClick={() => handleNavClick("/news")}>News & Insights</Link>
+          {/* COMBINED PUBLICATIONS & NEWS */}
+          <Link to="/publications" className="nav-link" onClick={() => handleNavClick("/publications")}>News & Publications</Link>
+          
           <Link to="/contact" className="nav-link" onClick={() => handleNavClick("/contact")}>Contact</Link>
         </nav>
 
@@ -142,8 +143,7 @@ export default function Navbar() {
           <Link to="/" onClick={() => handleNavClick("/")}>Home</Link>
           <Link to="/about" onClick={() => handleNavClick("/about")}>About Us</Link>
           <Link to="/what-we-do" onClick={() => handleNavClick("/what-we-do")}>What We Do</Link>
-          <Link to="/publications" onClick={() => handleNavClick("/publications")}>Publications</Link>
-          <Link to="/news" onClick={() => handleNavClick("/news")}>News & Insights</Link>
+          <Link to="/publications" onClick={() => handleNavClick("/publications")}>News & Publications</Link>
           <Link to="/contact" onClick={() => handleNavClick("/contact")}>Contact</Link>
           
           <Link to="/track" onClick={() => handleNavClick("/track")} style={{ fontSize: "16px", fontWeight: "600", color: "#001F3F", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid #F1F5F9" }}>

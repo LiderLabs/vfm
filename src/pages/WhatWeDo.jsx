@@ -73,7 +73,7 @@ export default function WhatWeDo() {
       title: "Public Expenditure Utilisation Review",
       description: "Tracking the actual disbursement and utilisation of funds across Metropolitan, Municipal, and District Assemblies to ensure fiscal discipline.",
       detailText: "By auditing how funds are actually disbursed to the MMDAs, we ensure that fiscal discipline is maintained at the local level. Our review process tracks the journey of every Cedi from the national treasury to its intended project site.",
-      image: "/building-bg.jpg"
+      image: "/utilisation-bg.jpg"
     },
     {
       id: "benchmarks",
@@ -230,8 +230,25 @@ export default function WhatWeDo() {
           <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "60px", alignItems: "center" }}>
             
             <ZoomReveal style={{ order: index % 2 === 0 ? 1 : 2 }}>
-              <div style={{ borderRadius: "16px", overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}>
-                <img src={pillar.image} alt={pillar.title} style={{ width: "100%", height: "100%", minHeight: "400px", objectFit: "cover", display: "block" }} />
+              {/* FIX: Fixed height container + objectFit cover */}
+              <div style={{ 
+                borderRadius: "16px", 
+                overflow: "hidden", 
+                boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+                height: "500px", // Fixed height for all images
+                width: "100%"
+              }}>
+                <img 
+                  src={pillar.image} 
+                  alt={pillar.title} 
+                  style={{ 
+                    width: "100%", 
+                    height: "100%", 
+                    objectFit: "cover", // Forces the image to crop and fill the fixed height
+                    objectPosition: "center",
+                    display: "block" 
+                  }} 
+                />
               </div>
             </ZoomReveal>
             
@@ -247,7 +264,6 @@ export default function WhatWeDo() {
                   {pillar.description}
                 </p>
                 
-                {/* NEW: DYNAMIC HUMAN-LIKE TEXT INSTEAD OF BULLET POINTS */}
                 <p style={{ fontSize: "17px", lineHeight: "1.7", color: "#475569", marginBottom: "40px" }}>
                   {pillar.detailText}
                 </p>
