@@ -9,7 +9,6 @@ export default function InteractiveVfmWall() {
   
   const containerRef = useRef(null);
 
-  // Detect mobile device on mount
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.matchMedia("(max-width: 768px)").matches);
@@ -19,7 +18,6 @@ export default function InteractiveVfmWall() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // EXACT SAME STRUCTURE
   const words = [
     { text: "RESOURCE USE", top: "15%", left: "22%", size: "16px", weight: "600" },
     { text: "ACCOUNTABILITY", top: "10%", left: "42%", size: "26px", weight: "900" },
@@ -51,7 +49,6 @@ export default function InteractiveVfmWall() {
     { text: "KNOWLEDGE", top: "90%", left: "52%", size: "26px", weight: "900" },
   ];
 
-  // Desktop Mouse Move
   const handleMouseMove = (e) => {
     if (isMobile || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -69,13 +66,13 @@ export default function InteractiveVfmWall() {
     setMousePos({ x: 0, y: 0 }); 
   };
 
-  // Mobile Touch Move (The "Paintbrush" Effect)
   const handleTouchMove = (e) => {
     if (!isMobile) return;
+    // Prevent scrolling while interacting with the wall
+    if (e.cancelable) e.preventDefault(); 
+    
     const touch = e.touches[0];
     const element = document.elementFromPoint(touch.clientX, touch.clientY);
-    
-    // Look for the closest parent with a data-word attribute
     const wordElement = element?.closest('[data-word]');
     
     if (wordElement) {
@@ -98,8 +95,8 @@ export default function InteractiveVfmWall() {
           position: "relative",
           width: "100%",
           maxWidth: "1200px",
-          // On mobile, we force a taller aspect ratio so text doesn't shrink too much
-          aspectRatio: isMobile ? "3 / 4" : "16 / 9", 
+          // Taller aspect ratio on mobile to give text more vertical breathing room
+          aspectRatio: isMobile ? "4 / 5" : "16 / 9", 
           backgroundColor: "#FFFFFF",
           borderRadius: "24px",
           boxShadow: "inset 0 40px 80px -20px rgba(0,0,0,0.05), 0 30px 60px rgba(0,0,0,0.1)",
@@ -107,14 +104,12 @@ export default function InteractiveVfmWall() {
           transformStyle: "preserve-3d",
         }}
         animate={{
-          // Disable 3D tilt on mobile
           rotateX: isMobile ? 0 : mousePos.x,
           rotateY: isMobile ? 0 : mousePos.y,
         }}
         transition={{ type: "spring", stiffness: 100, damping: 30 }}
       >
         
-        {/* Overhead Spotlight Simulation */}
         <div style={{
           position: "absolute", top: 0, left: "10%", right: "10%", height: "250px",
           background: "radial-gradient(ellipse at top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 80%)",
@@ -125,8 +120,8 @@ export default function InteractiveVfmWall() {
           const isHovered = hoveredWord === word.text;
           const isDimmed = hoveredWord !== null && !isHovered;
 
-          // Adjust positioning slightly for mobile if needed, but keeping exact structure
-          const mobileScale = isMobile ? 0.6 : 1; 
+          // DRAMATICALLY scale down text on mobile to prevent overlap
+          const mobileScale = isMobile ? 0.45 : 1; 
           const parsedSize = parseInt(word.size);
           const finalSize = `${parsedSize * mobileScale}px`;
 
@@ -148,8 +143,7 @@ export default function InteractiveVfmWall() {
                 userSelect: "none",
                 opacity: isDimmed ? 0.2 : 1,
                 transition: "opacity 0.3s ease",
-                // Ensure touches register on the div
-                pointerEvents: isMobile ? "none" : "auto" 
+                pointerEvents: "none" // Allow touches to pass through to the container for elementFromPoint
               }}
             >
               <SplitText 
