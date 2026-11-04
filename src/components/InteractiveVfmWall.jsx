@@ -1,47 +1,17 @@
 import { useState, useRef, useEffect } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import SplitText from "./TextSplitter";
-
-// We extract this into a separate component to satisfy React's Rules of Hooks
-const MobileWord = ({ word, scrollYProgress, index, totalWords }) => {
-  // Stagger the wave effect diagonally based on the index
-  const startProgress = (index / totalWords) * 0.6;
-  const endProgress = startProgress + 0.4;
-
-  // As the user scrolls, the word transitions from light grey to navy
-  const color = useTransform(
-    scrollYProgress, 
-    [startProgress, endProgress], 
-    ["#4A4A4A", "#001F3F"]
-  );
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: word.top,
-        left: word.left,
-        transform: `translate(-50%, -50%) rotate(${word.rotate || "0deg"})`,
-        fontSize: word.size,
-        fontWeight: word.weight,
-        cursor: "default",
-        userSelect: "none",
-      }}
-    >
-      <motion.span style={{ color, textShadow: "2px 4px 8px rgba(0,0,0,0.1)", display: "inline-block", whiteSpace: "nowrap" }}>
-        {word.text}
-      </motion.span>
-    </div>
-  );
-};
 
 export default function InteractiveVfmWall() {
   const [hoveredWord, setHoveredWord] = useState(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
+  const [autoWord, setAutoWord] = useState(null);
+  const [lastInteraction, setLastInteraction] = useState(Date.now());
   
   const containerRef = useRef(null);
 
+  // Detect mobile
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.matchMedia("(max-width: 768px)").matches);
@@ -51,12 +21,29 @@ export default function InteractiveVfmWall() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
+  // THE IDLE BREATHING TIMER (Runs only on mobile)
+  useEffect(() => {
+    if (!isMobile) return;
 
-  // EXACT SAME LAYOUT DATA (No changes to coordinates)
+    const interval = setInterval(() => {
+      // If the user tapped recently (within 2.5s), pause the auto-animation
+      if (Date.now() - lastInteraction < 2500) return;
+
+      // Pick a random word index
+      const randomIndex = Math.floor(Math.random() * words.length);
+      setAutoWord(words[randomIndex].text);
+
+      // Clear it after the animation duration
+      setTimeout(() => {
+        setAutoWord(null);
+      }, 1200);
+
+    }, 1800); // Trigger every 1.8 seconds
+
+    return () => clearInterval(interval);
+  }, [isMobile, lastInteraction]);
+
+  // EXACT SAME LAYOUT DATA
   const words = [
     { text: "RESOURCE USE", top: "15%", left: "22%", size: "16px", weight: "600" },
     { text: "ACCOUNTABILITY", top: "10%", left: "42%", size: "26px", weight: "900" },
@@ -103,9 +90,27 @@ export default function InteractiveVfmWall() {
     setMousePos({ x: 0, y: 0 }); 
   };
 
-  // THE MAGIC TRICK FOR MOBILE: 
-  // We render a fixed-size 1200x675 (16:9) box, and then scale the whole thing down 
-  // by 0.35 using CSS transform. This preserves the exact layout without overlaps.
+  // Mobile Touch Handler
+  const handleTouchStart = (e) => {
+    if (!isMobile) return;
+    setLastInteraction(Date.now()); // Reset idle timer
+
+    const touch = e.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    const wordElement = element?.closest('[data-word]');
+    
+    if (wordElement) {
+      const tappedWord = wordElement.getAttribute('data-word');
+      setHoveredWord(tappedWord);
+
+      // Clear the tap state after 2.5 seconds
+      setTimeout(() => {
+        setHoveredWord(null);
+      }, 2500);
+    }
+  };
+
+  // THE MAGIC TRICK FOR MOBILE SCALING
   const mobileScale = 0.35;
   const virtualWidth = 1200;
   const virtualHeight = 675;
@@ -124,9 +129,10 @@ export default function InteractiveVfmWall() {
         ref={containerRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
         style={{
           position: "relative",
-          width: isMobile ? "100%" : "100%",
+          width: "100%",
           maxWidth: isMobile ? "100%" : "1200px",
           height: isMobile ? `${virtualHeight * mobileScale}px` : "auto",
           aspectRatio: isMobile ? "none" : "16 / 9",
@@ -145,7 +151,7 @@ export default function InteractiveVfmWall() {
         transition={{ type: "spring", stiffness: 100, damping: 30 }}
       >
         
-        {/* The Inner Virtual Canvas */}
+        {/* Inner Virtual Canvas */}
         <div style={{
           position: "relative",
           width: isMobile ? `${virtualWidth}px` : "100%",
@@ -162,27 +168,18 @@ export default function InteractiveVfmWall() {
           }} />
 
           {words.map((word, index) => {
-            if (isMobile) {
-              return (
-                <MobileWord 
-                  key={index} 
-                  word={word} 
-                  scrollYProgress={scrollYProgress} 
-                  index={index} 
-                  totalWords={words.length} 
-                />
-              );
-            }
-
-            // Desktop Render
+            // Determine if this specific word should be animated
             const isHovered = hoveredWord === word.text;
-            const isDimmed = hoveredWord !== null && !isHovered;
+            const isAuto = autoWord === word.text;
+            const isActive = isHovered || isAuto;
+            const isDimmed = (hoveredWord !== null || autoWord !== null) && !isActive;
 
             return (
               <div
                 key={index}
-                onMouseEnter={() => setHoveredWord(word.text)}
-                onMouseLeave={() => setHoveredWord(null)}
+                data-word={word.text}
+                onMouseEnter={() => !isMobile && setHoveredWord(word.text)}
+                onMouseLeave={() => !isMobile && setHoveredWord(null)}
                 style={{
                   position: "absolute",
                   top: word.top,
@@ -190,8 +187,8 @@ export default function InteractiveVfmWall() {
                   transform: `translate(-50%, -50%) rotate(${word.rotate || "0deg"})`,
                   fontSize: word.size,
                   fontWeight: word.weight,
-                  zIndex: isHovered ? 10 : 1,
-                  cursor: "crosshair",
+                  zIndex: isActive ? 10 : 1,
+                  cursor: isMobile ? "pointer" : "crosshair",
                   userSelect: "none",
                   opacity: isDimmed ? 0.2 : 1,
                   transition: "opacity 0.3s ease"
@@ -199,10 +196,10 @@ export default function InteractiveVfmWall() {
               >
                 <SplitText 
                   text={word.text} 
-                  hoveredWord={hoveredWord} 
+                  hoveredWord={isActive ? word.text : null} 
                   baseColor="#4A4A4A" 
                   hoverColor="#001F3F" 
-                  isMobile={false}
+                  isMobile={isMobile}
                 />
               </div>
             );
