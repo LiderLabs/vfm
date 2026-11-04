@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+import InteractiveVfmWall from "../components/InteractiveVfmWall";
 
 // --- FIXED SCROLL ANIMATION HOOK ---
 function useScrollReveal() {
@@ -56,30 +57,24 @@ export default function AboutUs() {
   }, [hash]);
 
   const stats = [
-    { value: "100%", label: "INDEPENDENT SCRUTINY", sub: "Statutory Technical Advisory" },
-    { value: "3-Tier", label: "EVALUATION MODEL", sub: "Economy, Efficiency, Effectiveness", isGold: true },
-    { value: "GH₵18.4B", label: "PIPELINE REVIEWED", sub: "Strategic Capital Portfolio" },
-    { value: "16", label: "REGIONAL COVERAGE", sub: "Metropolitan & Municipal Assemblies", isGold: true },
+    { value: "Act 1172", label: "LEGAL FRAMEWORK", sub: "Value for Money Office Act, 2026" },
+    { value: "3 Pillars", label: "EVALUATION MODEL", sub: "Economy, Efficiency, Effectiveness", isGold: true },
+    { value: "14 Days", label: "COMPLAINT ASSESSMENT", sub: "Statutory Timeline (Section 45)" },
+    { value: "2 - 5 Years", label: "DEBARMENT PENALTY", sub: "For Cost Inflation (Section 38)", isGold: true },
   ];
 
   const pillars = [
     {
       title: "Economy",
-      desc: "Ensuring that public resources are acquired at appropriate cost and with due regard for quality, eliminating unjustified premiums and inflation in procurement.",
-      tag1: "Benchmark Auditing",
-      tag2: "Procurement Tier"
+      desc: "Ensuring that public resources are acquired at appropriate cost and with due regard for quality, eliminating unjustified premiums and inflation in procurement."
     },
     {
       title: "Efficiency",
-      desc: "Promoting the responsible use of human, capital, and material resources to maximise programmatic outputs and systematically eliminate systemic waste.",
-      tag1: "Process Optimization",
-      tag2: "Execution Tier"
+      desc: "Promoting the responsible use of human, capital, and material resources to maximise programmatic outputs and systematically eliminate systemic waste."
     },
     {
       title: "Effectiveness",
-      desc: "Evaluating whether public programmes and infrastructure actually achieve intended socio-economic objectives and yield durable, meaningful results.",
-      tag1: "Outcome Realisation",
-      tag2: "Impact Tier"
+      desc: "Evaluating whether public programmes and infrastructure actually achieve intended socio-economic objectives and yield durable, meaningful results."
     }
   ];
 
@@ -152,7 +147,7 @@ export default function AboutUs() {
               <div>
                 <div style={{ marginBottom: "24px" }}>
                   <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "1.5px", color: "#8B7355", textTransform: "uppercase" }}>
-                    The Object of the Office (Section 2)
+                    The Object of the Office
                   </span>
                 </div>
                 <h1 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", lineHeight: "1.2", margin: "0 0 24px 0" }}>
@@ -164,10 +159,6 @@ export default function AboutUs() {
                 <p style={{ fontSize: "16px", lineHeight: "1.7", color: "#64748B", marginBottom: "32px" }}>
                   We scrutinise major capital projects, establish benchmarks for public capital efficiency, and ensure every public investment translates into tangible, durable socio-economic benefits for Ghanaian citizens across all sixteen administrative regions.
                 </p>
-                <a href="#framework" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "#0F172A", fontWeight: "700", fontSize: "15px", textDecoration: "none", borderBottom: "2px solid #0F172A", paddingBottom: "4px" }}>
-                  Learn More About Our Institutional Framework
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </a>
               </div>
             </Reveal>
 
@@ -213,45 +204,34 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* 4. STATUTORY MANDATE */}
+      {/* 4. INTERACTIVE VFM WALL */}
+      <InteractiveVfmWall />
+
+      {/* 5. STATUTORY MANDATE */}
       <section style={{ position: "relative", padding: "100px 24px", overflow: "hidden", backgroundColor: "#FFFFFF" }}>
         
         <div style={{ position: "absolute", right: "-5%", top: "0%", width: "600px", height: "600px", backgroundImage: "url(/coat-of-arms.png)", backgroundSize: "contain", backgroundRepeat: "no-repeat", backgroundPosition: "center", opacity: 0.03, zIndex: 0, pointerEvents: "none" }} />
 
-        <div style={{ maxWidth: "1000px", margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ maxWidth: "800px", margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
           
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "60px", alignItems: "center" }}>
-            <Reveal>
-              <div>
-                <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", margin: "0 0 24px 0", lineHeight: "1.1" }}>
-                  A Statutory Mandate for Fiscal Integrity.
-                </h2>
-                <p style={{ fontSize: "17px", lineHeight: "1.8", color: "#475569", marginBottom: "24px" }}>
-                  The VfM Office is not merely an advisory body; it is a statutory authority. Under Section 1 of Act 1172, the Office is established as a body corporate with the power to acquire and hold property, enter into contracts, and perform its functions independently.
-                </p>
-                <p style={{ fontSize: "17px", lineHeight: "1.8", color: "#475569" }}>
-                  Our mandate extends across all phases of the public procurement lifecycle, from the earliest feasibility studies to the final project audit and impact evaluation.
-                </p>
-              </div>
-            </Reveal>
+          <Reveal>
+            <div>
+              <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", margin: "0 0 32px 0", lineHeight: "1.2" }}>
+                A Statutory Mandate for Fiscal Integrity.
+              </h2>
+              <p style={{ fontSize: "18px", lineHeight: "1.8", color: "#334155", marginBottom: "24px", fontWeight: "500" }}>
+                The VfM Office is not merely an advisory body; it is a statutory authority. Under Section 1 of Act 1172, the Office is established as a body corporate with the power to acquire and hold property, enter into contracts, and perform its functions independently.
+              </p>
+              <p style={{ fontSize: "18px", lineHeight: "1.8", color: "#475569" }}>
+                Our mandate extends across all phases of the public procurement lifecycle, from the earliest feasibility studies to the final project audit and impact evaluation.
+              </p>
+            </div>
+          </Reveal>
 
-            <Reveal delay={0.2}>
-              <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "48px", boxShadow: "0 20px 40px rgba(0,0,0,0.08)", border: "1px solid #E2E8F0" }}>
-                <h3 style={{ fontSize: "24px", fontWeight: "800", color: "#001F3F", margin: "0 0 16px 0" }}>Value for Money Office Act, 2026</h3>
-                <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", marginBottom: "32px" }}>
-                  An Act to establish the Value for Money Office to provide for independent technical scrutiny of public expenditure, and to ensure maximum value in the procurement of public goods and infrastructure.
-                </p>
-                <div style={{ display: "flex", alignItems: "center", gap: "12px", color: "#001F3F", fontWeight: "700", fontSize: "14px", cursor: "pointer" }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                  Download Full Act (PDF)
-                </div>
-              </div>
-            </Reveal>
-          </div>
         </div>
       </section>
 
-      {/* 5. THREE PILLARS & SCOPE OF AUTHORITY */}
+      {/* 6. THREE PILLARS & SCOPE OF AUTHORITY */}
       <section style={{ position: "relative", padding: "100px 24px 60px", overflow: "hidden", backgroundColor: "#F4F5F0" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 1 }}>
           
@@ -264,16 +244,12 @@ export default function AboutUs() {
             </div>
           </Reveal>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px", marginBottom: "100px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px", marginBottom: "100px", alignItems: "start" }}>
             {pillars.map((pillar, index) => (
               <Reveal key={index} delay={index * 0.15}>
-                <div style={{ backgroundColor: "#FFFFFF", borderRadius: "12px", padding: "40px 32px", boxShadow: "0 10px 30px rgba(0,0,0,0.03)", display: "flex", flexDirection: "column", height: "100%" }}>
+                <div style={{ backgroundColor: "#FFFFFF", borderRadius: "12px", padding: "40px 32px", boxShadow: "0 10px 30px rgba(0,0,0,0.03)", display: "flex", flexDirection: "column" }}>
                   <h3 style={{ fontSize: "24px", fontWeight: "700", color: "#0F172A", margin: "0 0 16px 0" }}>{pillar.title}</h3>
-                  <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", margin: "0 0 32px 0", flex: 1 }}>{pillar.desc}</p>
-                  <div style={{ borderTop: "1px solid #E2E8F0", paddingTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px", fontWeight: "600" }}>
-                    <div style={{ color: "#0F172A", backgroundColor: "#F1F5F9", padding: "6px 12px", borderRadius: "4px" }}>{pillar.tag1}</div>
-                    <span style={{ color: "#64748B" }}>{pillar.tag2}</span>
-                  </div>
+                  <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", margin: 0 }}>{pillar.desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -311,7 +287,7 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* 6. THE GOVERNING BOARD (COMMITTEE LAYOUT) */}
+      {/* 7. THE GOVERNING BOARD (COMMITTEE LAYOUT) */}
       <section id="leadership" style={{ backgroundColor: "#F8F9FA", padding: "100px 24px" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           
@@ -384,7 +360,7 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* 7. INSTITUTIONAL VALUES SECTION */}
+      {/* 8. INSTITUTIONAL VALUES SECTION */}
       <section id="values" style={{ backgroundColor: "#FFFFFF", padding: "80px 24px" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           

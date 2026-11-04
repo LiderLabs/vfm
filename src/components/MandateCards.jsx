@@ -156,14 +156,14 @@ export default function MandateCards() {
             </div>
           </ZoomReveal>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px", alignItems: "start" }}>
             {pillars.map((pillar, index) => (
               <ZoomReveal key={index} delay={index * 0.15}>
                 <div 
                   style={{ 
                     backgroundColor: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(10px)",
                     border: "1px solid rgba(255, 255, 255, 0.1)", borderRadius: "16px", padding: "40px",
-                    display: "flex", flexDirection: "column", transition: "transform 0.3s ease, background-color 0.3s ease", height: "100%"
+                    display: "flex", flexDirection: "column", transition: "transform 0.3s ease, background-color 0.3s ease"
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-8px)";
@@ -174,7 +174,6 @@ export default function MandateCards() {
                     e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
                   }}
                 >
-                  {/* Icons removed from here */}
                   <h3 style={{ fontSize: "24px", fontWeight: "700", color: "#FFFFFF", margin: "0 0 16px 0" }}>{pillar.title}</h3>
                   <p style={{ fontSize: "16px", color: "#CBD5E1", lineHeight: "1.6", margin: 0 }}>{pillar.desc}</p>
                 </div>
