@@ -41,7 +41,7 @@ export default function MandateCards() {
     { title: "Compliance Monitoring", description: "Real-time oversight of projects to prevent cost overruns and unnecessary delays." },
     { title: "Sanctions Enforcement", description: "Applying penalties for violations to ensure absolute accountability across all entities." },
     { title: "Cost Benchmarking", description: "Setting standard cost benchmarks to ensure uniform pricing and curb contract inflation." },
-    { title: "Digital Integration", description: "Linking with GIFMIS and GHANEPS for automated, real-time financial and procurement data analysis." },
+    { title: "Digital Integration", description: "Operating a secure digital management platform to track assessments, clearances, and project evaluations in real-time (Section 27)." },
     { title: "Public Transparency", description: "Publishing annual reports and findings to keep citizens informed about the value of public spending." }
   ];
 
@@ -57,6 +57,27 @@ export default function MandateCards() {
     {
       title: "Effectiveness",
       desc: "Ensuring infrastructure and programmes achieve their intended socio-economic objectives."
+    }
+  ];
+
+  const publicActions = [
+    {
+      title: "Report a Concern",
+      desc: "Submit a confidential, legally protected report regarding contract inflation or misuse of public funds.",
+      link: "/submit",
+      btnText: "Submit a Report"
+    },
+    {
+      title: "Verify a Clearance",
+      desc: "Search the public register to confirm if a major government contract has received a Certificate of Clearance.",
+      link: "/clearance",
+      btnText: "View Public Register"
+    },
+    {
+      title: "Check Debarments",
+      desc: "View the official list of contractors and suppliers banned from participating in public procurement.",
+      link: "/sanctions",
+      btnText: "View Debarment List"
     }
   ];
 
@@ -205,14 +226,14 @@ export default function MandateCards() {
                 We are dedicated to ensuring that every government contract, infrastructure project, and public investment delivers maximum benefit to the citizens of Ghana. By enforcing strict cost benchmarks, we eliminate waste and prevent contract inflation.
               </p>
 
-              <Link to="/about" style={{ 
+              <Link to="/about#framework" style={{ 
                 display: "inline-flex", alignItems: "center", gap: "8px", backgroundColor: "#001F3F", color: "#FFFFFF", padding: "16px 32px", 
                 borderRadius: "4px", fontSize: "16px", fontWeight: "700", textDecoration: "none", transition: "background-color 0.2s ease"
               }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#0A2E4D"}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#001F3F"}
               >
-                Learn About Our Mandate
+                View Our Scope of Authority
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
               </Link>
             </div>
@@ -221,87 +242,52 @@ export default function MandateCards() {
         </div>
       </section>
 
-      {/* 4. LATEST NEWS PREVIEW */}
+      {/* 4. PUBLIC ACTION DASHBOARD (Replaces Fake News) */}
       <section style={{ backgroundColor: "#FFFFFF", padding: "100px 24px" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           
           <ZoomReveal>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "48px", flexWrap: "wrap", gap: "24px" }}>
-              <div>
-                <h2 style={{ fontSize: "36px", fontWeight: "800", color: "#001F3F", margin: "0 0 12px 0" }}>
-                  Latest Insights & Updates
-                </h2>
-                <p style={{ color: "#666666", fontSize: "16px", margin: 0 }}>
-                  Policy briefs, symposium coverage, and institutional announcements.
-                </p>
-              </div>
-              <Link to="/news" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "#001F3F", fontWeight: "700", fontSize: "15px", textDecoration: "none", borderBottom: "2px solid #001F3F", paddingBottom: "4px" }}>
-                View All News
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-              </Link>
+            <div style={{ textAlign: "center", marginBottom: "60px" }}>
+              <h2 style={{ fontSize: "36px", fontWeight: "800", color: "#001F3F", margin: "0 0 12px 0" }}>
+                Public Resources & Actions
+              </h2>
+              <p style={{ color: "#666666", fontSize: "16px", margin: 0 }}>
+                Direct access to the VfM Office's public services and regulatory registers.
+              </p>
             </div>
           </ZoomReveal>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "30px" }}>
-            
-            <ZoomReveal delay={0.1}>
-              <div style={{ borderRadius: "12px", overflow: "hidden", backgroundColor: "#F8F9FA", border: "1px solid #E2E8F0", transition: "transform 0.3s ease", cursor: "pointer", height: "100%", display: "flex", flexDirection: "column" }}
+            {publicActions.map((action, index) => (
+              <ZoomReveal key={index} delay={index * 0.1}>
+                <div style={{ 
+                  backgroundColor: "#F8F9FA", borderRadius: "12px", padding: "40px", 
+                  border: "1px solid #E2E8F0", display: "flex", flexDirection: "column",
+                  height: "100%", transition: "transform 0.3s ease"
+                }}
                 onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
                 onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-              >
-                <div style={{ position: "relative", height: "220px" }}>
-                  <img src="/boardroom.jpg" alt="Symposium" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "80px", background: "linear-gradient(to top, #F8F9FA, transparent)" }} />
-                </div>
-                <div style={{ padding: "24px", flex: 1 }}>
-                  <span style={{ fontSize: "12px", fontWeight: "700", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1px" }}>Symposium Brief</span>
-                  <h3 style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", margin: "12px 0 16px 0", lineHeight: "1.4" }}>
-                    VFM Office Convenes Multi-Agency Symposium on Capital Project Cost
+                >
+                  <h3 style={{ fontSize: "22px", fontWeight: "800", color: "#001F3F", margin: "0 0 16px 0" }}>
+                    {action.title}
                   </h3>
-                  <p style={{ fontSize: "14px", color: "#64748B", margin: 0 }}>November 18, 2024</p>
+                  <p style={{ fontSize: "16px", color: "#475569", lineHeight: "1.6", margin: "0 0 32px 0", flex: 1 }}>
+                    {action.desc}
+                  </p>
+                  <Link to={action.link} style={{ 
+                    display: "inline-flex", alignItems: "center", gap: "8px", 
+                    color: "#001F3F", fontWeight: "700", fontSize: "15px", 
+                    textDecoration: "none", borderBottom: "2px solid #001F3F", 
+                    paddingBottom: "4px", alignSelf: "flex-start"
+                  }}>
+                    {action.btnText}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                  </Link>
                 </div>
-              </div>
-            </ZoomReveal>
-
-            <ZoomReveal delay={0.2}>
-              <div style={{ borderRadius: "12px", overflow: "hidden", backgroundColor: "#F8F9FA", border: "1px solid #E2E8F0", transition: "transform 0.3s ease", cursor: "pointer", height: "100%", display: "flex", flexDirection: "column" }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
-                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-              >
-                <div style={{ position: "relative", height: "220px" }}>
-                  <img src="/building-bg.jpg" alt="Technical Advisory" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "80px", background: "linear-gradient(to top, #F8F9FA, transparent)" }} />
-                </div>
-                <div style={{ padding: "24px", flex: 1 }}>
-                  <span style={{ fontSize: "12px", fontWeight: "700", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1px" }}>Technical Advisory</span>
-                  <h3 style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", margin: "12px 0 16px 0", lineHeight: "1.4" }}>
-                    Standardising Unit Costs in Healthcare Facility Infrastructure
-                  </h3>
-                  <p style={{ fontSize: "14px", color: "#64748B", margin: 0 }}>October 28, 2024</p>
-                </div>
-              </div>
-            </ZoomReveal>
-
-            <ZoomReveal delay={0.3}>
-              <div style={{ borderRadius: "12px", overflow: "hidden", backgroundColor: "#F8F9FA", border: "1px solid #E2E8F0", transition: "transform 0.3s ease", cursor: "pointer", height: "100%", display: "flex", flexDirection: "column" }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
-                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-              >
-                <div style={{ position: "relative", height: "220px" }}>
-                  <img src="/about-bg.jpg" alt="Quarterly Bulletin" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "80px", background: "linear-gradient(to top, #F8F9FA, transparent)" }} />
-                </div>
-                <div style={{ padding: "24px", flex: 1 }}>
-                  <span style={{ fontSize: "12px", fontWeight: "700", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1px" }}>Quarterly Bulletin</span>
-                  <h3 style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", margin: "12px 0 16px 0", lineHeight: "1.4" }}>
-                    Strengthening Oversight Mechanisms Across Metropolitan Assemblies
-                  </h3>
-                  <p style={{ fontSize: "14px", color: "#64748B", margin: 0 }}>September 14, 2024</p>
-                </div>
-              </div>
-            </ZoomReveal>
-
+              </ZoomReveal>
+            ))}
           </div>
+
         </div>
       </section>
 
@@ -332,7 +318,7 @@ export default function MandateCards() {
               >
                 Portal Login
               </Link>
-              <Link to="/contact" style={{ 
+              <Link to="/clearance" style={{ 
                 backgroundColor: "rgba(255,255,255,0.1)", color: "#FFFFFF", border: "1px solid rgba(255,255,255,0.3)", 
                 padding: "16px 40px", borderRadius: "4px", fontSize: "16px", fontWeight: "700", cursor: "pointer", textDecoration: "none",
                 transition: "background-color 0.2s ease", display: "inline-block"
@@ -340,7 +326,7 @@ export default function MandateCards() {
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.2)"}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"}
               >
-                Request Access
+                View Public Register
               </Link>
             </div>
           </div>

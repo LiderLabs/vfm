@@ -1,26 +1,30 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function Hero() {
   const slides = [
     {
       headline1: "Every Cedi Counts.",
       headline2: "Every Outcome Matters.",
-      subheadline: "Advancing a culture of responsible spending, measurable results, and value-driven public service delivery across national infrastructure.",
-      btnText: "Our Purpose",
+      subheadline: "The Value for Money Office is an independent statutory authority established under Act 1172 to regulate, monitor, and conduct value for money assessments across Ghana's public sector.",
+      btnText: "Learn About Our Mandate",
+      btnLink: "/about",
       bgPosition: "center 20%" 
     },
     {
-      headline1: "Securing Value Before",
-      headline2: "The First Cedi is Spent.",
-      subheadline: "Conducting mandatory VfM certifications and enforcing strict cost benchmarks to prevent contract inflation and protect the public purse.",
-      btnText: "Our Approach",
+      headline1: "Statutory Independence.",
+      headline2: "Unwavering Fiscal Integrity.",
+      subheadline: "Except as otherwise provided by law, the Office is not subject to the direction or control of any person or authority in the performance of its statutory functions. (Section 12)",
+      btnText: "Read Our Institutional Values",
+      btnLink: "/about#values",
       bgPosition: "center 30%"
     },
     {
-      headline1: "Delivering Results.",
-      headline2: "Ensuring Accountability.",
-      subheadline: "Tracking major infrastructure projects across Ghana to eliminate cost overruns, prevent abandoned projects, and guarantee citizen value.",
-      btnText: "View Impact",
+      headline1: "Protecting the Public Purse.",
+      headline2: "Guaranteeing Citizen Value.",
+      subheadline: "We provide a confidential, legally protected mechanism for citizens and entities to report contract inflation, cost irregularities, and the abuse of public resources.",
+      btnText: "Report a Concern",
+      btnLink: "/submit",
       bgPosition: "center 40%"
     }
   ];
@@ -117,6 +121,8 @@ export default function Hero() {
             min-width: 160px !important;
             white-space: nowrap !important;
             box-sizing: border-box !important;
+            text-decoration: none;
+            text-align: center;
           }
 
           /* MOBILE STYLES */
@@ -147,13 +153,11 @@ export default function Hero() {
             }
             .hero-slide {
               max-width: 100%;
-              /* ADDED PADDING TO PREVENT BUTTONS TOUCHING */
               padding-right: 24px; 
             }
             .hero-btn {
               width: 100% !important;
-              display: flex !important;
-              justify-content: center !important;
+              display: block !important;
               margin-bottom: 20px;
             }
           }
@@ -185,13 +189,14 @@ export default function Hero() {
                     {slide.subheadline}
                   </p>
                   
-                  <button 
+                  <Link 
+                    to={slide.btnLink}
                     className="hero-btn"
-                    onMouseEnter={(e) => e.target.style.transform = "scale(1.05)"}
-                    onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
                   >
                     {slide.btnText}
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
