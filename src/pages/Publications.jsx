@@ -17,7 +17,7 @@ export default function Publications() {
       tag: "PRESIDENTIAL ASSENT",
       title: "Value for Money Office Act, 2026 (Act 1172) Becomes Law",
       desc: "The President of the Republic of Ghana has formally assented to the Value for Money Office Act, 2026 (Act 1172), establishing the Office as an independent statutory body corporate.",
-      image: "/building-bg.jpg"
+      image: "/utilisation-bg.jpg" // <--- CHANGED IMAGE HERE
     },
     {
       date: "May 11, 2026",
@@ -100,6 +100,26 @@ export default function Publications() {
   return (
     <div style={{ backgroundColor: "#F4F5F0", minHeight: "100vh", overflowX: "hidden" }}>
       
+      <style>
+        {`
+          /* Mobile 2x2 Grid for Tabs */
+          .filter-tabs-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 32px;
+          }
+          
+          /* Desktop Flex Row for Tabs */
+          @media (min-width: 768px) {
+            .filter-tabs-container {
+              display: flex;
+              flex-wrap: wrap;
+            }
+          }
+        `}
+      </style>
+
       {/* SECTION 1: NEWS / STATUTORY NOTICES */}
       <section style={{ backgroundColor: "#001F3F", padding: "80px 24px 100px", position: "relative" }}>
         
@@ -116,7 +136,6 @@ export default function Publications() {
             </p>
           </div>
 
-          {/* Section Header - NO YELLOW BAR */}
           <div style={{ marginBottom: "32px" }}>
             <h2 style={{ fontSize: "clamp(24px, 4vw, 32px)", fontWeight: "800", color: "#FFFFFF", margin: 0 }}>
               Latest Statutory Notices
@@ -133,8 +152,12 @@ export default function Publications() {
               onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
               onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
               >
-                <div style={{ position: "relative", height: "200px", overflow: "hidden" }}>
-                  <img src={notice.image} alt={notice.title} style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.8 }} />
+                <div style={{ position: "relative", height: "200px", overflow: "hidden", backgroundColor: "#0A2E4D" }}>
+                  <img 
+                    src={notice.image} 
+                    alt="" 
+                    style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.8 }} 
+                  />
                   <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "linear-gradient(180deg, rgba(10,46,77,0) 0%, rgba(10,46,77,1) 100%)" }} />
                   <div style={{ position: "absolute", bottom: "20px", left: "20px", color: "#FFFFFF", fontSize: "13px", fontWeight: "600" }}>
                     {notice.date}
@@ -172,15 +195,14 @@ export default function Publications() {
 
         <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 3 }}>
           
-          {/* Section Header - NO NAVY BAR */}
           <div style={{ marginBottom: "32px" }}>
             <h2 style={{ fontSize: "clamp(24px, 4vw, 32px)", fontWeight: "800", color: "#001F3F", margin: 0 }}>
               Official Publications Repository
             </h2>
           </div>
 
-          {/* Filter Tabs */}
-          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "32px" }}>
+          {/* Filter Tabs - 2x2 Grid on Mobile, Flex on Desktop */}
+          <div className="filter-tabs-container">
             {filters.map((filter) => {
               const isActive = activeFilter === filter;
               return (
@@ -188,7 +210,7 @@ export default function Publications() {
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
                   style={{
-                    padding: "8px 16px",
+                    padding: "12px 16px",
                     borderRadius: "4px",
                     fontSize: "13px",
                     fontWeight: "600",
@@ -196,7 +218,9 @@ export default function Publications() {
                     border: "none",
                     backgroundColor: isActive ? "#001F3F" : "#E2E8F0",
                     color: isActive ? "#FFFFFF" : "#475569",
-                    transition: "all 0.2s ease"
+                    transition: "all 0.2s ease",
+                    textAlign: "center",
+                    width: "100%"
                   }}
                 >
                   {filter}
