@@ -120,19 +120,44 @@ export default function AboutUs() {
   return (
     <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflowX: "hidden" }}>
       
-      {/* 1. PAGE HEADER */}
-      <section style={{ position: "relative", backgroundColor: "#001F3F", padding: "140px 24px", textAlign: "center", color: "white", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url(/about-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.7, zIndex: 0 }} />
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "linear-gradient(180deg, rgba(0,31,63,0.2) 0%, rgba(0,31,63,0.95) 100%)", zIndex: 1 }} />
+      {/* 1. PAGE HEADER - FULL UNCROPPED IMAGE */}
+      <section style={{ position: "relative", backgroundColor: "#F8F9FA", width: "100%" }}>
         
-        <Reveal>
-          <div style={{ position: "relative", zIndex: 2 }}>
-            <h1 style={{ fontSize: "56px", fontWeight: "900", margin: "0 0 16px 0", letterSpacing: "-1px", textShadow: "0 2px 10px rgba(0,0,0,0.8)" }}>About Us</h1>
-            <p style={{ fontSize: "20px", color: "#FFFFFF", maxWidth: "650px", margin: "0 auto", fontWeight: "600", lineHeight: "1.6", textShadow: "0 1px 5px rgba(0,0,0,0.8)" }}>
-              Learn more about our mandate, our leadership, and the values that drive us to ensure value for every Cedi.
-            </p>
-          </div>
-        </Reveal>
+        {/* The Image - 100% width, auto height to show everything */}
+        <div style={{ 
+          width: "100%",
+          height: "clamp(300px, 50vw, 600px)", // Adjusts height based on screen width
+          backgroundImage: "url(/about-bg.jpg)", 
+          backgroundSize: "cover", // Will now cover properly without extreme zoom because height is relative to width
+          backgroundPosition: "center 60%", // Focuses on the building and grass
+          position: "relative"
+        }} />
+
+        {/* Floating Text Card overlapping the bottom of the image */}
+        <div style={{ 
+          position: "relative",
+          marginTop: "-80px", // Pulls the card up into the image
+          display: "flex",
+          justifyContent: "center",
+          padding: "0 24px"
+        }}>
+          <Reveal>
+            <div style={{ 
+              backgroundColor: "#001F3F", 
+              borderRadius: "16px", 
+              padding: "40px 60px", 
+              textAlign: "center", 
+              color: "white",
+              boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
+              maxWidth: "800px"
+            }}>
+              <h1 style={{ fontSize: "48px", fontWeight: "900", margin: "0 0 16px 0", letterSpacing: "-1px" }}>About Us</h1>
+              <p style={{ fontSize: "18px", color: "#E2E8F0", margin: "0 auto", fontWeight: "500", lineHeight: "1.6" }}>
+                Learn more about our mandate, our leadership, and the values that drive us to ensure value for every Cedi.
+              </p>
+            </div>
+          </Reveal>
+        </div>
       </section>
 
       {/* 2. EXECUTIVE SUMMARY */}
