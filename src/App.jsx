@@ -27,7 +27,8 @@ function Layout() {
   const isDashboard = location.pathname.startsWith("/dashboard");
 
   return (
-    <div style={{ fontFamily: "sans-serif", margin: 0, padding: 0, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+    // Removed fontFamily: "sans-serif" so index.css (Inter) takes global control
+    <div style={{ margin: 0, padding: 0, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       
       {!isPortal && !isDashboard && <Navbar />}
       

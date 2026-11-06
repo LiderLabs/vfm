@@ -17,7 +17,7 @@ export default function Publications() {
       tag: "PRESIDENTIAL ASSENT",
       title: "Value for Money Office Act, 2026 (Act 1172) Becomes Law",
       desc: "The President of the Republic of Ghana has formally assented to the Value for Money Office Act, 2026 (Act 1172), establishing the Office as an independent statutory body corporate.",
-      image: "/utilisation-bg.jpg" // <--- CHANGED IMAGE HERE
+      image: "/utilisation-bg.jpg"
     },
     {
       date: "May 11, 2026",
@@ -102,20 +102,12 @@ export default function Publications() {
       
       <style>
         {`
-          /* Mobile 2x2 Grid for Tabs */
-          .filter-tabs-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 32px;
+          .hide-scrollbar::-webkit-scrollbar {
+            display: none;
           }
-          
-          /* Desktop Flex Row for Tabs */
-          @media (min-width: 768px) {
-            .filter-tabs-container {
-              display: flex;
-              flex-wrap: wrap;
-            }
+          .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
           }
         `}
       </style>
@@ -201,8 +193,20 @@ export default function Publications() {
             </h2>
           </div>
 
-          {/* Filter Tabs - 2x2 Grid on Mobile, Flex on Desktop */}
-          <div className="filter-tabs-container">
+          {/* Filter Tabs - Horizontal Scroll */}
+          <div 
+            className="hide-scrollbar"
+            style={{ 
+              display: "flex", 
+              gap: "12px", 
+              marginBottom: "32px",
+              overflowX: "auto", 
+              paddingBottom: "8px", 
+              flexWrap: "nowrap",
+              maskImage: "linear-gradient(to right, black 90%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to right, black 90%, transparent 100%)"
+            }}
+          >
             {filters.map((filter) => {
               const isActive = activeFilter === filter;
               return (
@@ -210,7 +214,7 @@ export default function Publications() {
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
                   style={{
-                    padding: "12px 16px",
+                    padding: "10px 20px",
                     borderRadius: "4px",
                     fontSize: "13px",
                     fontWeight: "600",
@@ -219,8 +223,8 @@ export default function Publications() {
                     backgroundColor: isActive ? "#001F3F" : "#E2E8F0",
                     color: isActive ? "#FFFFFF" : "#475569",
                     transition: "all 0.2s ease",
-                    textAlign: "center",
-                    width: "100%"
+                    flexShrink: 0,
+                    whiteSpace: "nowrap"
                   }}
                 >
                   {filter}
