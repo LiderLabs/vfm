@@ -42,17 +42,34 @@ const Reveal = ({ children, delay = 0, width = "100%" }) => {
   );
 };
 
-// --- MOBILE-ONLY REVEAL (Uses Framer Motion whileInView for reliability) ---
-const MobileReveal = ({ children }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 40 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-50px" }}
-    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-  >
-    {children}
-  </motion.div>
-);
+// --- NATIVE MOBILE RISE (Pure IntersectionObserver, 100% Reliable) ---
+const MobileRise = ({ children }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { setIsVisible(entry.isIntersecting); },
+      { threshold: 0.05, rootMargin: "0px 0px -80px 0px" } // Triggers earlier
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => { if (ref.current) observer.unobserve(ref.current); };
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? "translateY(0)" : "translateY(40px)",
+        transition: "opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
+        width: "100%"
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 
 // --- DUAL-MODE STACK SECTION WRAPPER ---
 const StackSection = ({ children, index }) => {
@@ -131,7 +148,7 @@ export default function MandateCards() {
       <StackSection index={0}>
         <section style={{ position: "relative", padding: "80px 24px", backgroundColor: "#F8F9FA" }}>
           <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 2 }}>
-            <MobileReveal>
+            <MobileRise>
               <div style={{ textAlign: "center", marginBottom: "60px" }}>
                 <h2 style={{ fontSize: "40px", fontWeight: "800", color: "#001F3F", margin: "0 0 16px 0" }}>
                   Our Core Mandate
@@ -140,19 +157,18 @@ export default function MandateCards() {
                   Six pillars of value-for-money oversight across the public sector.
                 </p>
               </div>
-            </MobileReveal>
+            </MobileRise>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "30px" }}>
               {mandates.map((item, index) => {
                 const Icon = item.icon;
                 return (
-                  <MobileReveal key={index}>
+                  <MobileRise key={index}>
                     <div 
                       style={{ 
                         backgroundColor: "#FFFFFF", padding: "40px", borderRadius: "8px",
                         boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)", 
                         border: "1px solid #E2E8F0",
-                        transition: "all 0.3s ease", cursor: "pointer",
                         display: "flex", flexDirection: "column", height: "100%"
                       }}
                     >
@@ -172,7 +188,7 @@ export default function MandateCards() {
                         {item.description}
                       </p>
                     </div>
-                  </MobileReveal>
+                  </MobileRise>
                 );
               })}
             </div>
@@ -188,7 +204,7 @@ export default function MandateCards() {
 
           <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 2 }}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "60px", alignItems: "start" }}>
-              <MobileReveal>
+              <MobileRise>
                 <div>
                   <h2 style={{ fontSize: "clamp(32px, 4vw, 42px)", fontWeight: "800", color: "#FFFFFF", margin: "0 0 20px 0", lineHeight: "1.2" }}>
                     The Statutory Definition of Value for Money.
@@ -197,11 +213,11 @@ export default function MandateCards() {
                     Act 1172 mandates that public expenditure be evaluated against three distinct statutory principles. These principles form the foundation of every assessment conducted by the Office.
                   </p>
                 </div>
-              </MobileReveal>
+              </MobileRise>
 
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {pillars.map((pillar, index) => (
-                  <MobileReveal key={index}>
+                  <MobileRise key={index}>
                     <div style={{ 
                       padding: "24px 0",
                       borderBottom: index === pillars.length - 1 ? "none" : "1px solid rgba(255,255,255,0.15)",
@@ -214,7 +230,7 @@ export default function MandateCards() {
                         {pillar.desc}
                       </p>
                     </div>
-                  </MobileReveal>
+                  </MobileRise>
                 ))}
               </div>
             </div>
@@ -222,22 +238,22 @@ export default function MandateCards() {
         </section>
       </StackSection>
 
-      {/* 3. INSTITUTIONAL CTA - TRUE EDGE-TO-EDGE SPLIT */}
+      {/* 3. INSTITUTIONAL CTA - FULL SPLIT SCREEN */}
       <StackSection index={2}>
         <section style={{ 
           display: "grid", 
           gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
           backgroundColor: "#F4F5F0",
-          alignItems: "stretch", // Forces the image to stretch full height
-          minHeight: "600px"      // Ensures the section is tall enough to look impressive
+          alignItems: "stretch",
+          minHeight: "600px"
         }}>
           
-          <MobileReveal>
+          <MobileRise>
             <div style={{ 
               width: "100%", 
               height: "100%", 
               position: "relative",
-              minHeight: "400px" // Ensures image shows on mobile stacked view
+              minHeight: "400px"
             }}>
               <img 
                 src="/about-bg.jpg" 
@@ -253,9 +269,9 @@ export default function MandateCards() {
                 }} 
               />
             </div>
-          </MobileReveal>
+          </MobileRise>
 
-          <MobileReveal>
+          <MobileRise>
             <div style={{ 
               padding: "80px 60px",
               display: "flex",
@@ -273,7 +289,7 @@ export default function MandateCards() {
 
               <Link to="/about#framework" style={{ 
                 display: "inline-flex", alignItems: "center", gap: "8px", backgroundColor: "#001F3F", color: "#FFFFFF", padding: "16px 32px", 
-                borderRadius: "4px", fontSize: "16px", fontWeight: "700", textDecoration: "none", transition: "background-color 0.2s ease",
+                borderRadius: "4px", fontSize: "16px", fontWeight: "700", textDecoration: "none",
                 alignSelf: "flex-start"
               }}
               >
@@ -281,7 +297,7 @@ export default function MandateCards() {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
               </Link>
             </div>
-          </MobileReveal>
+          </MobileRise>
 
         </section>
       </StackSection>
@@ -291,7 +307,7 @@ export default function MandateCards() {
         <section style={{ backgroundColor: "#FFFFFF", padding: "80px 24px" }}>
           <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
             
-            <MobileReveal>
+            <MobileRise>
               <div style={{ textAlign: "center", marginBottom: "60px" }}>
                 <h2 style={{ fontSize: "36px", fontWeight: "800", color: "#001F3F", margin: "0 0 12px 0" }}>
                   Public Resources & Actions
@@ -300,17 +316,17 @@ export default function MandateCards() {
                   Direct access to the VfM Office's public services and regulatory registers.
                 </p>
               </div>
-            </MobileReveal>
+            </MobileRise>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "30px" }}>
               {publicActions.map((action, index) => {
                 const Icon = action.icon;
                 return (
-                  <MobileReveal key={index}>
+                  <MobileRise key={index}>
                     <div style={{ 
                       backgroundColor: "#F8F9FA", borderRadius: "8px", padding: "40px", 
                       border: "1px solid #E2E8F0", display: "flex", flexDirection: "column",
-                      height: "100%", transition: "all 0.3s ease",
+                      height: "100%",
                       boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)"
                     }}
                     >
@@ -339,7 +355,7 @@ export default function MandateCards() {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                       </Link>
                     </div>
-                  </MobileReveal>
+                  </MobileRise>
                 );
               })}
             </div>
@@ -354,7 +370,7 @@ export default function MandateCards() {
           
           <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url(/building-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.15, zIndex: 0 }} />
           
-          <MobileReveal>
+          <MobileRise>
             <div style={{ maxWidth: "800px", margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
               <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#FFFFFF", marginBottom: "24px", lineHeight: "1.1" }}>
                 Access the VFM Internal Portal
@@ -365,7 +381,7 @@ export default function MandateCards() {
               <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
                 <Link to="/portal" style={{ 
                   backgroundColor: "#FCD116", color: "#001F3F", border: "none", padding: "16px 40px", borderRadius: "4px", fontSize: "16px", 
-                  fontWeight: "800", cursor: "pointer", textDecoration: "none", transition: "transform 0.2s ease", display: "inline-block"
+                  fontWeight: "800", cursor: "pointer", textDecoration: "none", display: "inline-block"
                 }}
                 >
                   Portal Login
@@ -373,14 +389,14 @@ export default function MandateCards() {
                 <Link to="/clearance" style={{ 
                   backgroundColor: "rgba(255,255,255,0.1)", color: "#FFFFFF", border: "1px solid rgba(255,255,255,0.3)", 
                   padding: "16px 40px", borderRadius: "4px", fontSize: "16px", fontWeight: "700", cursor: "pointer", textDecoration: "none",
-                  transition: "background-color 0.2s ease", display: "inline-block"
+                  display: "inline-block"
                 }}
                 >
                   View Public Register
                 </Link>
               </div>
             </div>
-          </MobileReveal>
+          </MobileRise>
         </section>
       </StackSection>
     </div>
