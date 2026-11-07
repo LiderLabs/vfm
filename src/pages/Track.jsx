@@ -34,8 +34,27 @@ export default function Track() {
   ];
 
   return (
-    <div style={{ backgroundColor: "#F4F5F0", minHeight: "100vh", padding: "80px 24px" }}>
-      <div style={{ maxWidth: "700px", margin: "0 auto" }}>
+    <div style={{ position: "relative", backgroundColor: "#F4F5F0", minHeight: "100vh", padding: "80px 24px", overflowX: "hidden" }}>
+      
+      {/* FULL-PAGE SUBTLE VFMO LOGO BACKGROUND */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: "none",
+          backgroundImage: "url(/vfm-logo.png)",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center center",
+          backgroundSize: "min(85vw, 900px)",
+          opacity: 0.05,
+          filter: "grayscale(10%)",
+        }}
+      />
+
+      {/* CONTENT ABOVE LOGO */}
+      <div style={{ position: "relative", zIndex: 1, maxWidth: "700px", margin: "0 auto" }}>
         
         {/* HEADER */}
         <div style={{ textAlign: "center", marginBottom: "40px" }}>

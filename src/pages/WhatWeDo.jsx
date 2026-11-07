@@ -1,31 +1,52 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
+import { motion, useScroll, useTransform } from "framer-motion";
 
-// --- SCROLL REVEAL ANIMATION COMPONENT ---
-const ZoomReveal = ({ children, delay = 0 }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef(null);
+// --- SERIOUS.BUSINESS STYLE STACKING CARD WRAPPER ---
+const StackCard = ({ children, index, id, total }) => {
+  const cardRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { setIsVisible(entry.isIntersecting); },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => { if (ref.current) observer.unobserve(ref.current); };
+    const checkMobile = () => setIsMobile(window.matchMedia("(max-width: 900px)").matches);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Background card scales down subtly as the next card slides over it
+  const scale = useTransform(scrollYProgress, [0, 1], [1, isMobile ? 1 : 0.95]);
 
   return (
     <div
-      ref={ref}
+      ref={cardRef}
+      id={id}
       style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? "scale(1)" : "scale(0.95)",
-        transition: `opacity 0.8s ease-out ${delay}s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
-        width: "100%"
+        position: isMobile ? "relative" : "sticky",
+        // Incremental sticky offset creates the visible tabbed stack like in the video
+        top: isMobile ? "auto" : `calc(80px + ${index * 16}px)`,
+        zIndex: index + 1,
+        width: "100%",
+        marginBottom: isMobile ? "32px" : `${(total - index) * 10}px`,
       }}
     >
-      {children}
+      <motion.div
+        style={{
+          scale,
+          transformOrigin: "top center",
+          borderRadius: "28px",
+          // Deep upward shadow so the incoming card visibly casts a shadow onto the previous card
+          boxShadow: isMobile ? "0 10px 25px rgba(0,0,0,0.06)" : "0 -18px 45px rgba(0, 0, 0, 0.16)",
+          overflow: "hidden",
+        }}
+      >
+        {children}
+      </motion.div>
     </div>
   );
 };
@@ -33,7 +54,7 @@ const ZoomReveal = ({ children, delay = 0 }) => {
 export default function WhatWeDo() {
   const { hash } = useLocation();
   const [activePillar, setActivePillar] = useState(0);
-  
+
   const touchStart = useRef(null);
   const touchEnd = useRef(null);
 
@@ -43,13 +64,14 @@ export default function WhatWeDo() {
       if (element) {
         setTimeout(() => {
           element.scrollIntoView({ behavior: "smooth" });
-        }, 100);
+        }, 150);
       }
     } else {
       window.scrollTo(0, 0);
     }
   }, [hash]);
 
+  // Alternating card themes (Light vs Navy) to maximize visual overlap contrast
   const pillars = [
     {
       id: "assessments",
@@ -57,7 +79,11 @@ export default function WhatWeDo() {
       title: "Pre-Contract & Technical VfM Assessments",
       description: "Conducting mandatory ex-ante reviews of major capital projects to ensure proposed costs are reasonable and represent maximum value before public funds are committed.",
       detailText: "Our technical teams examine the intricacies of every proposal, from conducting detailed bid evaluations to applying value engineering principles. We work to establish accurate cost benchmarks, ensuring that the government is not paying inflated prices before a single contract is signed.",
-      image: "/site-review.jpg"
+      image: "/site-review.jpg",
+      isDark: false,
+      bgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      subColor: "#475569",
     },
     {
       id: "evaluation",
@@ -65,7 +91,11 @@ export default function WhatWeDo() {
       title: "Project Scrutiny & Impact Evaluation",
       description: "Continuous monitoring of ongoing infrastructure to prevent cost overruns and post-implementation audits to measure actual socio-economic impact.",
       detailText: "A contract award is not the finish line; it is the starting block. We deploy compliance audits and rigorous impact metrics to track progress on the ground, proactively identifying risks and preventing the costly delays that derail public projects.",
-      image: "/boardroom.jpg"
+      image: "/boardroom.jpg",
+      isDark: true,
+      bgColor: "#001F3F", // Deep Navy Card
+      textColor: "#FFFFFF",
+      subColor: "#CBD5E1",
     },
     {
       id: "utilisation",
@@ -73,7 +103,11 @@ export default function WhatWeDo() {
       title: "Public Expenditure Utilisation Review",
       description: "Tracking the actual disbursement and utilisation of funds across Metropolitan, Municipal, and District Assemblies to ensure fiscal discipline.",
       detailText: "By auditing how funds are actually disbursed to the MMDAs, we ensure that fiscal discipline is maintained at the local level. Our review process tracks the journey of every Cedi from the national treasury to its intended project site.",
-      image: "/utilisation-bg.jpg"
+      image: "/utilisation-bg.jpg",
+      isDark: false,
+      bgColor: "#F8F9FA", // Crisp Warm Pearl
+      textColor: "#0F172A",
+      subColor: "#475569",
     },
     {
       id: "benchmarks",
@@ -81,7 +115,11 @@ export default function WhatWeDo() {
       title: "Performance & Service Delivery Benchmarking",
       description: "Establishing rigorous public sector metrics to compare unit costs and service outputs against regional peer nations and international standards.",
       detailText: "We develop comprehensive unit cost metrics and delivery standards that allow us to compare Ghana's public projects against regional peers. This data-driven approach ensures that our procurement practices remain competitive and efficient on a global scale.",
-      image: "/about-bg.jpg"
+      image: "/about-bg.jpg",
+      isDark: false,
+      bgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      subColor: "#475569",
     },
     {
       id: "standards",
@@ -89,7 +127,11 @@ export default function WhatWeDo() {
       title: "Research, Standards & Technical Guidance",
       description: "Formulating national reference manuals, standardized costing guides, and econometric models to inform evidence-based public policy decisions.",
       detailText: "To institutionalize value for money, we publish gazetted reference manuals and standardized costing guides. Our econometric lifecycle models provide policymakers with the evidence-based tools they need to make informed decisions on major capital expenditures.",
-      image: "/site-review.jpg"
+      image: "/site-review.jpg",
+      isDark: true,
+      bgColor: "#0F172A", // Slate Charcoal Card
+      textColor: "#FFFFFF",
+      subColor: "#CBD5E1",
     },
     {
       id: "training",
@@ -97,14 +139,19 @@ export default function WhatWeDo() {
       title: "Institutional Capacity Building & Training",
       description: "Equipping procurement officers, ministry executives, and local government leaders with the technical skills required to execute value-for-money protocols.",
       detailText: "We believe that sustainable change requires empowered people. Through executive seminars and technical certification programs, we equip procurement officers and local government leaders with the skills necessary to enforce value-for-money protocols in their daily operations.",
-      image: "/boardroom.jpg"
+      image: "/boardroom.jpg",
+      isDark: false,
+      bgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      subColor: "#475569",
     }
   ];
 
+  // Auto-slide hero
   useEffect(() => {
     const timer = setInterval(() => {
       setActivePillar((prev) => (prev === pillars.length - 1 ? 0 : prev + 1));
-    }, 6000); 
+    }, 6000);
     return () => clearInterval(timer);
   }, [pillars.length]);
 
@@ -128,7 +175,7 @@ export default function WhatWeDo() {
     if (isRightSwipe) {
       setActivePillar((prev) => (prev === 0 ? pillars.length - 1 : prev - 1));
     }
-    
+
     touchStart.current = null;
     touchEnd.current = null;
   };
@@ -141,8 +188,7 @@ export default function WhatWeDo() {
   };
 
   return (
-    <div style={{ backgroundColor: "#F8F9FA", minHeight: "100vh", overflowX: "hidden" }}>
-      
+    <div style={{ backgroundColor: "#F4F5F0", minHeight: "100vh", overflowX: "hidden", fontFamily: "'Inter', sans-serif" }}>
       <style>
         {`
           .explore-btn-fix {
@@ -169,13 +215,12 @@ export default function WhatWeDo() {
 
       {/* 1. CINEMATIC SLIDESHOW HERO */}
       <section style={{ position: "relative", backgroundColor: "#001F3F", overflow: "hidden", display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-        
         <div style={{ position: "relative", zIndex: 10, padding: "40px 24px 24px", maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
           <h1 style={{ fontSize: "42px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 12px 0", lineHeight: "1.1", maxWidth: "800px", textShadow: "0 4px 12px rgba(0,0,0,0.8)" }}>
             Operational Scope & Focus Areas
           </h1>
           <p style={{ fontSize: "18px", color: "#E2E8F0", maxWidth: "650px", margin: 0, lineHeight: "1.6", textShadow: "0 2px 6px rgba(0,0,0,0.8)" }}>
-            The Office deploys multidisciplinary technical teams to execute targeted evaluations across six primary institutional pillars.
+            The Office deploys multidisciplinary technical teams to execute targeted evaluations across six primary institutional areas.
           </p>
         </div>
 
@@ -208,7 +253,7 @@ export default function WhatWeDo() {
 
                 <div style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", padding: "40px 24px 100px", position: "relative", zIndex: 2 }}>
                   <div style={{ marginBottom: "16px" }}>
-                    <span style={{ fontSize: "14px", fontWeight: "700", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1.5px", textShadow: "0 2px 5px rgba(0,0,0,0.8)" }}>
+                    <span style={{ fontSize: "14px", fontWeight: "800", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1.5px", textShadow: "0 2px 5px rgba(0,0,0,0.8)" }}>
                       {pillar.category}
                     </span>
                   </div>
@@ -255,71 +300,132 @@ export default function WhatWeDo() {
         </div>
       </section>
 
-      {/* 2. THE 6 DETAILED SECTIONS - LIGHT BACKGROUND WITH SHADOWS AND SPACING */}
-      <div style={{ backgroundColor: "#F4F5F0", padding: "80px 24px" }}>
-        <div style={{ maxWidth: "1400px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "60px" }}>
+      {/* 2. THE STACKING CARDS DECK (SERIOUS.BUSINESS STYLE OVERLAPPING ANIMATION) */}
+      <div style={{ backgroundColor: "#F4F5F0", padding: "80px 24px 160px" }}>
+        
+        {/* Intro Headline */}
+        <div style={{ maxWidth: "1200px", margin: "0 auto 60px", textAlign: "center" }}>
+          <span style={{ fontSize: "12px", fontWeight: "800", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1.5px", display: "block", marginBottom: "12px" }}>
+            Statutory Focus
+          </span>
+          <h2 style={{ fontSize: "clamp(32px, 4vw, 44px)", fontWeight: "900", color: "#001F3F", margin: "0 0 16px 0", letterSpacing: "-0.5px" }}>
+            Statutory Methodology & Areas
+          </h2>
+          <p style={{ color: "#475569", fontSize: "18px", margin: "0 auto", maxWidth: "600px", lineHeight: "1.6" }}>
+            Detailed breakdown of our evaluations from early pre-contract reviews to lifecycle audit.
+          </p>
+        </div>
+
+        {/* Stack Container */}
+        <div style={{ maxWidth: "1300px", margin: "0 auto", position: "relative" }}>
           {pillars.map((pillar, index) => (
-            <section 
+            <StackCard 
               key={pillar.id} 
+              index={index} 
               id={pillar.id} 
-              style={{ 
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 500px), 1fr))",
-                backgroundColor: "#FFFFFF",
-                alignItems: "stretch",
-                minHeight: "600px",
-                borderRadius: "16px",
-                overflow: "hidden",
-                boxShadow: "0 20px 40px rgba(0,0,0,0.08)", // Soft shadow for separation
-                border: "1px solid #E2E8F0"
-              }}
+              total={pillars.length}
             >
-              
-              {/* Image Side */}
-              <div style={{ order: index % 2 === 0 ? 1 : 2, position: "relative", width: "100%", height: "100%", minHeight: "400px" }}>
-                <img 
-                  src={pillar.image} 
-                  alt={pillar.title} 
-                  style={{ 
-                    position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
-                    objectFit: "cover", objectPosition: "center", display: "block" 
-                  }} 
-                />
-              </div>
-              
-              {/* Text Side */}
-              <div style={{ 
-                order: index % 2 === 0 ? 2 : 1, 
-                padding: "80px 60px", 
-                display: "flex", 
-                flexDirection: "column", 
-                justifyContent: "center" 
-              }}>
-                <span style={{ fontSize: "13px", fontWeight: "800", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1.5px", display: "block", marginBottom: "16px" }}>
-                  {pillar.category}
-                </span>
-                <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", margin: "0 0 24px 0", lineHeight: "1.1" }}>
-                  {pillar.title}
-                </h2>
-                <p style={{ fontSize: "18px", lineHeight: "1.7", color: "#475569", marginBottom: "24px" }}>
-                  {pillar.description}
-                </p>
+              <div 
+                style={{ 
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 500px), 1fr))",
+                  backgroundColor: pillar.bgColor,
+                  alignItems: "stretch",
+                  minHeight: "560px",
+                  borderRadius: "28px",
+                  overflow: "hidden",
+                  border: pillar.isDark ? "none" : "1px solid #E2E8F0"
+                }}
+              >
+                {/* Image Side */}
+                <div style={{ order: index % 2 === 0 ? 1 : 2, position: "relative", width: "100%", height: "100%", minHeight: "360px" }}>
+                  <img 
+                    src={pillar.image} 
+                    alt={pillar.title} 
+                    style={{ 
+                      position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
+                      objectFit: "cover", objectPosition: "center", display: "block" 
+                    }} 
+                  />
+                  <div style={{ position: "absolute", inset: 0, background: pillar.isDark ? "linear-gradient(to top, rgba(0,31,63,0.5) 0%, transparent 60%)" : "linear-gradient(to top, rgba(0,0,0,0.15) 0%, transparent 60%)" }} />
+                </div>
                 
-                <p style={{ fontSize: "17px", lineHeight: "1.7", color: "#475569", marginBottom: "40px" }}>
-                  {pillar.detailText}
-                </p>
+                {/* Content Side */}
+                <div style={{ 
+                  order: index % 2 === 0 ? 2 : 1, 
+                  padding: "60px 48px", 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  justifyContent: "center" 
+                }}>
+                  {/* Category Tag (Pure category, no 'Pillar 01/02') */}
+                  <div style={{ marginBottom: "16px" }}>
+                    <span style={{ 
+                      fontSize: "12px", 
+                      fontWeight: "800", 
+                      color: pillar.isDark ? "#FCD116" : "#8B7355", 
+                      backgroundColor: pillar.isDark ? "rgba(252, 209, 22, 0.12)" : "rgba(139, 115, 85, 0.08)",
+                      padding: "6px 14px",
+                      borderRadius: "6px",
+                      textTransform: "uppercase", 
+                      letterSpacing: "1.5px",
+                      display: "inline-block"
+                    }}>
+                      {pillar.category}
+                    </span>
+                  </div>
 
-                <Link to="/contact" style={{ display: "inline-flex", alignItems: "center", gap: "8px", backgroundColor: "#001F3F", color: "#FFFFFF", padding: "16px 32px", borderRadius: "4px", fontSize: "16px", fontWeight: "700", textDecoration: "none", transition: "background-color 0.2s ease", alignSelf: "flex-start" }}>
-                  Request a Consultation
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </Link>
+                  <h3 style={{ fontSize: "clamp(26px, 3vw, 36px)", fontWeight: "900", color: pillar.textColor, margin: "0 0 20px 0", lineHeight: "1.2", letterSpacing: "-0.5px" }}>
+                    {pillar.title}
+                  </h3>
+
+                  <p style={{ fontSize: "17px", lineHeight: "1.7", color: pillar.subColor, marginBottom: "18px", fontWeight: "500" }}>
+                    {pillar.description}
+                  </p>
+                  
+                  <p style={{ fontSize: "15px", lineHeight: "1.7", color: pillar.subColor, opacity: 0.9, marginBottom: "36px" }}>
+                    {pillar.detailText}
+                  </p>
+
+                  {/* AUTHORITATIVE ACTION BUTTON */}
+                  <Link 
+                    to="/contact" 
+                    style={{ 
+                      display: "inline-flex", 
+                      alignItems: "center", 
+                      gap: "10px", 
+                      backgroundColor: pillar.isDark ? "#FCD116" : "#001F3F", 
+                      color: pillar.isDark ? "#001F3F" : "#FFFFFF", 
+                      padding: "16px 32px", 
+                      borderRadius: "6px", 
+                      fontSize: "15px", 
+                      fontWeight: "800", 
+                      textDecoration: "none", 
+                      transition: "all 0.2s ease", 
+                      alignSelf: "flex-start",
+                      boxShadow: pillar.isDark ? "0 4px 15px rgba(252, 209, 22, 0.3)" : "0 4px 15px rgba(0, 31, 63, 0.15)"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                      e.currentTarget.style.backgroundColor = pillar.isDark ? "#FFDE45" : "#0A2E4D";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.backgroundColor = pillar.isDark ? "#FCD116" : "#001F3F";
+                    }}
+                  >
+                    Engage Our Technical Team
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </Link>
+                </div>
               </div>
-
-            </section>
+            </StackCard>
           ))}
         </div>
       </div>
-
     </div>
   );
 }
