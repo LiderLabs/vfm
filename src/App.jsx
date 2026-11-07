@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-route
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import FloatingHelpButton from "./components/FloatingHelpButton";
 import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import WhatWeDo from "./pages/WhatWeDo";
@@ -18,6 +19,7 @@ import OpenData from "./pages/OpenData";
 import Engagement from "./pages/Engagement"; 
 import ReviewPanel from "./pages/ReviewPanel"; 
 import Whistleblower from "./pages/Whistleblower";
+import Faq from "./pages/Faq";
 import Placeholder from "./pages/Placeholder";
 
 function Layout() {
@@ -27,7 +29,6 @@ function Layout() {
   const isDashboard = location.pathname.startsWith("/dashboard");
 
   return (
-    // Removed fontFamily: "sans-serif" so index.css (Inter) takes global control
     <div style={{ margin: 0, padding: 0, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       
       {!isPortal && !isDashboard && <Navbar />}
@@ -48,6 +49,7 @@ function Layout() {
           <Route path="/news" element={<Navigate to="/publications" replace />} />
           
           <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<Faq />} />
           
           {/* Public Submission, Tracking, Clearance, Sanctions, Open Data & Engagement Routes */}
           <Route path="/submit" element={<Submit />} />
@@ -73,6 +75,7 @@ function Layout() {
 
       {!isPortal && !isDashboard && <Footer />}
       {!isPortal && !isDashboard && <ScrollToTop />}
+      {!isPortal && !isDashboard && <FloatingHelpButton />}
     </div>
   );
 }

@@ -133,9 +133,8 @@ export default function WhatWeDo() {
     touchEnd.current = null;
   };
 
-  const handleExploreClick = () => {
-    const targetId = pillars[activePillar].id;
-    const element = document.getElementById(targetId);
+  const handleExploreClick = (id) => {
+    const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
@@ -160,100 +159,142 @@ export default function WhatWeDo() {
               display: inline-flex !important;
             }
           }
+          .hero-track {
+            display: flex;
+            height: 100%;
+            transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+          }
         `}
       </style>
 
-      {/* 1. INTERACTIVE DARK SECTION */}
-      <section style={{ position: "relative", backgroundColor: "#001F3F", padding: "100px 24px 80px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      {/* 1. CINEMATIC SLIDESHOW HERO */}
+      <section style={{ position: "relative", backgroundColor: "#001F3F", overflow: "hidden", display: "flex", flexDirection: "column", minHeight: "100vh" }}>
         
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url(/building-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.65, zIndex: 0 }} />
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "linear-gradient(180deg, rgba(0,31,63,0.5) 0%, rgba(0,31,63,0.95) 100%)", zIndex: 1 }} />
+        <div style={{ position: "relative", zIndex: 10, padding: "40px 24px 24px", maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
+          <h1 style={{ fontSize: "42px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 12px 0", lineHeight: "1.1", maxWidth: "800px", textShadow: "0 4px 12px rgba(0,0,0,0.8)" }}>
+            Operational Scope & Focus Areas
+          </h1>
+          <p style={{ fontSize: "18px", color: "#E2E8F0", maxWidth: "650px", margin: 0, lineHeight: "1.6", textShadow: "0 2px 6px rgba(0,0,0,0.8)" }}>
+            The Office deploys multidisciplinary technical teams to execute targeted evaluations across six primary institutional pillars.
+          </p>
+        </div>
 
-        <div style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", position: "relative", zIndex: 2, flex: 1 }}>
-          
-          <div style={{ marginBottom: "60px" }}>
-            <h1 style={{ fontSize: "52px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 16px 0", lineHeight: "1.1", maxWidth: "800px", textShadow: "0 4px 12px rgba(0,0,0,0.6)" }}>
-              Operational Scope & Focus Areas
-            </h1>
-            <p style={{ fontSize: "20px", color: "#E2E8F0", maxWidth: "650px", margin: 0, lineHeight: "1.6", textShadow: "0 2px 6px rgba(0,0,0,0.6)" }}>
-              The Office deploys multidisciplinary technical teams to execute targeted evaluations across six primary institutional pillars.
-            </p>
-          </div>
+        <div 
+          style={{ position: "relative", flex: 1, overflow: "hidden", width: "100%" }}
+          onTouchStart={handleTouchStart} 
+          onTouchMove={handleTouchMove} 
+          onTouchEnd={handleTouchEnd}
+        >
+          <div 
+            className="hero-track"
+            style={{ transform: `translateX(-${activePillar * 100}%)` }}
+          >
+            {pillars.map((pillar) => (
+              <div 
+                key={pillar.id} 
+                style={{ 
+                  minWidth: "100%", width: "100%", position: "relative", display: "flex", alignItems: "center"
+                }}
+              >
+                <div style={{ 
+                  position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
+                  backgroundImage: `url(${pillar.image})`, backgroundSize: "cover", backgroundPosition: "center", opacity: 0.65, zIndex: 0 
+                }} />
+                
+                <div style={{ 
+                  position: "absolute", top: 0, left: 0, right: 0, bottom: 0, 
+                  background: "linear-gradient(180deg, rgba(0,31,63,0.2) 0%, rgba(0,31,63,0.95) 100%)", zIndex: 1 
+                }} />
 
-          <div style={{ minHeight: "300px" }} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
-            <div key={activePillar} style={{ animation: "fadeSlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards" }}>
-              <style>{`
-                @keyframes fadeSlideIn {
-                  from { opacity: 0; transform: translateY(20px); }
-                  to { opacity: 1; transform: translateY(0); }
-                }
-              `}</style>
+                <div style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", padding: "40px 24px 100px", position: "relative", zIndex: 2 }}>
+                  <div style={{ marginBottom: "16px" }}>
+                    <span style={{ fontSize: "14px", fontWeight: "700", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1.5px", textShadow: "0 2px 5px rgba(0,0,0,0.8)" }}>
+                      {pillar.category}
+                    </span>
+                  </div>
 
-              <div style={{ marginBottom: "16px" }}>
-                <span style={{ fontSize: "14px", fontWeight: "700", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1.5px" }}>
-                  {pillars[activePillar].category}
-                </span>
+                  <h2 style={{ fontSize: "48px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 24px 0", lineHeight: "1.2", maxWidth: "900px", textShadow: "0 4px 12px rgba(0,0,0,0.8)" }}>
+                    {pillar.title}
+                  </h2>
+                  
+                  <p style={{ fontSize: "18px", lineHeight: "1.8", color: "#CBD5E1", maxWidth: "800px", marginBottom: "40px", textShadow: "0 2px 6px rgba(0,0,0,0.8)" }}>
+                    {pillar.description}
+                  </p>
+
+                  <button 
+                    onClick={() => handleExploreClick(pillar.id)} 
+                    className="explore-btn-fix" 
+                    style={{ 
+                      backgroundColor: "#FCD116", color: "#001F3F", border: "none", padding: "16px 40px", 
+                      borderRadius: "4px", fontSize: "16px", fontWeight: "800", cursor: "pointer", 
+                      transition: "transform 0.2s ease", boxShadow: "0 4px 15px rgba(252, 209, 22, 0.4)" 
+                    }} 
+                    onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"} 
+                    onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+                  >
+                    Explore Focus Area
+                  </button>
+                </div>
               </div>
-
-              <h2 style={{ fontSize: "48px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 24px 0", lineHeight: "1.2", maxWidth: "900px", textShadow: "0 4px 12px rgba(0,0,0,0.6)" }}>
-                {pillars[activePillar].title}
-              </h2>
-              
-              <p style={{ fontSize: "18px", lineHeight: "1.8", color: "#CBD5E1", maxWidth: "800px", marginBottom: "40px", textShadow: "0 2px 6px rgba(0,0,0,0.6)" }}>
-                {pillars[activePillar].description}
-              </p>
-
-              <button onClick={handleExploreClick} className="explore-btn-fix" style={{ backgroundColor: "#FCD116", color: "#001F3F", border: "none", padding: "16px 40px", borderRadius: "4px", fontSize: "16px", fontWeight: "800", cursor: "pointer", transition: "transform 0.2s ease", boxShadow: "0 4px 15px rgba(252, 209, 22, 0.3)" }} onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"} onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}>
-                Explore Focus Area
-              </button>
-            </div>
+            ))}
           </div>
 
-          <div style={{ display: "flex", gap: "12px", marginTop: "60px", justifyContent: "flex-start" }}>
+          <div style={{ position: "absolute", bottom: "40px", left: "50%", transform: "translateX(-50%)", display: "flex", gap: "12px", zIndex: 10 }}>
             {pillars.map((_, index) => (
-              <div key={index} onClick={() => setActivePillar(index)} style={{ width: index === activePillar ? "40px" : "12px", height: "12px", borderRadius: "6px", backgroundColor: index === activePillar ? "#FCD116" : "rgba(255,255,255,0.3)", transition: "all 0.4s ease", cursor: "pointer" }} />
+              <div 
+                key={index} 
+                onClick={() => setActivePillar(index)} 
+                style={{ 
+                  width: index === activePillar ? "40px" : "12px", height: "12px", borderRadius: "6px", 
+                  backgroundColor: index === activePillar ? "#FCD116" : "rgba(255,255,255,0.4)", 
+                  transition: "all 0.4s ease", cursor: "pointer", boxShadow: "0 2px 5px rgba(0,0,0,0.5)"
+                }} 
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* 2. THE 6 DETAILED SECTIONS */}
-      {pillars.map((pillar, index) => (
-        <section 
-          key={pillar.id} 
-          id={pillar.id} 
-          style={{ 
-            padding: "100px 24px", 
-            backgroundColor: index % 2 === 0 ? "#F8F9FA" : "#FFFFFF" 
-          }}
-        >
-          <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "60px", alignItems: "center" }}>
-            
-            <ZoomReveal style={{ order: index % 2 === 0 ? 1 : 2 }}>
-              {/* FIX: Fixed height container + objectFit cover */}
-              <div style={{ 
-                borderRadius: "16px", 
-                overflow: "hidden", 
-                boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
-                height: "500px", // Fixed height for all images
-                width: "100%"
-              }}>
+      {/* 2. THE 6 DETAILED SECTIONS - LIGHT BACKGROUND WITH SHADOWS AND SPACING */}
+      <div style={{ backgroundColor: "#F4F5F0", padding: "80px 24px" }}>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "60px" }}>
+          {pillars.map((pillar, index) => (
+            <section 
+              key={pillar.id} 
+              id={pillar.id} 
+              style={{ 
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 500px), 1fr))",
+                backgroundColor: "#FFFFFF",
+                alignItems: "stretch",
+                minHeight: "600px",
+                borderRadius: "16px",
+                overflow: "hidden",
+                boxShadow: "0 20px 40px rgba(0,0,0,0.08)", // Soft shadow for separation
+                border: "1px solid #E2E8F0"
+              }}
+            >
+              
+              {/* Image Side */}
+              <div style={{ order: index % 2 === 0 ? 1 : 2, position: "relative", width: "100%", height: "100%", minHeight: "400px" }}>
                 <img 
                   src={pillar.image} 
                   alt={pillar.title} 
                   style={{ 
-                    width: "100%", 
-                    height: "100%", 
-                    objectFit: "cover", // Forces the image to crop and fill the fixed height
-                    objectPosition: "center",
-                    display: "block" 
+                    position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
+                    objectFit: "cover", objectPosition: "center", display: "block" 
                   }} 
                 />
               </div>
-            </ZoomReveal>
-            
-            <ZoomReveal delay={0.2} style={{ order: index % 2 === 0 ? 2 : 1 }}>
-              <div>
+              
+              {/* Text Side */}
+              <div style={{ 
+                order: index % 2 === 0 ? 2 : 1, 
+                padding: "80px 60px", 
+                display: "flex", 
+                flexDirection: "column", 
+                justifyContent: "center" 
+              }}>
                 <span style={{ fontSize: "13px", fontWeight: "800", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1.5px", display: "block", marginBottom: "16px" }}>
                   {pillar.category}
                 </span>
@@ -268,16 +309,16 @@ export default function WhatWeDo() {
                   {pillar.detailText}
                 </p>
 
-                <Link to="/contact" style={{ display: "inline-flex", alignItems: "center", gap: "8px", backgroundColor: "#001F3F", color: "#FFFFFF", padding: "16px 32px", borderRadius: "4px", fontSize: "16px", fontWeight: "700", textDecoration: "none", transition: "background-color 0.2s ease" }}>
+                <Link to="/contact" style={{ display: "inline-flex", alignItems: "center", gap: "8px", backgroundColor: "#001F3F", color: "#FFFFFF", padding: "16px 32px", borderRadius: "4px", fontSize: "16px", fontWeight: "700", textDecoration: "none", transition: "background-color 0.2s ease", alignSelf: "flex-start" }}>
                   Request a Consultation
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </Link>
               </div>
-            </ZoomReveal>
 
-          </div>
-        </section>
-      ))}
+            </section>
+          ))}
+        </div>
+      </div>
 
     </div>
   );

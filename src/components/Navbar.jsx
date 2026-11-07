@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const navigate = useNavigate();
 
-  const handleNavClick = (path) => {
-    navigate(path);
+  const closeMenus = () => {
     setActiveDropdown(null);
     setIsMobileMenuOpen(false);
   };
@@ -24,18 +22,11 @@ export default function Navbar() {
           .nav-link { color: #001F3F; text-decoration: none; transition: color 0.2s; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
           .nav-link:hover { color: #FCD116; }
           
-          /* LOGO STYLE */
-          .logo-image {
-            height: 55px;
-            width: auto;
-            object-fit: contain;
-          }
-
-          /* DESKTOP DROPDOWNS */
+          .logo-image { height: 55px; width: auto; object-fit: contain; }
           .dropdown-container { position: relative; padding: 10px 0; }
           .dropdown-menu {
             position: absolute; top: 100%; left: 0; margin-top: 0px;
-            background-color: #FFFFFF; min-width: 250px; border-radius: 4px;
+            background-color: #FFFFFF; min-width: 280px; border-radius: 4px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15); padding: 8px 0;
             display: flex; flex-direction: column; z-index: 9999; border: 1px solid #E2E8F0;
           }
@@ -44,15 +35,12 @@ export default function Navbar() {
             transition: background-color 0.2s;
           }
           .dropdown-item:hover { background-color: #F0F4F8; color: #001F3F; }
-
           .mobile-menu-btn { display: none; background: none; border: none; color: #001F3F; cursor: pointer; }
 
-          /* MOBILE & TABLET STYLES */
           @media (max-width: 1200px) {
             .nav-links { display: none; }
             .desktop-actions { display: none !important; } 
             .mobile-menu-btn { display: block; }
-            
             .mobile-dropdown {
               position: absolute; top: 100%; left: 0; right: 0;
               background-color: #FFFFFF; border-top: 1px solid #E2E8F0;
@@ -61,17 +49,14 @@ export default function Navbar() {
               animation: slideDown 0.3s ease-out forwards; z-index: 1000;
               max-height: calc(100vh - 80px); overflow-y: auto;
             }
-            
             @keyframes slideDown {
               from { opacity: 0; transform: scaleY(0.9); }
               to { opacity: 1; transform: scaleY(1); }
             }
-
             .mobile-dropdown a {
               color: #001F3F; text-decoration: none; font-size: 16px; font-weight: 600;
               padding-bottom: 12px; border-bottom: 1px solid #F1F5F9;
             }
-            
             .mobile-portal-btn {
               display: flex; align-items: center; justify-content: center; gap: 8px;
               background-color: #FCD116; color: #001F3F; border: none;
@@ -79,85 +64,114 @@ export default function Navbar() {
               cursor: pointer; margin-top: 12px; width: 100%;
               box-shadow: 0 4px 15px rgba(252, 209, 22, 0.2);
             }
-            
             .logo-image { height: 40px; }
           }
         `}
       </style>
 
       <div className="nav-container">
-        
-        {/* Logo area */}
-        <Link to="/" style={{ display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 }}>
+        <Link to="/" onClick={closeMenus} style={{ display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 }}>
           <img src="/vfm-logo.png" alt="VfM Office Logo" className="logo-image" />
         </Link>
 
         {/* Desktop Links */}
         <nav className="nav-links">
-          <Link to="/" className="nav-link" onClick={() => handleNavClick("/")}>Home</Link>
+          <Link to="/" className="nav-link" onClick={closeMenus}>Home</Link>
           
-          {/* ABOUT US DROPDOWN */}
+          {/* ABOUT US DROPDOWN (Clicking it directly navigates to /about) */}
           <div className="dropdown-container" onMouseEnter={() => setActiveDropdown("about")} onMouseLeave={() => setActiveDropdown(null)}>
-            <span className="nav-link" onClick={() => handleNavClick("/about")}>
+            <Link to="/about" className="nav-link" onClick={closeMenus}>
               About Us <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </span>
+            </Link>
             {activeDropdown === "about" && (
               <div className="dropdown-menu">
-                <Link to="/about" className="dropdown-item" onClick={() => setActiveDropdown(null)}>Overview</Link>
-                <Link to="/about#leadership" className="dropdown-item" onClick={() => setActiveDropdown(null)}>Leadership</Link>
-                <Link to="/about#values" className="dropdown-item" onClick={() => setActiveDropdown(null)}>Institutional Values</Link>
+                <Link to="/about" className="dropdown-item" onClick={closeMenus}>Overview</Link>
+                <Link to="/about#leadership" className="dropdown-item" onClick={closeMenus}>Leadership</Link>
+                <Link to="/about#values" className="dropdown-item" onClick={closeMenus}>Institutional Values</Link>
               </div>
             )}
           </div>
 
-          {/* WHAT WE DO - DIRECT LINK */}
-          <Link to="/what-we-do" className="nav-link" onClick={() => handleNavClick("/what-we-do")}>What We Do</Link>
+          <Link to="/what-we-do" className="nav-link" onClick={closeMenus}>What We Do</Link>
 
-          {/* COMBINED PUBLICATIONS & NEWS */}
-          <Link to="/publications" className="nav-link" onClick={() => handleNavClick("/publications")}>News & Publications</Link>
+          <div className="dropdown-container" onMouseEnter={() => setActiveDropdown("compliance")} onMouseLeave={() => setActiveDropdown(null)}>
+            <span className="nav-link">
+              Compliance & Transparency <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+            {activeDropdown === "compliance" && (
+              <div className="dropdown-menu">
+                <Link to="/clearance" className="dropdown-item" onClick={closeMenus}>Certificate of Clearance</Link>
+                <Link to="/sanctions" className="dropdown-item" onClick={closeMenus}>Sanctions & Debarment</Link>
+                <Link to="/track" className="dropdown-item" onClick={closeMenus}>Track a Complaint</Link>
+                <Link to="/open-data" className="dropdown-item" onClick={closeMenus}>Open Data Portal</Link>
+                <Link to="/engagement" className="dropdown-item" onClick={closeMenus}>Public Engagement</Link>
+                <Link to="/review-panel" className="dropdown-item" onClick={closeMenus}>Review Panel</Link>
+                <Link to="/whistleblower" className="dropdown-item" onClick={closeMenus}>Whistleblower Policy</Link>
+              </div>
+            )}
+          </div>
           
-          <Link to="/contact" className="nav-link" onClick={() => handleNavClick("/contact")}>Contact</Link>
+          <Link to="/contact" className="nav-link" onClick={closeMenus}>Contact</Link>
         </nav>
 
         {/* Desktop Right Actions */}
         <div className="desktop-actions" style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
           
+          {/* SEARCH ANCHOR SLOT: Next to submit icon */}
+          <div id="navbar-search-anchor" style={{ width: "42px", height: "42px", flexShrink: 0 }} />
+
+          {/* Submit Icon */}
           <Link to="/submit" title="Report a Concern" style={{ display: "flex", alignItems: "center", justifyContent: "center", color: "#001F3F", textDecoration: "none", border: "1px solid #CBD5E1", width: "42px", height: "42px", borderRadius: "4px", transition: "all 0.2s ease" }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#F8FAFC"; e.currentTarget.style.borderColor = "#001F3F"; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.borderColor = "#CBD5E1"; }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           </Link>
 
-          <button onClick={() => handleNavClick("/portal")} style={{ display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#FCD116", color: "#001F3F", border: "none", padding: "12px 24px", borderRadius: "4px", fontWeight: "800", fontSize: "14px", cursor: "pointer", transition: "all 0.3s ease", boxShadow: "0 4px 15px rgba(252, 209, 22, 0.2)" }} onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(252, 209, 22, 0.4)"; e.currentTarget.style.backgroundColor = "#FFDE45"; }} onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 15px rgba(252, 209, 22, 0.2)"; e.currentTarget.style.backgroundColor = "#FCD116"; }}>
-            Portal
-          </button>
+          {/* Portal Button */}
+          <Link to="/portal" style={{ textDecoration: "none" }}>
+            <button style={{ display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#FCD116", color: "#001F3F", border: "none", padding: "12px 24px", borderRadius: "4px", fontWeight: "800", fontSize: "14px", cursor: "pointer", transition: "all 0.3s ease", boxShadow: "0 4px 15px rgba(252, 209, 22, 0.2)" }} onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(252, 209, 22, 0.4)"; e.currentTarget.style.backgroundColor = "#FFDE45"; }} onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 15px rgba(252, 209, 22, 0.2)"; e.currentTarget.style.backgroundColor = "#FCD116"; }}>
+              Portal
+            </button>
+          </Link>
         </div>
 
-        {/* Mobile Hamburger Icon */}
+        {/* Mobile Hamburger */}
         <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
           {isMobileMenuOpen ? <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> : <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>}
         </button>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="mobile-dropdown">
-          <Link to="/" onClick={() => handleNavClick("/")}>Home</Link>
-          <Link to="/about" onClick={() => handleNavClick("/about")}>About Us</Link>
-          <Link to="/what-we-do" onClick={() => handleNavClick("/what-we-do")}>What We Do</Link>
-          <Link to="/publications" onClick={() => handleNavClick("/publications")}>News & Publications</Link>
-          <Link to="/contact" onClick={() => handleNavClick("/contact")}>Contact</Link>
+          <Link to="/" onClick={closeMenus}>Home</Link>
+          <Link to="/about" onClick={closeMenus}>About Us</Link>
+          <Link to="/what-we-do" onClick={closeMenus}>What We Do</Link>
           
-          <Link to="/track" onClick={() => handleNavClick("/track")} style={{ fontSize: "16px", fontWeight: "600", color: "#001F3F", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid #F1F5F9" }}>
-            Track a Complaint
-          </Link>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px", borderBottom: "1px solid #F1F5F9", paddingBottom: "12px" }}>
+            <span style={{ fontSize: "12px", fontWeight: "800", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1px" }}>Compliance & Transparency</span>
+            <Link to="/clearance" onClick={closeMenus} style={{ paddingLeft: "12px", fontSize: "14px", fontWeight: "500" }}>Certificate of Clearance</Link>
+            <Link to="/sanctions" onClick={closeMenus} style={{ paddingLeft: "12px", fontSize: "14px", fontWeight: "500" }}>Sanctions & Debarment</Link>
+            <Link to="/track" onClick={closeMenus} style={{ paddingLeft: "12px", fontSize: "14px", fontWeight: "500" }}>Track a Complaint</Link>
+            <Link to="/open-data" onClick={closeMenus} style={{ paddingLeft: "12px", fontSize: "14px", fontWeight: "500" }}>Open Data Portal</Link>
+            <Link to="/engagement" onClick={closeMenus} style={{ paddingLeft: "12px", fontSize: "14px", fontWeight: "500" }}>Public Engagement</Link>
+            <Link to="/review-panel" onClick={closeMenus} style={{ paddingLeft: "12px", fontSize: "14px", fontWeight: "500" }}>Review Panel</Link>
+            <Link to="/whistleblower" onClick={closeMenus} style={{ paddingLeft: "12px", fontSize: "14px", fontWeight: "500" }}>Whistleblower Policy</Link>
+          </div>
 
-          <Link to="/submit" onClick={() => handleNavClick("/submit")} style={{ fontSize: "16px", fontWeight: "600", color: "#001F3F", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: "8px" }}>
+          <Link to="/contact" onClick={closeMenus}>Contact</Link>
+          <Link to="/faq" onClick={closeMenus} style={{ fontSize: "16px", fontWeight: "600", color: "#001F3F", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: "8px" }}>
+            <Search size={18} />
+            Search Help Center
+          </Link>
+          <Link to="/submit" onClick={closeMenus} style={{ fontSize: "16px", fontWeight: "600", color: "#001F3F", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: "8px" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             Report a Concern
           </Link>
 
-          <button className="mobile-portal-btn" onClick={() => handleNavClick("/portal")}>
-            Portal Login
-          </button>
+          <Link to="/portal" onClick={closeMenus} style={{ textDecoration: "none" }}>
+            <button className="mobile-portal-btn">
+              Portal Login
+            </button>
+          </Link>
         </div>
       )}
     </header>

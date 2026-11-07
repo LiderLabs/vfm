@@ -32,14 +32,17 @@ export default function Footer() {
           </Link>
         </div>
 
-        {/* Column 2: Quick Links */}
+        {/* Column 2: Quick Links (Now includes Publications) */}
         <div style={{ minWidth: "150px" }}>
           <h4 style={{ fontSize: "14px", fontWeight: "800", margin: "0 0 20px 0", color: "#FCD116", letterSpacing: "1px", textTransform: "uppercase" }}>Quick Links</h4>
           <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "4px" }}>
             <li><Link to="/about" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#FCD116"} onMouseLeave={(e) => e.target.style.color = "#FFFFFF"}>About Us</Link></li>
             <li><Link to="/what-we-do" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#FCD116"} onMouseLeave={(e) => e.target.style.color = "#FFFFFF"}>What We Do</Link></li>
-            <li><Link to="/publications" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#FCD116"} onMouseLeave={(e) => e.target.style.color = "#FFFFFF"}>Publications</Link></li>
-            <li><Link to="/news" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#FCD116"} onMouseLeave={(e) => e.target.style.color = "#FFFFFF"}>News & Insights</Link></li>
+            
+            {/* MOVED NEWS & PUBLICATIONS HERE */}
+            <li><Link to="/publications" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#FCD116"} onMouseLeave={(e) => e.target.style.color = "#FFFFFF"}>News & Publications</Link></li>
+            
+            <li><Link to="/contact" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#FCD116"} onMouseLeave={(e) => e.target.style.color = "#FFFFFF"}>Contact</Link></li>
           </ul>
         </div>
 
