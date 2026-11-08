@@ -113,11 +113,11 @@ export default function FloatingHelpButton() {
   const dockY = useMotionValue(0);
   const baseSize = useMotionValue(42);
 
-  // 1. SCROLL-INDUCED CONTROLLER (Starts immediately at 0px to 180px)
+  // 1. SCROLL-INDUCED CONTROLLER
   const { scrollY } = useScroll();
   const rawFlight = useTransform(scrollY, [0, 180], [0, 1]);
 
-  // CRITICALLY DAMPED SPRING (Zero bounce, zero overshoot past 0 or 1)
+  // CRITICALLY DAMPED SPRING
   const smoothFlight = useSpring(rawFlight, { 
     stiffness: 120, 
     damping: 26, 
@@ -125,21 +125,17 @@ export default function FloatingHelpButton() {
     restDelta: 0.001 
   });
 
-  // HARD CLAMP: Guarantees it can NEVER surpass the navbar slot (never < 0) or the edge (never > 1)
   const flight = useTransform(smoothFlight, (v) => Math.min(Math.max(v, 0), 1));
 
-  // Trajectory with a subtle, graceful 18px arc
   const currentX = useTransform([flight, anchorX, dockX], ([p, ax, dx]) => ax + p * (dx - ax));
   const currentY = useTransform(
     [flight, anchorY, dockY],
     ([p, ay, dy]) => ay + p * (dy - ay) + Math.sin(p * Math.PI) * 18
   );
 
-  // Smooth GPU transforms without state re-renders
   const buttonWidth = useTransform([flight, baseSize], ([p, bs]) => bs + p * (48 - bs));
   const buttonHeight = useTransform([flight, baseSize], ([p, bs]) => bs + p * (52 - bs));
   
-  // Clean transition from 4px square in navbar to 26px rounded tab at edge
   const borderRadius = useTransform(flight, [0, 0.4, 1], [
     "4px 4px 4px 4px",
     "16px 16px 16px 16px",
@@ -154,10 +150,8 @@ export default function FloatingHelpButton() {
     ["0 0 0 rgba(0,0,0,0)", "0 6px 16px rgba(0,31,63,0.12)", "0 8px 25px rgba(0,31,63,0.22)"]
   );
 
-  // Peeking offset: "-50%" in flight/navbar, tucks to "-65%" when arriving at the edge
   const xOffset = useTransform(flight, [0, 0.85, 1], ["-50%", "-50%", "-65%"]);
 
-  // Measures exact slot position relative to scroll = 0 to prevent drift
   useEffect(() => {
     const updateCoordinates = () => {
       const isMob = window.innerWidth <= 1200;
@@ -168,7 +162,6 @@ export default function FloatingHelpButton() {
 
       if (navSlot) {
         const rect = navSlot.getBoundingClientRect();
-        // Always calculate the slot's true coordinate relative to the top of the document
         const currentScroll = window.scrollY;
         const trueTop = rect.top + currentScroll;
         
@@ -224,7 +217,6 @@ export default function FloatingHelpButton() {
       {!isOpen && (
         <motion.div
           onClick={() => {
-            // If scrolled, open flyout. If resting in navbar, go to FAQ.
             if (flight.get() > 0.75) {
               setIsOpen(true);
             } else {
@@ -251,7 +243,6 @@ export default function FloatingHelpButton() {
             overflow: "hidden",
           }}
           whileHover={{
-            // Slides out smoothly when hovering while docked on the edge
             x: flight.get() > 0.75 ? "-100%" : "-50%",
             scale: flight.get() > 0.75 ? 1.05 : 1.02,
           }}
@@ -288,8 +279,10 @@ export default function FloatingHelpButton() {
               style={{
                 position: "fixed",
                 top: "16px",
-                bottom: "16px",
                 right: "16px",
+                /* FIX: Replaced bottom: 16px with a locked dynamic viewport height */
+                height: "calc(100dvh - 32px)", 
+                maxHeight: "calc(100vh - 32px)",
                 width: "calc(100vw - 32px)",
                 maxWidth: "380px",
                 backgroundColor: "#FFFFFF",
@@ -366,7 +359,7 @@ export default function FloatingHelpButton() {
                     border: "1px solid #CBD5E1",
                   }}
                 >
-                  <Search size={18} color="#64748B" />
+                  <Search size={18} color="#64748B" style={{ flexShrink: 0 }} />
                   <input
                     type="text"
                     placeholder="Ask or search (e.g. 'track case', 'permit')..."
@@ -386,7 +379,7 @@ export default function FloatingHelpButton() {
                     <button
                       type="button"
                       onClick={() => setSearchQuery("")}
-                      style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                      style={{ background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0 }}
                     >
                       <X size={16} color="#94A3B8" />
                     </button>
@@ -395,7 +388,7 @@ export default function FloatingHelpButton() {
 
                 {/* Suggested Chips */}
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px", marginTop: "10px" }}>
-                  <span style={{ fontSize: "11px", color: "#64748B", fontWeight: "600" }}>
+                  <span style={{ fontSize: "11px", color: "#64748B", fontWeight: "600", flexShrink: 0 }}>
                     Suggested:
                   </span>
                   {quickPills.map((pill, i) => (
@@ -412,6 +405,8 @@ export default function FloatingHelpButton() {
                         cursor: "pointer",
                         fontWeight: "600",
                         transition: "all 0.15s ease",
+                        flexShrink: 0, // Prevents pills from crushing
+                        whiteSpace: "nowrap", // Keeps text on one line
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E2E8F0")}
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F1F5F9")}
