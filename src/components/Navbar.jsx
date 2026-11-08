@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Search } from "lucide-react"; // <-- ADDED THE MISSING IMPORT HERE
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -40,18 +41,22 @@ export default function Navbar() {
           @media (max-width: 1200px) {
             .nav-links { display: none; }
             .desktop-actions { display: none !important; } 
-            .mobile-menu-btn { display: block; }
+            .mobile-menu-btn { display: block; z-index: 10001; position: relative; }
+            
+            /* FIXED MOBILE DROPDOWN */
             .mobile-dropdown {
-              position: absolute; top: 100%; left: 0; right: 0;
-              background-color: #FFFFFF; border-top: 1px solid #E2E8F0;
-              padding: 24px; display: flex; flex-direction: column; gap: 20px;
-              box-shadow: 0 10px 20px rgba(0,0,0,0.1); transform-origin: top;
-              animation: slideDown 0.3s ease-out forwards; z-index: 1000;
-              max-height: calc(100vh - 80px); overflow-y: auto;
+              position: fixed; /* Fixed to screen, not header */
+              top: 0; left: 0; right: 0; bottom: 0;
+              background-color: #FFFFFF; 
+              padding: 80px 24px 40px; /* Space for the close button */
+              display: flex; flex-direction: column; gap: 20px;
+              z-index: 10000; /* Above everything else */
+              overflow-y: auto;
+              animation: fadeIn 0.2s ease-out forwards;
             }
-            @keyframes slideDown {
-              from { opacity: 0; transform: scaleY(0.9); }
-              to { opacity: 1; transform: scaleY(1); }
+            @keyframes fadeIn {
+              from { opacity: 0; transform: translateY(-10px); }
+              to { opacity: 1; transform: translateY(0); }
             }
             .mobile-dropdown a {
               color: #001F3F; text-decoration: none; font-size: 16px; font-weight: 600;
@@ -78,7 +83,6 @@ export default function Navbar() {
         <nav className="nav-links">
           <Link to="/" className="nav-link" onClick={closeMenus}>Home</Link>
           
-          {/* ABOUT US DROPDOWN (Clicking it directly navigates to /about) */}
           <div className="dropdown-container" onMouseEnter={() => setActiveDropdown("about")} onMouseLeave={() => setActiveDropdown(null)}>
             <Link to="/about" className="nav-link" onClick={closeMenus}>
               About Us <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -117,15 +121,12 @@ export default function Navbar() {
         {/* Desktop Right Actions */}
         <div className="desktop-actions" style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
           
-          {/* SEARCH ANCHOR SLOT: Next to submit icon */}
           <div id="navbar-search-anchor" style={{ width: "42px", height: "42px", flexShrink: 0 }} />
 
-          {/* Submit Icon */}
           <Link to="/submit" title="Report a Concern" style={{ display: "flex", alignItems: "center", justifyContent: "center", color: "#001F3F", textDecoration: "none", border: "1px solid #CBD5E1", width: "42px", height: "42px", borderRadius: "4px", transition: "all 0.2s ease" }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#F8FAFC"; e.currentTarget.style.borderColor = "#001F3F"; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.borderColor = "#CBD5E1"; }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           </Link>
 
-          {/* Portal Button */}
           <Link to="/portal" style={{ textDecoration: "none" }}>
             <button style={{ display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#FCD116", color: "#001F3F", border: "none", padding: "12px 24px", borderRadius: "4px", fontWeight: "800", fontSize: "14px", cursor: "pointer", transition: "all 0.3s ease", boxShadow: "0 4px 15px rgba(252, 209, 22, 0.2)" }} onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(252, 209, 22, 0.4)"; e.currentTarget.style.backgroundColor = "#FFDE45"; }} onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 15px rgba(252, 209, 22, 0.2)"; e.currentTarget.style.backgroundColor = "#FCD116"; }}>
               Portal
@@ -139,7 +140,7 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div className="mobile-dropdown">
           <Link to="/" onClick={closeMenus}>Home</Link>
@@ -158,10 +159,12 @@ export default function Navbar() {
           </div>
 
           <Link to="/contact" onClick={closeMenus}>Contact</Link>
+          
           <Link to="/faq" onClick={closeMenus} style={{ fontSize: "16px", fontWeight: "600", color: "#001F3F", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: "8px" }}>
             <Search size={18} />
             Search Help Center
           </Link>
+          
           <Link to="/submit" onClick={closeMenus} style={{ fontSize: "16px", fontWeight: "600", color: "#001F3F", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: "8px" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             Report a Concern
