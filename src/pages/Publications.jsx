@@ -120,13 +120,11 @@ export default function Publications() {
   const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Modals
   const [activeNoticeIndex, setActiveNoticeIndex] = useState(null);
   const [activeDocIndex, setActiveDocIndex] = useState(null);
 
   const prefersReduced = useReducedMotion();
 
-  // Mobile News & Docs Carousels
   const mobileNewsRef = useRef(null);
   const mobileDocsRef = useRef(null);
   
@@ -136,7 +134,6 @@ export default function Publications() {
   const newsTimerRef = useRef(null);
   const docsTimerRef = useRef(null);
 
-  // Detect mobile
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.matchMedia("(max-width: 992px)").matches);
     checkMobile();
@@ -144,7 +141,6 @@ export default function Publications() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Hero Scroll Parallax
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroBgY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
@@ -195,9 +191,8 @@ export default function Publications() {
   ];
 
   const desktopFilteredDocuments = documents.filter((doc) => doc.category === activeFilter);
-  const mobileDisplayedDocuments = documents; // Show all on mobile carousel
+  const mobileDisplayedDocuments = documents;
 
-  // --- DESKTOP PLAYLIST AUTOPLAY ---
   useEffect(() => {
     if (isHovered || prefersReduced || isMobile) return;
     const interval = setInterval(() => {
@@ -206,7 +201,6 @@ export default function Publications() {
     return () => clearInterval(interval);
   }, [isHovered, prefersReduced, isMobile, notices.length]);
 
-  // --- MOBILE NEWS AUTOSCROLL ---
   useEffect(() => {
     if (!isMobile || isNewsInteracting || prefersReduced) return;
     const startAutoScroll = () => {
@@ -235,7 +229,6 @@ export default function Publications() {
     setTimeout(() => setIsNewsInteracting(false), 4000);
   };
 
-  // --- MOBILE DOCS AUTOSCROLL ---
   useEffect(() => {
     if (!isMobile || isDocsInteracting || prefersReduced) return;
     const startAutoScroll = () => {
@@ -271,7 +264,6 @@ export default function Publications() {
           .hide-scrollbar::-webkit-scrollbar { display: none; }
           .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-          /* DESKTOP PLAYLIST MARQUEE */
           @keyframes scrollPlaylist {
             0% { transform: translateY(0); }
             100% { transform: translateY(-33.3333%); }
@@ -291,7 +283,6 @@ export default function Publications() {
           }
           .playlist-container:hover .playlist-track { animation-play-state: paused; }
 
-          /* MOBILE HORIZONTAL SWIPE CAROUSELS */
           .mobile-scroll-container {
             display: flex;
             gap: 16px;
@@ -304,7 +295,6 @@ export default function Publications() {
           }
           .mobile-scroll-container::-webkit-scrollbar { display: none; }
           
-          /* Spacer to ensure last card is fully visible */
           .mobile-scroll-container::after {
             content: '';
             flex: 0 0 24px;
@@ -331,11 +321,9 @@ export default function Publications() {
         `}
       </style>
 
-      {/* Global Watermark */}
       <div aria-hidden="true" style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", backgroundImage: "url(/vfm-logo.png)", backgroundRepeat: "no-repeat", backgroundPosition: "center center", backgroundSize: "min(85vw, 900px)", opacity: 0.03, filter: "grayscale(10%)" }} />
 
       <div style={{ position: "relative", zIndex: 1 }}>
-        {/* SECTION 1: NEWS */}
         <section ref={heroRef} style={{ backgroundColor: "rgba(0,31,63,0.98)", padding: "100px 24px 120px", position: "relative", overflow: "hidden" }}>
           <motion.div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: "-15%", backgroundImage: "url(/coat-of-arms.png)", backgroundSize: "contain", backgroundRepeat: "no-repeat", backgroundPosition: "right -100px center", opacity: 0.05, zIndex: 0, y: prefersReduced ? 0 : heroBgY, scale: prefersReduced ? 1 : heroScale }} />
 
@@ -354,7 +342,6 @@ export default function Publications() {
 
               <div className="theater-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: "32px" }}>
                 
-                {/* DESKTOP LEFT: MAIN VIEWER */}
                 {!isMobile && (
                   <Reveal delay={0.1} y={30}>
                     <AnimatePresence mode="wait">
@@ -375,7 +362,6 @@ export default function Publications() {
                   </Reveal>
                 )}
 
-                {/* RIGHT: PLAYLIST */}
                 <div>
                   <div style={{ marginBottom: "16px", paddingLeft: "8px" }}>
                     <h3 style={{ fontSize: "18px", fontWeight: "800", color: "#FFFFFF", margin: 0 }}>{isMobile ? "Live Statutory Updates" : "Up Next"}</h3>
@@ -423,7 +409,6 @@ export default function Publications() {
           </div>
         </section>
 
-        {/* SECTION 2: PUBLICATIONS */}
         <section style={{ backgroundColor: "#F4F5F0", padding: "80px 24px 100px", position: "relative", zIndex: 2 }}>
           <div style={{ position: "absolute", top: "-40px", left: 0, right: 0, height: "80px", backgroundColor: "#F4F5F0", borderRadius: "50% 50% 0 0 / 100% 100% 0 0" }} />
 
@@ -437,7 +422,6 @@ export default function Publications() {
               </div>
             </Reveal>
 
-            {/* DESKTOP ONLY: Filter Tabs */}
             {!isMobile && (
               <Reveal delay={0.1}>
                 <div className="tabs-container" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} style={{ display: "flex", gap: "12px", marginBottom: "40px", flexWrap: "nowrap" }}>
@@ -453,10 +437,8 @@ export default function Publications() {
               </Reveal>
             )}
 
-            {/* CARDS DISPLAY */}
             <div style={{ minHeight: "350px" }}>
               {!isMobile ? (
-                /* DESKTOP GRID LAYOUT */
                 <AnimatePresence mode="wait">
                   <motion.div key={activeFilter} initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4, ease: "easeOut" }} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))", gap: "24px" }}>
                     {desktopFilteredDocuments.map((doc, index) => (
@@ -478,7 +460,6 @@ export default function Publications() {
                   </motion.div>
                 </AnimatePresence>
               ) : (
-                /* MOBILE HORIZONTAL SWIPE CAROUSEL */
                 <div ref={mobileDocsRef} className="mobile-scroll-container" onTouchStart={handleDocsTouchStart} onTouchEnd={handleDocsTouchEnd} onScroll={handleDocsTouchStart}>
                   {mobileDisplayedDocuments.map((doc, index) => (
                     <div key={index} className="mobile-doc-card" onClick={() => setActiveDocIndex(index)} style={{ cursor: "pointer" }}>
@@ -499,17 +480,10 @@ export default function Publications() {
                 </div>
               )}
             </div>
-
-            {!isMobile && desktopFilteredDocuments.length === 0 && (
-              <div style={{ textAlign: "center", padding: "60px 24px", backgroundColor: "#FFFFFF", borderRadius: "12px", border: "1px dashed #CBD5E1" }}>
-                <p style={{ fontSize: "16px", color: "#64748B", margin: 0 }}>No documents found in this category yet.</p>
-              </div>
-            )}
           </div>
         </section>
       </div>
 
-      {/* MOBILE FULL-SCREEN MODAL (NEWS DETAILS) */}
       <AnimatePresence>
         {isMobile && activeNoticeIndex !== null && (
           <motion.div initial={{ opacity: 0, y: "100%" }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "#001F3F", zIndex: 9999, display: "flex", flexDirection: "column", overflowY: "auto" }}>
@@ -528,7 +502,7 @@ export default function Publications() {
         )}
       </AnimatePresence>
 
-      {/* MOBILE FULL-SCREEN MODAL (PUBLICATION DETAILS) - Fixed the button rendering */}
+      {/* FIXED MOBILE PUBLICATION MODAL */}
       <AnimatePresence>
         {isMobile && activeDocIndex !== null && (
           <motion.div initial={{ opacity: 0, y: "100%" }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "#F4F5F0", zIndex: 9999, display: "flex", flexDirection: "column", overflowY: "auto" }}>
@@ -536,6 +510,7 @@ export default function Publications() {
               <span style={{ color: "#8B7355", fontWeight: "800", fontSize: "12px", letterSpacing: "1px", textTransform: "uppercase" }}>{mobileDisplayedDocuments[activeDocIndex].category}</span>
               <button onClick={() => setActiveDocIndex(null)} style={{ background: "rgba(0,0,0,0.05)", border: "none", borderRadius: "50%", width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center", color: "#001F3F", cursor: "pointer" }}><HandDrawnClose /></button>
             </div>
+            
             <div style={{ padding: "24px", display: "flex", flexDirection: "column", flex: 1 }}>
               <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px" }}>
                 <div style={{ width: "56px", height: "56px", borderRadius: "16px", backgroundColor: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 6px rgba(0,0,0,0.05)" }}><HandDrawnDocument /></div>
@@ -546,14 +521,16 @@ export default function Publications() {
               </div>
               <h2 style={{ fontSize: "26px", fontWeight: "800", color: "#0F172A", margin: "0 0 20px 0", lineHeight: "1.3" }}>{mobileDisplayedDocuments[activeDocIndex].title}</h2>
               <p style={{ fontSize: "16px", color: "#475569", lineHeight: "1.8", margin: "0 0 32px 0", flex: 1 }}>{mobileDisplayedDocuments[activeDocIndex].desc}</p>
-              
-              {/* Fixed Button Rendering */}
+            </div>
+
+            <div style={{ padding: "24px", paddingBottom: "40px", backgroundColor: "#F4F5F0", position: "sticky", bottom: 0, left: 0, right: 0, display: "flex", flexDirection: "column" }}>
               <button 
                 style={{ 
                   backgroundColor: "#001F3F", 
                   color: "#FFFFFF", 
                   border: "none", 
-                  width: "100%",
+                  width: "100%", 
+                  minWidth: "100%",
                   padding: "16px 20px", 
                   borderRadius: "8px", 
                   fontSize: "16px", 
@@ -563,8 +540,9 @@ export default function Publications() {
                   alignItems: "center", 
                   justifyContent: "center", 
                   gap: "10px",
-                  whiteSpace: "nowrap",
-                  boxShadow: "0 4px 12px rgba(0,31,63,0.2)"
+                  boxSizing: "border-box",
+                  boxShadow: "0 8px 20px rgba(0,31,63,0.2)",
+                  marginBottom: "10px"
                 }}
                 onClick={() => setActiveDocIndex(null)}
               >
