@@ -119,12 +119,17 @@ export default function Publications() {
   const [activeFilter, setActiveFilter] = useState("Annual Reviews"); 
   const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Modal state
   const [activeNoticeIndex, setActiveNoticeIndex] = useState(null); 
+  const [activeDocIndex, setActiveDocIndex] = useState(null);
+
   const prefersReduced = useReducedMotion();
 
-  // Refs & State for Hybrid Autoscroll
+  // Refs for News Autoscroll
   const mobileNewsRef = useRef(null);
-  const newsTimeoutRef = useRef(null);
+  const autoScrollTimerRef = useRef(null);
+  const userInteractedRef = useRef(false);
 
   // Detect mobile
   useEffect(() => {
@@ -198,61 +203,44 @@ export default function Publications() {
     return () => clearInterval(interval);
   }, [isHovered, prefersReduced, isMobile, notices.length]);
 
-  // --- HYBRID NEWS AUTOSCROLL (Mobile Only) ---
+  // --- MOBILE NEWS AUTOSCROLL ---
   useEffect(() => {
     if (!isMobile || prefersReduced) return;
 
     const startAutoScroll = () => {
-      // Clear any existing timers
-      if (newsTimeoutRef.current) clearInterval(newsTimeoutRef.current);
+      if (autoScrollTimerRef.current) clearInterval(autoScrollTimerRef.current);
 
-      newsTimeoutRef.current = setInterval(() => {
-        if (mobileNewsRef.current) {
+      autoScrollTimerRef.current = setInterval(() => {
+        if (mobileNewsRef.current && !userInteractedRef.current) {
           const container = mobileNewsRef.current;
           const maxScroll = container.scrollHeight - container.clientHeight;
           
-          // If we are at the bottom, scroll back to the top
+          // If we are at the bottom, loop back to the top
           if (container.scrollTop >= maxScroll - 10) {
             container.scrollTo({ top: 0, behavior: "smooth" });
           } else {
-            // Scroll down smoothly by roughly 90px
-            container.scrollBy({ top: 90, behavior: "smooth" });
+            // Scroll down smoothly
+            container.scrollBy({ top: 100, behavior: "smooth" });
           }
         }
-      }, 3000); // Moves every 3 seconds
+      }, 3500);
     };
 
     startAutoScroll();
 
     return () => {
-      if (newsTimeoutRef.current) clearInterval(newsTimeoutRef.current);
+      if (autoScrollTimerRef.current) clearInterval(autoScrollTimerRef.current);
     };
   }, [isMobile, prefersReduced]);
 
-  // Handlers for interaction
-  const handleNewsTouchStart = () => {
-    if (newsTimeoutRef.current) clearInterval(newsTimeoutRef.current);
-  };
-
-  const handleNewsTouchEnd = () => {
-    // Wait 5 seconds after user stops touching before resuming auto-scroll
-    if (newsTimeoutRef.current) clearInterval(newsTimeoutRef.current);
-    newsTimeoutRef.current = setTimeout(() => {
-      if (isMobile && !prefersReduced) {
-        // Re-trigger the auto-scroll logic
-        const container = mobileNewsRef.current;
-        if (container) {
-          const maxScroll = container.scrollHeight - container.clientHeight;
-          const scrollInterval = setInterval(() => {
-             if (container.scrollTop >= maxScroll - 10) {
-               container.scrollTo({ top: 0, behavior: "smooth" });
-             } else {
-               container.scrollBy({ top: 90, behavior: "smooth" });
-             }
-          }, 3000);
-          newsTimeoutRef.current = scrollInterval;
-        }
-      }
+  // Mobile interaction handlers
+  const handleNewsInteraction = () => {
+    userInteractedRef.current = true;
+    if (autoScrollTimerRef.current) clearInterval(autoScrollTimerRef.current);
+    
+    // Resume auto-scroll 5 seconds after interaction stops
+    setTimeout(() => {
+      userInteractedRef.current = false;
     }, 5000);
   };
 
@@ -300,13 +288,6 @@ export default function Publications() {
               padding: 10px 0;
             }
             .mobile-news-container::-webkit-scrollbar { display: none; }
-
-            .download-btn-mobile-fix {
-              width: 100% !important;
-              display: flex !important;
-              justify-content: center !important;
-              align-items: center !important;
-            }
           }
         `}
       </style>
@@ -404,11 +385,11 @@ export default function Publications() {
                     <div 
                       className="mobile-news-container"
                       ref={mobileNewsRef}
-                      onTouchStart={handleNewsTouchStart}
-                      onTouchEnd={handleNewsTouchEnd}
-                      onScroll={handleNewsTouchStart}
-                      onMouseEnter={handleNewsTouchStart}
-                      onMouseLeave={handleNewsTouchEnd}
+                      onTouchStart={handleNewsInteraction}
+                      onTouchEnd={handleNewsInteraction}
+                      onScroll={handleNewsInteraction}
+                      onMouseEnter={handleNewsInteraction}
+                      onMouseLeave={handleNewsInteraction}
                     >
                       {notices.map((notice, index) => (
                         <motion.div
@@ -493,60 +474,77 @@ export default function Publications() {
                   transition={{ duration: 0.4, ease: "easeOut" }}
                   style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))", gap: "24px" }}
                 >
-                  {/* On mobile, use mobileDisplayedDocuments. On desktop, use desktopFilteredDocuments */}
-                  {(isMobile ? mobileDisplayedDocuments : desktopFilteredDocuments).map((doc, index) => (
-                    <motion.div 
-                      key={index} 
-                      whileHover={prefersReduced ? {} : { y: -4, boxShadow: "0 20px 40px -10px rgba(0,31,63,0.08)", borderColor: "#CBD5E1" }}
-                      style={{ 
-                        backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "32px", 
-                        display: "flex", flexDirection: "column", 
-                        boxShadow: "0 4px 6px rgba(0,0,0,0.02)", border: "1px solid #E2E8F0", 
-                        transition: "border-color 0.3s ease, box-shadow 0.3s ease",
-                        cursor: "pointer", position: "relative", overflow: "hidden"
-                      }}
-                    >
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
-                        <div style={{ width: "56px", height: "56px", borderRadius: "16px", backgroundColor: "#F0F4F8", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <HandDrawnDocument />
+                  {(isMobile ? mobileDisplayedDocuments : desktopFilteredDocuments).map((doc, index) => {
+                    // On mobile, make the whole card clickable to open modal
+                    const CardWrapper = isMobile ? motion.div : "div";
+                    
+                    return (
+                      <motion.div 
+                        key={index} 
+                        onClick={() => isMobile && setActiveDocIndex(index)}
+                        whileHover={prefersReduced || isMobile ? {} : { y: -4, boxShadow: "0 20px 40px -10px rgba(0,31,63,0.08)", borderColor: "#CBD5E1" }}
+                        style={{ 
+                          backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "32px", 
+                          display: "flex", flexDirection: "column", 
+                          boxShadow: "0 4px 6px rgba(0,0,0,0.02)", border: "1px solid #E2E8F0", 
+                          transition: "border-color 0.3s ease, box-shadow 0.3s ease",
+                          cursor: isMobile ? "pointer" : "default", position: "relative", overflow: "hidden"
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
+                          <div style={{ width: "56px", height: "56px", borderRadius: "16px", backgroundColor: "#F0F4F8", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <HandDrawnDocument />
+                          </div>
+                          <span style={{ fontSize: "13px", color: "#64748B", fontWeight: "600", backgroundColor: "#F8FAFC", padding: "4px 10px", borderRadius: "4px" }}>
+                            {doc.date}
+                          </span>
                         </div>
-                        <span style={{ fontSize: "13px", color: "#64748B", fontWeight: "600", backgroundColor: "#F8FAFC", padding: "4px 10px", borderRadius: "4px" }}>
-                          {doc.date}
+
+                        <span style={{ fontSize: "11px", fontWeight: "800", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px", display: "block" }}>
+                          {doc.category}
                         </span>
-                      </div>
+                        <h3 style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", margin: "0 0 16px 0", lineHeight: "1.4" }}>
+                          {doc.title}
+                        </h3>
 
-                      <span style={{ fontSize: "11px", fontWeight: "800", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px", display: "block" }}>
-                        {doc.category}
-                      </span>
-                      <h3 style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", margin: "0 0 16px 0", lineHeight: "1.4" }}>
-                        {doc.title}
-                      </h3>
+                        {/* On mobile, clamp the description */}
+                        <p style={{ 
+                          fontSize: "15px", color: "#475569", lineHeight: "1.6", margin: "0 0 32px 0", flex: 1,
+                          display: isMobile ? "-webkit-box" : "block",
+                          WebkitLineClamp: isMobile ? 3 : "unset",
+                          WebkitBoxOrient: isMobile ? "vertical" : "unset",
+                          overflow: isMobile ? "hidden" : "visible"
+                        }}>
+                          {doc.desc}
+                        </p>
 
-                      <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", margin: "0 0 32px 0", flex: 1 }}>
-                        {doc.desc}
-                      </p>
-
-                      <div style={{ borderTop: "1px solid #F1F5F9", paddingTop: "24px", display: "flex", justifyContent: "flex-end" }}>
-                        <button 
-                          className="download-btn-mobile-fix"
-                          style={{ 
-                            backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", 
-                            padding: "12px 24px", borderRadius: "8px", fontSize: "14px", 
-                            fontWeight: "700", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px",
-                            transition: "background-color 0.2s ease, transform 0.1s ease", whiteSpace: "nowrap"
-                          }}
-                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#0A2E4D"; }}
-                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#001F3F"; }}
-                          onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.97)"}
-                          onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
-                        >
-                          <HandDrawnDownloadIcon />
-                          Download
-                          <span style={{ opacity: 0.7, fontWeight: "500", fontSize: "13px" }}>({doc.fileSize})</span>
-                        </button>
-                      </div>
-                    </motion.div>
-                  ))}
+                        <div style={{ borderTop: "1px solid #F1F5F9", paddingTop: "24px", display: "flex", justifyContent: "flex-end" }}>
+                          {!isMobile ? (
+                            <button 
+                              style={{ 
+                                backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", 
+                                padding: "12px 24px", borderRadius: "8px", fontSize: "14px", 
+                                fontWeight: "700", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px",
+                                transition: "background-color 0.2s ease, transform 0.1s ease", whiteSpace: "nowrap"
+                              }}
+                              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#0A2E4D"; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#001F3F"; }}
+                              onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.97)"}
+                              onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
+                            >
+                              <HandDrawnDownloadIcon />
+                              Download
+                              <span style={{ opacity: 0.7, fontWeight: "500", fontSize: "13px" }}>({doc.fileSize})</span>
+                            </button>
+                          ) : (
+                            <span style={{ fontSize: "14px", fontWeight: "700", color: "#001F3F", display: "flex", alignItems: "center", gap: "6px" }}>
+                              Read & Download <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </span>
+                          )}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -561,7 +559,7 @@ export default function Publications() {
 
       </div>
 
-      {/* MOBILE FULL-SCREEN MODAL */}
+      {/* MOBILE FULL-SCREEN MODAL (NEWS) */}
       <AnimatePresence>
         {isMobile && activeNoticeIndex !== null && (
           <motion.div
@@ -593,6 +591,57 @@ export default function Publications() {
               <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: "13px", color: "#64748B" }}>Value for Money Office</span>
               </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* MOBILE FULL-SCREEN MODAL (PUBLICATIONS) */}
+      <AnimatePresence>
+        {isMobile && activeDocIndex !== null && (
+          <motion.div
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "#F4F5F0", zIndex: 9999, display: "flex", flexDirection: "column", overflowY: "auto" }}
+          >
+            <div style={{ padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, backgroundColor: "rgba(244,245,240,0.95)", backdropFilter: "blur(10px)", zIndex: 10, borderBottom: "1px solid #E2E8F0" }}>
+              <span style={{ color: "#8B7355", fontWeight: "800", fontSize: "12px", letterSpacing: "1px", textTransform: "uppercase" }}>{mobileDisplayedDocuments[activeDocIndex].category}</span>
+              <button onClick={() => setActiveDocIndex(null)} style={{ background: "rgba(0,0,0,0.05)", border: "none", borderRadius: "50%", width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center", color: "#001F3F", cursor: "pointer" }}>
+                <HandDrawnClose />
+              </button>
+            </div>
+            <div style={{ padding: "24px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px" }}>
+                <div style={{ width: "56px", height: "56px", borderRadius: "16px", backgroundColor: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 6px rgba(0,0,0,0.05)" }}>
+                  <HandDrawnDocument />
+                </div>
+                <div>
+                  <span style={{ fontSize: "13px", color: "#64748B", fontWeight: "600", display: "block", marginBottom: "4px" }}>{mobileDisplayedDocuments[activeDocIndex].date}</span>
+                  <span style={{ fontSize: "13px", color: "#001F3F", fontWeight: "700" }}>Size: {mobileDisplayedDocuments[activeDocIndex].fileSize}</span>
+                </div>
+              </div>
+
+              <h2 style={{ fontSize: "26px", fontWeight: "800", color: "#0F172A", margin: "0 0 20px 0", lineHeight: "1.3" }}>
+                {mobileDisplayedDocuments[activeDocIndex].title}
+              </h2>
+              
+              <p style={{ fontSize: "16px", color: "#475569", lineHeight: "1.8", margin: "0 0 32px 0" }}>
+                {mobileDisplayedDocuments[activeDocIndex].desc}
+              </p>
+
+              <button 
+                style={{ 
+                  backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", width: "100%",
+                  padding: "16px 24px", borderRadius: "8px", fontSize: "16px", 
+                  fontWeight: "700", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px"
+                }}
+                onClick={() => setActiveDocIndex(null)}
+              >
+                <HandDrawnDownloadIcon />
+                Download Document
+              </button>
             </div>
           </motion.div>
         )}
