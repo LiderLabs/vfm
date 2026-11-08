@@ -36,6 +36,13 @@ export default function InteractiveVfmWall() {
   });
   const scrollAssemble = useSpring(scrollYProgress, { damping: 24, stiffness: 100 });
 
+  // FIX: Hook is now at the top level so it doesn't crash on mobile
+  const glareBackground = useTransform(
+    [smoothMouseX, smoothMouseY],
+    ([x, y]) =>
+      `radial-gradient(480px circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%, rgba(0, 31, 63, 0.04), transparent 70%)`
+  );
+
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -63,38 +70,27 @@ export default function InteractiveVfmWall() {
   const dynamicMobileScale = Math.min((windowWidth - 32) / virtualWidth, 0.45);
   const currentScale = isMobile ? dynamicMobileScale : 1;
 
-  // ALL 36 WORDS — EACH WITH A DEDICATED VIBRANT HOVER COLOR
+  // ALL 36 WORDS
   const rawWords = [
-    // --- UPPER CENTER SPINE ---
     { text: "ACCOUNTABILITY", top: "26%", left: "41.5%", size: "26px", weight: "900", depth: 25, color: "#2563EB", scatter: { x: -20, y: -70, z: 80, r: -4 } },
     { text: "LIFECYCLE COST", top: "30.5%", left: "41.5%", size: "20px", weight: "600", depth: 15, color: "#059669", scatter: { x: 10, y: -60, z: 50, r: 3 } },
     { text: "COST CONTROL", top: "34.5%", left: "45%", size: "22px", weight: "800", depth: 20, color: "#D97706", scatter: { x: 20, y: -40, z: 60, r: 4 } },
     { text: "COST EFFICIENCY", top: "39.5%", left: "43.5%", size: "34px", weight: "900", depth: 35, color: "#7C3AED", scatter: { x: 0, y: -30, z: 110, r: -2 } },
-
-    // --- UPPER LEFT CLUSTER ---
     { text: "RESOURCE USE", top: "31%", left: "21.5%", size: "16px", weight: "600", depth: 16, color: "#0284C7", scatter: { x: -70, y: -50, z: 70, r: -8 } },
     { text: "BEST VALUE", top: "34.5%", left: "21.5%", size: "18px", weight: "800", depth: 20, color: "#EA580C", scatter: { x: -60, y: -30, z: 60, r: 6 } },
     { text: "TRUST", top: "39%", left: "23%", size: "28px", weight: "900", depth: 30, color: "#E11D48", scatter: { x: -60, y: 0, z: 90, r: -8 } },
     { text: "BUDGET", top: "32%", left: "28.5%", size: "22px", weight: "900", rotate: "90deg", depth: 28, color: "#0D9488", scatter: { x: -40, y: -40, z: 80, r: 20 } },
-
-    // --- UPPER RIGHT CLUSTER ---
     { text: "GOOD RETURNS", top: "17%", left: "57.5%", size: "15px", weight: "800", rotate: "90deg", depth: 22, color: "#16A34A", scatter: { x: 50, y: -60, z: 70, r: 30 } },
     { text: "BENEFIT", top: "32%", left: "57.5%", size: "19px", weight: "900", rotate: "90deg", depth: 28, color: "#C026D3", scatter: { x: 60, y: -50, z: 80, r: 25 } },
     { text: "SMART SPENDING", top: "27%", left: "61%", size: "17px", weight: "800", rotate: "90deg", depth: 25, color: "#4F46E5", scatter: { x: 70, y: -50, z: 80, r: 20 } },
     { text: "ECONOMY", top: "32.6%", left: "67.5%", size: "20px", weight: "800", depth: 22, color: "#CA8A04", scatter: { x: 80, y: -40, z: 70, r: -6 } },
     { text: "PERFORMANCE", top: "38.2%", left: "68%", size: "19px", weight: "800", depth: 24, color: "#DC2626", scatter: { x: 80, y: -20, z: 70, r: 5 } },
-
-    // --- FAR RIGHT ---
     { text: "INVESTMENT", top: "26%", left: "77%", size: "22px", weight: "900", rotate: "90deg", depth: 32, color: "#0284C7", scatter: { x: 70, y: -30, z: 120, r: 35 } },
     { text: "SAVINGS", top: "47%", left: "81.5%", size: "18px", weight: "900", rotate: "90deg", depth: 28, color: "#059669", scatter: { x: 80, y: 30, z: 90, r: -25 } },
-    { text: "NO WASTE", top: "47%", left: "84.5%", size: "18px", weight: "800", rotate: "90deg", depth: 28, scatter: { x: 90, y: 30, z: 90, r: -25 } },
-
-    // --- CENTER ANCHOR & HORIZONTAL PAIR ---
+    { text: "NO WASTE", top: "47%", left: "84.5%", size: "18px", weight: "800", rotate: "90deg", depth: 28, color: "#059669", scatter: { x: 90, y: 30, z: 90, r: -25 } },
     { text: "VALUE FOR MONEY", top: "47.5%", left: "48%", size: "72px", weight: "900", depth: 40, color: "#1D4ED8", scatter: { x: 0, y: 0, z: 140, r: 0 } },
     { text: "MAXIMUM OUTPUT", top: "57%", left: "47.5%", size: "40px", weight: "900", depth: 34, color: "#7C3AED", scatter: { x: 0, y: 40, z: 100, r: 2 } },
     { text: "COST BENEFIT", top: "57%", left: "72%", size: "26px", weight: "800", depth: 26, color: "#DC2626", scatter: { x: 70, y: 40, z: 80, r: -4 } },
-
-    // --- MID & LOWER LEFT ---
     { text: "UTILITY", top: "43.5%", left: "14.5%", size: "18px", weight: "600", depth: 15, color: "#0891B2", scatter: { x: -80, y: -10, z: 50, r: 10 } },
     { text: "OUTCOME", top: "48.5%", left: "14.5%", size: "18px", weight: "600", depth: 18, color: "#9333EA", scatter: { x: -80, y: 15, z: 60, r: -6 } },
     { text: "DURABILITY", top: "65%", left: "10%", size: "22px", weight: "800", rotate: "90deg", depth: 26, color: "#B45309", scatter: { x: -70, y: 50, z: 80, r: 35 } },
@@ -102,13 +98,9 @@ export default function InteractiveVfmWall() {
     { text: "STRATEGY", top: "58.5%", left: "19%", size: "20px", weight: "800", depth: 24, color: "#E11D48", scatter: { x: -50, y: 50, z: 70, r: 6 } },
     { text: "PLANNING", top: "62.5%", left: "19%", size: "20px", weight: "800", depth: 24, color: "#2563EB", scatter: { x: -60, y: 70, z: 80, r: -5 } },
     { text: "LONGEVITY", top: "66.5%", left: "19.5%", size: "24px", weight: "900", depth: 28, color: "#D97706", scatter: { x: -50, y: 90, z: 90, r: 8 } },
-
-    // --- VERTICAL TRIO ---
     { text: "OPTIMIZATION", top: "62.5%", left: "26%", size: "14px", weight: "700", rotate: "90deg", depth: 22, color: "#0284C7", scatter: { x: -30, y: 70, z: 70, r: 30 } },
     { text: "WISE CHOICE", top: "62.5%", left: "28%", size: "14px", weight: "700", rotate: "90deg", depth: 22, color: "#7C3AED", scatter: { x: -20, y: 70, z: 70, r: 30 } },
     { text: "RELIABILITY", top: "62.5%", left: "30%", size: "14px", weight: "700", rotate: "90deg", depth: 22, color: "#16A34A", scatter: { x: -10, y: 70, z: 70, r: 30 } },
-
-    // --- LOWER CENTER & RIGHT ---
     { text: "SMART CHOICE", top: "69.5%", left: "34%", size: "16px", weight: "700", rotate: "90deg", depth: 20, color: "#EA580C", scatter: { x: -10, y: 70, z: 60, r: 25 } },
     { text: "SUSTAINABILITY", top: "62.5%", left: "44%", size: "22px", weight: "800", depth: 25, color: "#059669", scatter: { x: 10, y: 50, z: 70, r: -3 } },
     { text: "MONITORING", top: "62.5%", left: "58.5%", size: "19px", weight: "700", depth: 18, color: "#0284C7", scatter: { x: 50, y: 50, z: 50, r: 5 } },
@@ -193,11 +185,7 @@ export default function InteractiveVfmWall() {
             style={{
               position: "absolute",
               inset: 0,
-              background: useTransform(
-                [smoothMouseX, smoothMouseY],
-                ([x, y]) =>
-                  `radial-gradient(480px circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%, rgba(0, 31, 63, 0.04), transparent 70%)`
-              ),
+              background: glareBackground,
               pointerEvents: "none",
               zIndex: 0,
             }}
@@ -223,7 +211,6 @@ export default function InteractiveVfmWall() {
               (hoveredWord !== null || autoWord !== null || dragState.activeWord !== null) &&
               !isActive;
 
-            // Distance-based kinetic deflection
             let repelX = 0;
             let repelY = 0;
             if (dragState.activeWord && !isBeingDragged) {
@@ -284,7 +271,6 @@ function WordItem({
   onDrag,
   onDragEnd,
 }) {
-  // 1. ALL HOOKS UNCONDITIONALLY AT THE TOP LEVEL (Prevents React crashes)
   const scatterX = useTransform(scrollAssemble, [0, 1], [word.scatter.x, 0]);
   const scatterY = useTransform(scrollAssemble, [0, 1], [word.scatter.y, 0]);
   const scatterZ = useTransform(scrollAssemble, [0, 1], [word.scatter.z, word.depth]);
@@ -301,7 +287,6 @@ function WordItem({
   );
 
   return (
-    // LAYER 1: Permanent Centered Anchor
     <div
       style={{
         position: "absolute",
@@ -312,7 +297,6 @@ function WordItem({
         zIndex: isBeingDragged ? 100 : isActive ? 50 : Math.floor(word.depth),
       }}
     >
-      {/* LAYER 2: Parallax, Scroll Assembly & Parting Wave */}
       <motion.div
         style={{
           x: baseX,
@@ -326,7 +310,6 @@ function WordItem({
         }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
       >
-        {/* LAYER 3: Isolated Draggable Motion Canvas */}
         <motion.div
           data-word={word.text}
           drag

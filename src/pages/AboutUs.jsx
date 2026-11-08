@@ -6,7 +6,6 @@ import { ChevronDown } from "lucide-react";
 // ========================================================
 // 1. STATS SECTION HAND-DRAWN ICONS
 // ========================================================
-
 const HandDrawnScaleIcon = ({ color = "#001F3F" }) => (
   <svg width="40" height="40" viewBox="0 0 48 48" fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
     <path d="M24 7 L24 41" strokeWidth="2.6" />
@@ -49,7 +48,6 @@ const HandDrawnBanIcon = ({ color = "#B8860B" }) => (
 // ========================================================
 // 2. INSTITUTIONAL VALUES HAND-DRAWN ICONS
 // ========================================================
-
 const HandDrawnIntegrityIcon = () => (
   <svg width="40" height="40" viewBox="0 0 48 48" fill="none" stroke="#001F3F" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
     <path d="M24 6 C30 8, 38 7, 40 13 C41 26, 33 37, 24 43 C15 37, 7 26, 8 13 C10 7, 18 8, 24 6 Z" />
@@ -90,24 +88,29 @@ const HandDrawnEfficiencyIcon = () => (
 );
 
 // --- SCROLL ANIMATION HOOK ---
-function useScrollReveal() {
+function useScrollReveal(isMobile) {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef(null);
 
   useEffect(() => {
+    if (isMobile) {
+      setIsVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => { setIsVisible(entry.isIntersecting); },
       { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
     );
     if (ref.current) observer.observe(ref.current);
     return () => { if (ref.current) observer.unobserve(ref.current); };
-  }, []);
+  }, [isMobile]);
 
   return [ref, isVisible];
 }
 
-const Reveal = ({ children, delay = 0, width = "100%" }) => {
-  const [ref, isVisible] = useScrollReveal();
+const Reveal = ({ children, delay = 0, width = "100%", isMobile }) => {
+  const [ref, isVisible] = useScrollReveal(isMobile);
   return (
     <div
       ref={ref}
@@ -126,6 +129,14 @@ const Reveal = ({ children, delay = 0, width = "100%" }) => {
 export default function AboutUs() {
   const { hash } = useLocation();
   const [openScope, setOpenScope] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.matchMedia("(max-width: 992px)").matches);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     if (hash) {
@@ -139,38 +150,10 @@ export default function AboutUs() {
   }, [hash]);
 
   const stats = [
-    { 
-      number: "Act 1172", 
-      unit: "", 
-      label: "LEGAL FRAMEWORK", 
-      sub: "Value for Money Office Act, 2026", 
-      icon: HandDrawnScaleIcon, 
-      isGold: false 
-    },
-    { 
-      number: "16", 
-      unit: "Regions", 
-      label: "NATIONAL COVERAGE", 
-      sub: "Across all administrative regions", 
-      icon: HandDrawnPinIcon, 
-      isGold: true 
-    },
-    { 
-      number: "14", 
-      unit: "Days", 
-      label: "COMPLAINT ASSESSMENT", 
-      sub: "Statutory Timeline (Section 45)", 
-      icon: HandDrawnClockIcon, 
-      isGold: false 
-    },
-    { 
-      number: "2 – 5", 
-      unit: "Years", 
-      label: "DEBARMENT PENALTY", 
-      sub: "For Cost Inflation (Section 38)", 
-      icon: HandDrawnBanIcon, 
-      isGold: true 
-    },
+    { number: "Act 1172", unit: "", label: "LEGAL FRAMEWORK", sub: "Value for Money Office Act, 2026", icon: HandDrawnScaleIcon, isGold: false },
+    { number: "16", unit: "Regions", label: "NATIONAL COVERAGE", sub: "Across all administrative regions", icon: HandDrawnPinIcon, isGold: true },
+    { number: "14", unit: "Days", label: "COMPLAINT ASSESSMENT", sub: "Statutory Timeline (Section 45)", icon: HandDrawnClockIcon, isGold: false },
+    { number: "2 – 5", unit: "Years", label: "DEBARMENT PENALTY", sub: "For Cost Inflation (Section 38)", icon: HandDrawnBanIcon, isGold: true },
   ];
 
   const scopes = [
@@ -180,28 +163,11 @@ export default function AboutUs() {
     { title: "Public Reporting", desc: "Publishing annual value-for-money registers and gazetted findings to ensure transparency and citizen accountability." }
   ];
 
-  // INSTITUTIONAL VALUES WITH HAND-DRAWN SVGS
   const values = [
-    { 
-      title: "Integrity", 
-      desc: "Upholding the highest standards of honesty and ethical conduct in all our evaluations.", 
-      icon: HandDrawnIntegrityIcon 
-    },
-    { 
-      title: "Transparency", 
-      desc: "Ensuring our processes and findings are open, clear, and accessible to the public.", 
-      icon: HandDrawnTransparencyIcon 
-    },
-    { 
-      title: "Accountability", 
-      desc: "Taking responsibility for our actions and holding public entities to the same standard.", 
-      icon: HandDrawnAccountabilityIcon 
-    },
-    { 
-      title: "Efficiency", 
-      desc: "Maximizing the impact of every Cedi spent to deliver the best outcomes for citizens.", 
-      icon: HandDrawnEfficiencyIcon 
-    },
+    { title: "Integrity", desc: "Upholding the highest standards of honesty and ethical conduct in all our evaluations.", icon: HandDrawnIntegrityIcon },
+    { title: "Transparency", desc: "Ensuring our processes and findings are open, clear, and accessible to the public.", icon: HandDrawnTransparencyIcon },
+    { title: "Accountability", desc: "Taking responsibility for our actions and holding public entities to the same standard.", icon: HandDrawnAccountabilityIcon },
+    { title: "Efficiency", desc: "Maximizing the impact of every Cedi spent to deliver the best outcomes for citizens.", icon: HandDrawnEfficiencyIcon },
   ];
 
   const boardMembers = [
@@ -235,14 +201,14 @@ export default function AboutUs() {
         </div>
 
         <div style={{ position: "relative", marginTop: "-80px", display: "flex", justifyContent: "center", padding: "0 24px" }}>
-          <Reveal>
+          <Reveal isMobile={isMobile}>
             <div style={{ 
               backgroundColor: "#001F3F", borderRadius: "16px", padding: "40px 60px", 
               textAlign: "center", color: "white", boxShadow: "0 20px 40px rgba(0,0,0,0.2)", maxWidth: "800px",
               position: "relative", zIndex: 10
             }}>
-              <h1 style={{ fontSize: "48px", fontWeight: "900", margin: "0 0 16px 0", letterSpacing: "-1px" }}>About Us</h1>
-              <p style={{ fontSize: "18px", color: "#E2E8F0", margin: "0 auto", fontWeight: "500", lineHeight: "1.6" }}>
+              <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", fontWeight: "900", margin: "0 0 16px 0", letterSpacing: "-1px" }}>About Us</h1>
+              <p style={{ fontSize: "clamp(16px, 2vw, 18px)", color: "#E2E8F0", margin: "0 auto", fontWeight: "500", lineHeight: "1.6" }}>
                 Learn more about our mandate, our leadership, and the values that drive us to ensure value for every Cedi.
               </p>
             </div>
@@ -251,20 +217,20 @@ export default function AboutUs() {
       </section>
 
       {/* 2. EXECUTIVE SUMMARY & STATS */}
-      <section style={{ position: "relative", padding: "120px 24px 100px", overflow: "hidden", backgroundColor: "#F4F5F0" }}>
+      <section style={{ position: "relative", padding: "100px 24px 80px", overflow: "hidden", backgroundColor: "#F4F5F0" }}>
         <div style={{ position: "absolute", right: "-5%", top: "10%", width: "600px", height: "600px", backgroundImage: "url('/vfm-logo.png')", backgroundSize: "contain", backgroundRepeat: "no-repeat", backgroundPosition: "center", opacity: 0.03, zIndex: 0, pointerEvents: "none" }} />
 
         <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 1 }}>
           
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))", gap: "60px", marginBottom: "100px", alignItems: "stretch" }}>
-            <Reveal>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "60px", marginBottom: "80px", alignItems: "stretch" }}>
+            <Reveal isMobile={isMobile}>
               <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
                 <div style={{ marginBottom: "24px" }}>
                   <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "1.5px", color: "#8B7355", textTransform: "uppercase" }}>
                     The Object of the Office
                   </span>
                 </div>
-                <h1 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", lineHeight: "1.2", margin: "0 0 24px 0" }}>
+                <h1 style={{ fontSize: "clamp(28px, 4vw, 42px)", fontWeight: "800", color: "#0F172A", lineHeight: "1.2", margin: "0 0 24px 0" }}>
                   To regulate, monitor, coordinate, promote, develop and conduct value for money assessments.
                 </h1>
                 <p style={{ fontSize: "18px", lineHeight: "1.6", color: "#334155", marginBottom: "20px", fontWeight: "500" }}>
@@ -276,26 +242,19 @@ export default function AboutUs() {
               </div>
             </Reveal>
 
-            <Reveal delay={0.2}>
-              <div style={{ borderRadius: "16px", overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.15)", height: "100%", minHeight: "550px" }}>
+            <Reveal delay={0.2} isMobile={isMobile}>
+              <div style={{ borderRadius: "16px", overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.15)", height: "100%", minHeight: "400px" }}>
                 <img src="/boardroom.jpg" alt="VfM Boardroom" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               </div>
             </Reveal>
           </div>
 
-          {/* STATS BANNER */}
-          <Reveal delay={0.1}>
+          <Reveal delay={0.1} isMobile={isMobile}>
             <div style={{ 
-              backgroundColor: "#FFFFFF", 
-              borderRadius: "20px", 
-              padding: "40px 32px", 
+              backgroundColor: "#FFFFFF", borderRadius: "20px", padding: "40px 32px", 
               boxShadow: "0 20px 45px -10px rgba(0, 31, 63, 0.08)", 
-              display: "grid", 
-              gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", 
-              gap: "28px", 
-              border: "1px solid #E2E8F0", 
-              marginBottom: "100px",
-              position: "relative"
+              display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", 
+              gap: "28px", border: "1px solid #E2E8F0", marginBottom: "80px", position: "relative"
             }}>
               {stats.map((stat, index) => {
                 const IconComponent = stat.icon;
@@ -306,9 +265,7 @@ export default function AboutUs() {
                   <div 
                     key={index} 
                     style={{ 
-                      display: "flex", 
-                      flexDirection: "column", 
-                      padding: "12px 16px",
+                      display: "flex", flexDirection: "column", padding: "12px 16px",
                       borderRight: index < stats.length - 1 ? "1px solid #F1F5F9" : "none",
                       transition: "transform 0.25s ease",
                     }}
@@ -317,57 +274,33 @@ export default function AboutUs() {
                   >
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
                       <div style={{ 
-                        width: "50px", height: "50px", 
-                        borderRadius: "12px", 
+                        width: "50px", height: "50px", borderRadius: "12px", 
                         backgroundColor: lightBadge,
                         display: "flex", alignItems: "center", justifyContent: "center" 
                       }}>
                         <IconComponent color={accentColor} />
                       </div>
                       <span style={{ 
-                        fontSize: "10px", 
-                        fontWeight: "800", 
-                        color: accentColor, 
-                        letterSpacing: "1px", 
-                        textTransform: "uppercase",
-                        backgroundColor: lightBadge,
-                        padding: "4px 8px",
-                        borderRadius: "6px"
+                        fontSize: "10px", fontWeight: "800", color: accentColor, 
+                        letterSpacing: "1px", textTransform: "uppercase",
+                        backgroundColor: lightBadge, padding: "4px 8px", borderRadius: "6px"
                       }}>
                         {stat.label}
                       </span>
                     </div>
 
                     <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "6px" }}>
-                      <h3 style={{ 
-                        fontSize: "34px", 
-                        fontWeight: "900", 
-                        margin: 0, 
-                        color: accentColor, 
-                        lineHeight: 1.1,
-                        letterSpacing: "-0.5px"
-                      }}>
+                      <h3 style={{ fontSize: "34px", fontWeight: "900", margin: 0, color: accentColor, lineHeight: 1.1, letterSpacing: "-0.5px" }}>
                         {stat.number}
                       </h3>
                       {stat.unit && (
-                        <span style={{ 
-                          fontSize: "20px", 
-                          fontWeight: "800", 
-                          color: accentColor,
-                          lineHeight: 1
-                        }}>
+                        <span style={{ fontSize: "20px", fontWeight: "800", color: accentColor, lineHeight: 1 }}>
                           {stat.unit}
                         </span>
                       )}
                     </div>
 
-                    <p style={{ 
-                      fontSize: "13px", 
-                      color: "#64748B", 
-                      margin: 0, 
-                      lineHeight: "1.45",
-                      fontWeight: "500"
-                    }}>
+                    <p style={{ fontSize: "13px", color: "#64748B", margin: 0, lineHeight: "1.45", fontWeight: "500" }}>
                       {stat.sub}
                     </p>
                   </div>
@@ -399,10 +332,10 @@ export default function AboutUs() {
           <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "linear-gradient(90deg, rgba(0,31,63,1) 40%, rgba(0,31,63,0.8) 100%)", zIndex: 1 }} />
           
           <div style={{ maxWidth: "1000px", margin: "0 auto", position: "relative", zIndex: 2 }}>
-            <Reveal>
+            <Reveal isMobile={isMobile}>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
-                <h2 style={{ fontSize: "36px", fontWeight: "800", color: "#FFFFFF", marginBottom: "16px" }}>Statutory Independence</h2>
-                <p style={{ fontSize: "20px", color: "#E2E8F0", lineHeight: "1.6", maxWidth: "800px", margin: "0 auto" }}>
+                <h2 style={{ fontSize: "clamp(28px, 4vw, 36px)", fontWeight: "800", color: "#FFFFFF", marginBottom: "16px" }}>Statutory Independence</h2>
+                <p style={{ fontSize: "clamp(16px, 2vw, 20px)", color: "#E2E8F0", lineHeight: "1.6", maxWidth: "800px", margin: "0 auto" }}>
                   "Except as otherwise provided in the Constitution or by any other enactment, the Office is <strong>not subject to the direction or control of a person or an authority</strong> in the performance of the functions of the Office."
                 </p>
                 <p style={{ fontSize: "14px", fontWeight: "700", color: "#FCD116", marginTop: "16px", letterSpacing: "1px" }}>SECTION 12, ACT 1172</p>
@@ -412,7 +345,7 @@ export default function AboutUs() {
         </section>
       </div>
 
-      {/* 4. INTERACTIVE VFM WALL */}
+      {/* 4. INTERACTIVE VFM WALL (Restored for both desktop and mobile) */}
       <InteractiveVfmWall />
 
       {/* 5. STATUTORY MANDATE */}
@@ -421,9 +354,9 @@ export default function AboutUs() {
         <div style={{ position: "absolute", right: "-5%", top: "0%", width: "600px", height: "600px", backgroundImage: "url(/coat-of-arms.png)", backgroundSize: "contain", backgroundRepeat: "no-repeat", backgroundPosition: "center", opacity: 0.03, zIndex: 0, pointerEvents: "none" }} />
 
         <div style={{ maxWidth: "800px", margin: "0 auto", position: "relative", zIndex: 1, textAlign: "center" }}>
-          <Reveal>
+          <Reveal isMobile={isMobile}>
             <div>
-              <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", margin: "0 0 32px 0", lineHeight: "1.2" }}>
+              <h2 style={{ fontSize: "clamp(28px, 4vw, 42px)", fontWeight: "800", color: "#0F172A", margin: "0 0 32px 0", lineHeight: "1.2" }}>
                 A Statutory Mandate for Fiscal Integrity.
               </h2>
               <p style={{ fontSize: "18px", lineHeight: "1.8", color: "#334155", marginBottom: "24px", fontWeight: "500" }}>
@@ -442,9 +375,9 @@ export default function AboutUs() {
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url(/building-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.15, zIndex: 0 }} />
         
         <div style={{ maxWidth: "900px", margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <Reveal>
+          <Reveal isMobile={isMobile}>
             <div style={{ textAlign: "center", marginBottom: "60px" }}>
-              <h2 style={{ fontSize: "42px", fontWeight: "800", color: "#0F172A", margin: "0 0 16px 0" }}>Scope of Authority</h2>
+              <h2 style={{ fontSize: "clamp(28px, 4vw, 42px)", fontWeight: "800", color: "#0F172A", margin: "0 0 16px 0" }}>Scope of Authority</h2>
               <p style={{ color: "#475569", fontSize: "18px", margin: 0, maxWidth: "600px", marginLeft: "auto", marginRight: "auto" }}>The statutory powers granted to the VfM Office to enforce fiscal discipline.</p>
             </div>
           </Reveal>
@@ -453,7 +386,7 @@ export default function AboutUs() {
             {scopes.map((scope, index) => {
               const isOpen = openScope === index;
               return (
-                <Reveal key={index} delay={index * 0.1}>
+                <Reveal key={index} delay={index * 0.1} isMobile={isMobile}>
                   <div 
                     onClick={() => setOpenScope(isOpen ? null : index)}
                     style={{ 
@@ -465,17 +398,17 @@ export default function AboutUs() {
                       overflow: "hidden"
                     }}
                   >
-                    <div style={{ padding: "28px 36px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "24px" }}>
-                      <h3 style={{ fontSize: "22px", fontWeight: "800", color: isOpen ? "#FFFFFF" : "#0F172A", margin: 0, transition: "color 0.3s ease" }}>
+                    <div style={{ padding: "24px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px" }}>
+                      <h3 style={{ fontSize: "clamp(18px, 2vw, 22px)", fontWeight: "800", color: isOpen ? "#FFFFFF" : "#0F172A", margin: 0, transition: "color 0.3s ease" }}>
                         {scope.title}
                       </h3>
-                      <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: isOpen ? "#FCD116" : "#F1F5F9", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.4s ease", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}>
+                      <div style={{ width: "36px", height: "36px", flexShrink: 0, borderRadius: "50%", backgroundColor: isOpen ? "#FCD116" : "#F1F5F9", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.4s ease", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}>
                         <ChevronDown size={20} color={isOpen ? "#001F3F" : "#64748B"} strokeWidth={2.5} />
                       </div>
                     </div>
                     <div style={{ maxHeight: isOpen ? "300px" : "0px", opacity: isOpen ? 1 : 0, overflow: "hidden", transition: "max-height 0.4s ease-in-out, opacity 0.3s ease-in-out", backgroundColor: isOpen ? "#0A2E4D" : "transparent" }}>
-                      <div style={{ padding: "0 36px 36px 36px" }}>
-                        <p style={{ fontSize: "17px", color: "#CBD5E1", lineHeight: "1.7", margin: 0 }}>{scope.desc}</p>
+                      <div style={{ padding: "0 20px 24px 20px" }}>
+                        <p style={{ fontSize: "16px", color: "#CBD5E1", lineHeight: "1.7", margin: 0 }}>{scope.desc}</p>
                       </div>
                     </div>
                   </div>
@@ -491,9 +424,9 @@ export default function AboutUs() {
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url(/boardroom.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.08, zIndex: 0 }} />
 
         <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <Reveal>
+          <Reveal isMobile={isMobile}>
             <div style={{ textAlign: "center", marginBottom: "60px" }}>
-              <h2 style={{ fontSize: "36px", fontWeight: "800", color: "#001F3F", margin: "0 0 12px 0" }}>The Governing Board</h2>
+              <h2 style={{ fontSize: "clamp(28px, 4vw, 36px)", fontWeight: "800", color: "#001F3F", margin: "0 0 12px 0" }}>The Governing Board</h2>
               <p style={{ color: "#666666", fontSize: "16px", margin: 0, maxWidth: "600px", marginLeft: "auto", marginRight: "auto" }}>
                 The Office is governed by a multidisciplinary Board appointed in accordance with Section 4 of Act 1172. The Board is led by the Chairperson, with the Director-General serving as the chief executive.
               </p>
@@ -501,8 +434,8 @@ export default function AboutUs() {
           </Reveal>
 
           <div style={{ display: "flex", justifyContent: "center", marginBottom: "60px" }}>
-            <Reveal width="auto">
-              <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "40px", border: "2px solid #001F3F", boxShadow: "0 20px 40px rgba(0,31,63,0.15)", textAlign: "center", width: "320px" }}>
+            <Reveal width="auto" isMobile={isMobile}>
+              <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", padding: "40px", border: "2px solid #001F3F", boxShadow: "0 20px 40px rgba(0,31,63,0.15)", textAlign: "center", width: "100%", maxWidth: "320px" }}>
                 <div style={{ width: "80px", height: "80px", backgroundColor: "#F1F5F9", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px auto" }}>
                   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#001F3F" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 </div>
@@ -516,15 +449,15 @@ export default function AboutUs() {
             <div style={{ width: "2px", height: "40px", backgroundColor: "#CBD5E1" }} />
           </div>
 
-          <Reveal delay={0.1}>
+          <Reveal delay={0.1} isMobile={isMobile}>
             <div style={{ textAlign: "center", marginBottom: "32px" }}>
               <span style={{ fontSize: "12px", fontWeight: "800", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1.5px" }}>Statutory Members of the Board</span>
             </div>
           </Reveal>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px" }}>
             {boardMembers.map((member, index) => (
-              <Reveal key={index} delay={index * 0.05} width="100%">
+              <Reveal key={index} delay={index * 0.05} width="100%" isMobile={isMobile}>
                 <div style={{ 
                   backgroundColor: member.isDG ? "#001F3F" : "#FFFFFF", 
                   borderRadius: "12px", padding: "24px", 
@@ -550,12 +483,12 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* 8. INSTITUTIONAL VALUES (REBUILT WITH CUSTOM HAND-DRAWN ICONS & REFINED CARDS) */}
+      {/* 8. INSTITUTIONAL VALUES */}
       <section id="values" style={{ position: "relative", background: "linear-gradient(180deg, #FFFFFF 0%, #FFFBF0 100%)", padding: "90px 24px 100px" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-          <Reveal>
+          <Reveal isMobile={isMobile}>
             <div style={{ textAlign: "center", marginBottom: "56px" }}>
-              <h2 style={{ fontSize: "38px", fontWeight: "900", color: "#001F3F", margin: "0 0 12px 0", letterSpacing: "-0.5px" }}>
+              <h2 style={{ fontSize: "clamp(28px, 4vw, 38px)", fontWeight: "900", color: "#001F3F", margin: "0 0 12px 0", letterSpacing: "-0.5px" }}>
                 Institutional Values
               </h2>
               <p style={{ color: "#64748B", fontSize: "17px", margin: 0, fontWeight: "500" }}>
@@ -564,20 +497,15 @@ export default function AboutUs() {
             </div>
           </Reveal>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "28px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "28px" }}>
             {values.map((value, index) => {
               const IconComponent = value.icon;
               return (
-                <Reveal key={index} delay={index * 0.08}>
+                <Reveal key={index} delay={index * 0.08} isMobile={isMobile}>
                   <div 
                     style={{ 
-                      backgroundColor: "#FFFFFF", 
-                      padding: "36px 30px", 
-                      borderRadius: "16px", 
-                      border: "1px solid #E2E8F0", 
-                      height: "100%", 
-                      display: "flex", 
-                      flexDirection: "column", 
+                      backgroundColor: "#FFFFFF", padding: "36px 30px", borderRadius: "16px", 
+                      border: "1px solid #E2E8F0", height: "100%", display: "flex", flexDirection: "column", 
                       boxShadow: "0 10px 30px -5px rgba(0, 31, 63, 0.05)",
                       transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease" 
                     }}
@@ -592,17 +520,10 @@ export default function AboutUs() {
                       e.currentTarget.style.borderColor = "#E2E8F0";
                     }}
                   >
-                    {/* Hand-Drawn Icon Badge with subtle tint */}
                     <div style={{ 
-                      width: "68px", 
-                      height: "68px", 
-                      backgroundColor: "rgba(0, 31, 63, 0.04)", 
-                      borderRadius: "14px", 
-                      display: "flex", 
-                      alignItems: "center", 
-                      justifyContent: "center", 
-                      marginBottom: "22px",
-                      border: "1px solid rgba(0, 31, 63, 0.06)"
+                      width: "68px", height: "68px", backgroundColor: "rgba(0, 31, 63, 0.04)", 
+                      borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center", 
+                      marginBottom: "22px", border: "1px solid rgba(0, 31, 63, 0.06)"
                     }}>
                       <IconComponent />
                     </div>
