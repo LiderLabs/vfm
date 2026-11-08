@@ -102,7 +102,6 @@ export default function FloatingHelpButton() {
   const [searchQuery, setSearchQuery] = useState("");
   const [openArticle, setOpenArticle] = useState(null);
   const [isReady, setIsReady] = useState(false);
-  const [isDocked, setIsDocked] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -114,49 +113,67 @@ export default function FloatingHelpButton() {
   const dockY = useMotionValue(0);
   const baseSize = useMotionValue(42);
 
-  // 1. SCROLL-INDUCED FLIGHT (Runs on both Mobile and Desktop)
+  // 1. SCROLL-INDUCED CONTROLLER (Starts immediately at 0px to 180px)
   const { scrollY } = useScroll();
-  const flightProgress = useTransform(scrollY, [10, 200], [0, 1]);
-  const smoothFlight = useSpring(flightProgress, { stiffness: 140, damping: 22, mass: 0.6 });
+  const rawFlight = useTransform(scrollY, [0, 180], [0, 1]);
 
-  // Real-time flight coordinates
-  const currentX = useTransform([smoothFlight, anchorX, dockX], ([p, ax, dx]) => ax + p * (dx - ax));
+  // CRITICALLY DAMPED SPRING (Zero bounce, zero overshoot past 0 or 1)
+  const smoothFlight = useSpring(rawFlight, { 
+    stiffness: 120, 
+    damping: 26, 
+    mass: 0.5,
+    restDelta: 0.001 
+  });
+
+  // HARD CLAMP: Guarantees it can NEVER surpass the navbar slot (never < 0) or the edge (never > 1)
+  const flight = useTransform(smoothFlight, (v) => Math.min(Math.max(v, 0), 1));
+
+  // Trajectory with a subtle, graceful 18px arc
+  const currentX = useTransform([flight, anchorX, dockX], ([p, ax, dx]) => ax + p * (dx - ax));
   const currentY = useTransform(
-    [smoothFlight, anchorY, dockY],
-    ([p, ay, dy]) => ay + p * (dy - ay) + Math.sin(p * Math.PI) * 25
+    [flight, anchorY, dockY],
+    ([p, ay, dy]) => ay + p * (dy - ay) + Math.sin(p * Math.PI) * 18
   );
 
-  const buttonWidth = useTransform([smoothFlight, baseSize], ([p, bs]) => bs + p * (50 - bs));
-  const buttonHeight = useTransform([smoothFlight, baseSize], ([p, bs]) => bs + p * (54 - bs));
-  const borderRadius = useTransform(smoothFlight, [0, 0.5, 1], [
+  // Smooth GPU transforms without state re-renders
+  const buttonWidth = useTransform([flight, baseSize], ([p, bs]) => bs + p * (48 - bs));
+  const buttonHeight = useTransform([flight, baseSize], ([p, bs]) => bs + p * (52 - bs));
+  
+  // Clean transition from 4px square in navbar to 26px rounded tab at edge
+  const borderRadius = useTransform(flight, [0, 0.4, 1], [
     "4px 4px 4px 4px",
     "16px 16px 16px 16px",
-    "27px 0px 0px 27px",
+    "26px 0px 0px 26px",
   ]);
-  const backgroundColor = useTransform(smoothFlight, [0, 0.4, 1], ["#FFFFFF", "#FEEF85", "#FCD116"]);
-  const borderStyle = useTransform(smoothFlight, (p) => (p < 0.25 ? "1px solid #CBD5E1" : "none"));
+
+  const backgroundColor = useTransform(flight, [0, 0.35, 1], ["#FFFFFF", "#FEEF85", "#FCD116"]);
+  const borderStyle = useTransform(flight, (p) => (p < 0.15 ? "1px solid #CBD5E1" : "none"));
   const boxShadow = useTransform(
-    smoothFlight,
-    [0, 0.3, 1],
-    ["0 0 0 rgba(0,0,0,0)", "0 8px 20px rgba(0,31,63,0.18)", "0 8px 25px rgba(0,31,63,0.25)"]
+    flight,
+    [0, 0.2, 1],
+    ["0 0 0 rgba(0,0,0,0)", "0 6px 16px rgba(0,31,63,0.12)", "0 8px 25px rgba(0,31,63,0.22)"]
   );
 
-  // Measure start and dock positions (Switches dynamically between desktop & mobile slots)
+  // Peeking offset: "-50%" in flight/navbar, tucks to "-65%" when arriving at the edge
+  const xOffset = useTransform(flight, [0, 0.85, 1], ["-50%", "-50%", "-65%"]);
+
+  // Measures exact slot position relative to scroll = 0 to prevent drift
   useEffect(() => {
     const updateCoordinates = () => {
       const isMob = window.innerWidth <= 1200;
       baseSize.set(isMob ? 38 : 42);
 
-      // Measure mobile slot next to hamburger on mobile, or desktop slot on desktop
       const targetId = isMob ? "navbar-search-anchor-mobile" : "navbar-search-anchor";
       const navSlot = document.getElementById(targetId);
 
       if (navSlot) {
         const rect = navSlot.getBoundingClientRect();
-        if (rect.width > 0 && rect.height > 0) {
-          anchorX.set(rect.left + rect.width / 2);
-          anchorY.set(rect.top + rect.height / 2);
-        }
+        // Always calculate the slot's true coordinate relative to the top of the document
+        const currentScroll = window.scrollY;
+        const trueTop = rect.top + currentScroll;
+        
+        anchorX.set(rect.left + rect.width / 2);
+        anchorY.set(trueTop + rect.height / 2);
       }
 
       dockX.set(window.innerWidth);
@@ -169,12 +186,6 @@ export default function FloatingHelpButton() {
     window.addEventListener("resize", updateCoordinates);
     return () => window.removeEventListener("resize", updateCoordinates);
   }, [anchorX, anchorY, dockX, dockY, baseSize]);
-
-  useEffect(() => {
-    return smoothFlight.on("change", (latest) => {
-      setIsDocked(latest >= 0.85);
-    });
-  }, [smoothFlight]);
 
   useEffect(() => {
     setIsOpen(false);
@@ -209,11 +220,12 @@ export default function FloatingHelpButton() {
 
   return (
     <>
-      {/* SCROLL-INDUCED FLYING ICON (Unified for Mobile & Desktop) */}
+      {/* SCROLL-INDUCED FLYING ICON */}
       {!isOpen && (
         <motion.div
           onClick={() => {
-            if (isDocked) {
+            // If scrolled, open flyout. If resting in navbar, go to FAQ.
+            if (flight.get() > 0.75) {
               setIsOpen(true);
             } else {
               navigate("/faq");
@@ -223,7 +235,7 @@ export default function FloatingHelpButton() {
             position: "fixed",
             left: currentX,
             top: currentY,
-            x: isDocked ? "-65%" : "-50%",
+            x: xOffset,
             y: "-50%",
             width: buttonWidth,
             height: buttonHeight,
@@ -237,16 +249,16 @@ export default function FloatingHelpButton() {
             cursor: "pointer",
             zIndex: 9990,
             overflow: "hidden",
-            transition: "x 0.25s ease",
           }}
           whileHover={{
-            x: isDocked ? "-100%" : "-50%",
-            scale: isDocked ? 1.05 : 1.02,
+            // Slides out smoothly when hovering while docked on the edge
+            x: flight.get() > 0.75 ? "-100%" : "-50%",
+            scale: flight.get() > 0.75 ? 1.05 : 1.02,
           }}
           whileTap={{ scale: 0.95 }}
           title="Search Help Center"
         >
-          <Search size={isDocked ? 22 : 19} color="#001F3F" strokeWidth={2.4} />
+          <Search size={19} color="#001F3F" strokeWidth={2.4} />
         </motion.div>
       )}
 
