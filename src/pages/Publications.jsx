@@ -126,6 +126,11 @@ export default function Publications() {
 
   const prefersReduced = useReducedMotion();
 
+  // Mobile News Swipe & Autoloop State
+  const mobileNewsRef = useRef(null);
+  const [isNewsInteracting, setIsNewsInteracting] = useState(false);
+  const autoScrollTimerRef = useRef(null);
+
   // Detect mobile
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.matchMedia("(max-width: 992px)").matches);
@@ -193,6 +198,49 @@ export default function Publications() {
     setExpandedDocIndex(expandedDocIndex === index ? null : index);
   };
 
+  // Mobile News Interaction Handlers
+  const handleNewsTouchStart = () => {
+    setIsNewsInteracting(true);
+    if (autoScrollTimerRef.current) clearInterval(autoScrollTimerRef.current);
+  };
+
+  const handleNewsTouchEnd = () => {
+    // Wait 4 seconds after user lets go before resuming auto-scroll
+    setTimeout(() => {
+      setIsNewsInteracting(false);
+    }, 4000);
+  };
+
+  // Auto-scroll logic using scrollLeft (horizontal swipe)
+  useEffect(() => {
+    if (!isMobile || isNewsInteracting || prefersReduced) return;
+
+    const startAutoScroll = () => {
+      if (autoScrollTimerRef.current) clearInterval(autoScrollTimerRef.current);
+
+      autoScrollTimerRef.current = setInterval(() => {
+        if (mobileNewsRef.current && !isNewsInteracting) {
+          const container = mobileNewsRef.current;
+          const maxScroll = container.scrollWidth - container.clientWidth;
+          
+          // If we are at the end, loop back to the start
+          if (container.scrollLeft >= maxScroll - 10) {
+            container.scrollTo({ left: 0, behavior: "smooth" });
+          } else {
+            // Scroll right smoothly by one card width
+            container.scrollBy({ left: 280, behavior: "smooth" });
+          }
+        }
+      }, 3500);
+    };
+
+    startAutoScroll();
+
+    return () => {
+      if (autoScrollTimerRef.current) clearInterval(autoScrollTimerRef.current);
+    };
+  }, [isMobile, isNewsInteracting, prefersReduced]);
+
   return (
     <div style={{ position: "relative", backgroundColor: "#F4F5F0", minHeight: "100vh", overflowX: "hidden", fontFamily: "'Inter', sans-serif" }}>
       <style>
@@ -220,28 +268,24 @@ export default function Publications() {
           }
           .playlist-container:hover .playlist-track { animation-play-state: paused; }
 
-          /* MOBILE HARDWARE-ACCELERATED VERTICAL MARQUEE */
-          @keyframes scrollMobileMarquee {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-33.3333%); }
-          }
-          .mobile-marquee-container {
-            overflow: hidden;
-            position: relative;
-            height: 380px;
-            mask-image: linear-gradient(to bottom, transparent, black 6%, black 94%, transparent);
-            -webkit-mask-image: linear-gradient(to bottom, transparent, black 6%, black 94%, transparent);
-            touch-action: pan-y;
-          }
-          .mobile-marquee-track {
+          /* MOBILE HORIZONTAL SWIPE CAROUSEL */
+          .mobile-news-scroll-container {
             display: flex;
-            flex-direction: column;
-            gap: 14px;
-            animation: scrollMobileMarquee 20s linear infinite;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 10px;
+            mask-image: linear-gradient(to right, black 90%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
           }
-          /* Pause marquee on finger touch or tap */
-          .mobile-marquee-container:active .mobile-marquee-track {
-            animation-play-state: paused;
+          .mobile-news-scroll-container::-webkit-scrollbar { display: none; }
+          .mobile-news-card {
+            scroll-snap-align: start;
+            flex: 0 0 85%;
+            max-width: 300px;
           }
         `}
       </style>
@@ -339,7 +383,7 @@ export default function Publications() {
                   </Reveal>
                 )}
 
-                {/* RIGHT: PLAYLIST (DESKTOP & MOBILE AUTOLOOP) */}
+                {/* RIGHT: PLAYLIST (DESKTOP & MOBILE CAROUSEL) */}
                 <div>
                   <div style={{ marginBottom: "16px", paddingLeft: "8px" }}>
                     <h3 style={{ fontSize: "18px", fontWeight: "800", color: "#FFFFFF", margin: 0 }}>
@@ -387,42 +431,48 @@ export default function Publications() {
                       </div>
                     </div>
                   ) : (
-                    /* MOBILE SEAMLESS UPWARD AUTOLOOP MARQUEE */
-                    <div className="mobile-marquee-container">
-                      <div className="mobile-marquee-track">
-                        {playlistNotices.map((notice, index) => {
-                          const originalIndex = index % notices.length;
-                          return (
-                            <div
-                              key={index}
-                              onClick={() => setActiveNoticeIndex(originalIndex)}
-                              style={{
-                                backgroundColor: "#0A2E4D",
-                                borderRadius: "12px",
-                                padding: "14px",
-                                border: "1px solid rgba(255,255,255,0.12)",
-                                display: "flex",
-                                gap: "14px",
-                                cursor: "pointer",
-                                flexShrink: 0,
-                                boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
-                              }}
-                            >
-                              <div style={{ width: "85px", height: "65px", borderRadius: "6px", overflow: "hidden", flexShrink: 0 }}>
-                                <img src={notice.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                              </div>
-                              <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", flex: 1 }}>
-                                <span style={{ fontSize: "10px", fontWeight: "800", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px" }}>
-                                  {notice.tag}
-                                </span>
-                                <h4 style={{ fontSize: "13px", fontWeight: "700", color: "#FFFFFF", margin: 0, lineHeight: "1.35", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                                  {notice.title}
-                                </h4>
-                              </div>
+                    /* MOBILE HORIZONTAL SWIPE CAROUSEL */
+                    <div
+                      ref={mobileNewsRef}
+                      className="mobile-news-scroll-container"
+                      onTouchStart={handleNewsTouchStart}
+                      onTouchEnd={handleNewsTouchEnd}
+                      onScroll={handleNewsTouchStart}
+                    >
+                      {playlistNotices.map((notice, index) => {
+                        const originalIndex = index % notices.length;
+                        return (
+                          <div
+                            key={index}
+                            className="mobile-news-card"
+                            onClick={() => setActiveNoticeIndex(originalIndex)}
+                            style={{
+                              backgroundColor: "#0A2E4D",
+                              borderRadius: "12px",
+                              padding: "14px",
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: "14px",
+                              cursor: "pointer",
+                              flexShrink: 0,
+                              boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
+                            }}
+                          >
+                            <div style={{ width: "100%", height: "140px", borderRadius: "8px", overflow: "hidden" }}>
+                              <img src={notice.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                             </div>
-                          );
-                        })}
-                      </div>
+                            <div style={{ display: "flex", flexDirection: "column" }}>
+                              <span style={{ fontSize: "10px", fontWeight: "800", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "6px" }}>
+                                {notice.tag}
+                              </span>
+                              <h4 style={{ fontSize: "14px", fontWeight: "700", color: "#FFFFFF", margin: 0, lineHeight: "1.4", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                                {notice.title}
+                              </h4>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -570,7 +620,7 @@ export default function Publications() {
                   </motion.div>
                 </AnimatePresence>
               ) : (
-                /* MOBILE CLICK-TO-REVEAL ACCORDION (Compact & Animated) */
+                /* MOBILE CLICK-TO-REVEAL ACCORDION */
                 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                   {mobileDisplayedDocuments.map((doc, index) => {
                     const isExpanded = expandedDocIndex === index;
@@ -662,8 +712,15 @@ export default function Publications() {
                               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                               style={{ overflow: "hidden" }}
                             >
-                              <div style={{ padding: "0 20px 22px 20px", borderTop: "1px solid #F1F5F9" }}>
-                                <p style={{ fontSize: "14px", color: "#475569", lineHeight: "1.65", margin: "16px 0 20px 0" }}>
+                              {/* Fixed the inner padding and layout so button is fully visible */}
+                              <div style={{ 
+                                padding: "20px", 
+                                borderTop: "1px solid #F1F5F9",
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "16px"
+                              }}>
+                                <p style={{ fontSize: "14px", color: "#475569", lineHeight: "1.65", margin: 0 }}>
                                   {doc.desc}
                                 </p>
 
@@ -683,6 +740,7 @@ export default function Publications() {
                                     justifyContent: "center",
                                     gap: "8px",
                                     boxShadow: "0 4px 12px rgba(0,31,63,0.18)",
+                                    boxSizing: "border-box"
                                   }}
                                   onClick={(e) => {
                                     e.stopPropagation();
