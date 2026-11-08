@@ -22,6 +22,13 @@ const HandDrawnDownloadIcon = () => (
   </svg>
 );
 
+const HandDrawnClose = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+);
+
 // ========================================================
 // 2. REVEAL HELPERS
 // ========================================================
@@ -111,8 +118,24 @@ const RevealText = ({ text, as: Tag = "span", style = {}, delay = 0, wordDelay =
 export default function Publications() {
   const [activeFilter, setActiveFilter] = useState("Annual Reviews");
   const [isHovered, setIsHovered] = useState(false);
-  const [activeNoticeIndex, setActiveNoticeIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [activeNoticeIndex, setActiveNoticeIndex] = useState(null); 
   const prefersReduced = useReducedMotion();
+
+  // Refs for Hybrid Autoscroll
+  const tabsRef = useRef(null);
+  const mobileNewsRef = useRef(null);
+  
+  const [isTabsInteracting, setIsTabsInteracting] = useState(false);
+  const [isNewsInteracting, setIsNewsInteracting] = useState(false);
+
+  // Detect mobile
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.matchMedia("(max-width: 992px)").matches);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Hero Scroll Parallax
   const heroRef = useRef(null);
@@ -153,7 +176,7 @@ export default function Publications() {
     }
   ];
 
-  // Infinite scrolling playlist loop
+  // Infinite scrolling playlist loop for Desktop
   const playlistNotices = [...notices, ...notices, ...notices];
 
   const documents = [
@@ -203,20 +226,64 @@ export default function Publications() {
 
   const filteredDocuments = documents.filter(doc => doc.category === activeFilter);
 
-  // --- TAB AUTOPLAY LOGIC ---
+  // --- DESKTOP PLAYLIST AUTOPLAY ---
   useEffect(() => {
-    if (isHovered || prefersReduced) return;
+    if (isHovered || prefersReduced || isMobile) return;
 
     const interval = setInterval(() => {
-      setActiveFilter((current) => {
-        const currentIndex = filters.indexOf(current);
-        const nextIndex = (currentIndex + 1) % filters.length;
-        return filters[nextIndex];
-      });
+      setActiveNoticeIndex((prev) => (prev === null ? 0 : (prev + 1) % notices.length));
     }, 6000);
 
     return () => clearInterval(interval);
-  }, [isHovered, prefersReduced]);
+  }, [isHovered, prefersReduced, isMobile, notices.length]);
+
+  // --- HYBRID TAB AUTOSCROLL (Mobile Only) ---
+  useEffect(() => {
+    if (!isMobile || isTabsInteracting || prefersReduced) return;
+
+    const interval = setInterval(() => {
+      if (tabsRef.current) {
+        const container = tabsRef.current;
+        const maxScroll = container.scrollWidth - container.clientWidth;
+        
+        if (container.scrollLeft >= maxScroll - 10) {
+          container.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+          container.scrollTo({ left: container.scrollLeft + 150, behavior: "smooth" });
+        }
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isMobile, isTabsInteracting, prefersReduced]);
+
+  // --- HYBRID NEWS AUTOSCROLL (Mobile Only) ---
+  useEffect(() => {
+    if (!isMobile || isNewsInteracting || prefersReduced) return;
+
+    const interval = setInterval(() => {
+      if (mobileNewsRef.current) {
+        const container = mobileNewsRef.current;
+        const maxScroll = container.scrollHeight - container.clientHeight;
+        
+        if (container.scrollTop >= maxScroll - 10) {
+          container.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          // Scroll down by roughly the height of one card
+          container.scrollTo({ top: container.scrollTop + 100, behavior: "smooth" });
+        }
+      }
+    }, 3000); // Scrolls every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [isMobile, isNewsInteracting, prefersReduced]);
+
+  // Handle user interaction
+  const handleTabsInteractionStart = () => setIsTabsInteracting(true);
+  const handleTabsInteractionEnd = () => setTimeout(() => setIsTabsInteracting(false), 4000);
+
+  const handleNewsInteractionStart = () => setIsNewsInteracting(true);
+  const handleNewsInteractionEnd = () => setTimeout(() => setIsNewsInteracting(false), 4000);
 
   return (
     <div style={{ position: "relative", backgroundColor: "#F4F5F0", minHeight: "100vh", overflowX: "hidden" }}>
@@ -231,16 +298,16 @@ export default function Publications() {
             scrollbar-width: none;
           }
 
-          /* YOUTUBE PLAYLIST MARQUEE */
+          /* DESKTOP PLAYLIST MARQUEE */
           @keyframes scrollPlaylist {
             0% { transform: translateY(0); }
-            100% { transform: translateY(-33.3333%); } /* Shift by one full set of 3 items */
+            100% { transform: translateY(-33.3333%); }
           }
 
           .playlist-container {
             overflow: hidden;
             position: relative;
-            height: 520px; /* Fixed height to match main viewer */
+            height: 520px;
             mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
             -webkit-mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
           }
@@ -252,34 +319,45 @@ export default function Publications() {
             animation: scrollPlaylist 30s linear infinite;
           }
 
-          /* Pause on hover */
           .playlist-container:hover .playlist-track {
             animation-play-state: paused;
           }
 
-          /* On mobile, turn vertical playlist into horizontal swipeable row */
+          /* MOBILE TABS & NEWS SCROLL SETUP */
           @media (max-width: 992px) {
-            .playlist-container {
-              height: auto;
+            .tabs-container {
+              display: flex;
+              gap: 12px;
               overflow-x: auto;
               scroll-snap-type: x mandatory;
-              mask-image: none;
-              -webkit-mask-image: none;
-              padding-bottom: 16px;
+              padding-bottom: 12px;
+              scrollbar-width: none;
+              -ms-overflow-style: none;
+              -webkit-overflow-scrolling: touch;
+              mask-image: linear-gradient(to right, black 90%, transparent 100%);
+              -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
             }
-            .playlist-track {
-              flex-direction: row;
-              animation: none;
+            .tabs-container::-webkit-scrollbar {
+              display: none;
             }
-            .playlist-card-wrapper {
-              scroll-snap-align: start;
-              width: 280px;
-              flex-shrink: 0;
+            
+            /* Mobile News Carousel */
+            .mobile-news-container {
+              display: flex;
+              flex-direction: column;
+              gap: 16px;
+              overflow-y: auto;
+              max-height: 400px; /* Limits height so it can scroll */
+              scrollbar-width: none;
+              -ms-overflow-style: none;
+              mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
+              -webkit-mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
+              padding: 10px 0;
             }
-          }
+            .mobile-news-container::-webkit-scrollbar {
+              display: none;
+            }
 
-          /* FIX FOR DOWNLOAD BUTTON ON MOBILE */
-          @media (max-width: 480px) {
             .download-btn-mobile-fix {
               width: 100% !important;
               display: flex !important;
@@ -327,7 +405,6 @@ export default function Publications() {
             {/* YOUTUBE THEATER MODE GRID */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "32px" }}>
               
-              {/* Custom CSS Grid that responds to desktop */}
               <style>{`
                 @media (min-width: 992px) {
                   .theater-grid { grid-template-columns: 2fr 1fr !important; }
@@ -336,101 +413,116 @@ export default function Publications() {
 
               <div className="theater-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: "32px" }}>
                 
-                {/* LEFT: MAIN VIEWER */}
-                <Reveal delay={0.1} y={30}>
-                  <AnimatePresence mode="wait">
-                    <motion.div 
-                      key={activeNoticeIndex}
-                      initial={prefersReduced ? { opacity: 1 } : { opacity: 0, scale: 0.98 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={prefersReduced ? { opacity: 1 } : { opacity: 0, position: "absolute" }}
-                      transition={{ duration: 0.4, ease: "easeOut" }}
-                      style={{ 
-                        backgroundColor: "#0A2E4D", borderRadius: "16px", overflow: "hidden",
-                        border: "1px solid rgba(255,255,255,0.1)", display: "flex", flexDirection: "column",
-                        height: "100%", boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
-                      }}
-                    >
-                      {/* Main Image */}
-                      <div style={{ position: "relative", height: "300px", overflow: "hidden" }}>
-                        <img 
-                          src={notices[activeNoticeIndex].image} 
-                          alt="" 
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                        />
-                        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(10,46,77,0) 20%, rgba(10,46,77,1) 100%)" }} />
-                        <div style={{ position: "absolute", top: "24px", left: "24px", backgroundColor: "#FCD116", color: "#001F3F", padding: "6px 14px", borderRadius: "4px", fontSize: "12px", fontWeight: "800", letterSpacing: "1px", textTransform: "uppercase" }}>
-                          {notices[activeNoticeIndex].tag}
+                {/* LEFT: MAIN VIEWER (Desktop Only) */}
+                {!isMobile && (
+                  <Reveal delay={0.1} y={30}>
+                    <AnimatePresence mode="wait">
+                      <motion.div 
+                        key={activeNoticeIndex}
+                        initial={prefersReduced ? { opacity: 1 } : { opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={prefersReduced ? { opacity: 1 } : { opacity: 0, position: "absolute" }}
+                        transition={{ duration: 0.4, ease: "easeOut" }}
+                        style={{ 
+                          backgroundColor: "#0A2E4D", borderRadius: "16px", overflow: "hidden",
+                          border: "1px solid rgba(255,255,255,0.1)", display: "flex", flexDirection: "column",
+                          height: "100%", boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
+                        }}
+                      >
+                        <div style={{ position: "relative", height: "300px", overflow: "hidden" }}>
+                          <img src={notices[activeNoticeIndex || 0].image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(10,46,77,0) 20%, rgba(10,46,77,1) 100%)" }} />
+                          <div style={{ position: "absolute", top: "24px", left: "24px", backgroundColor: "#FCD116", color: "#001F3F", padding: "6px 14px", borderRadius: "4px", fontSize: "12px", fontWeight: "800", letterSpacing: "1px", textTransform: "uppercase" }}>
+                            {notices[activeNoticeIndex || 0].tag}
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Main Content */}
-                      <div style={{ padding: "0 24px 32px", display: "flex", flexDirection: "column", flex: 1, marginTop: "-20px", position: "relative", zIndex: 2 }}>
-                        <span style={{ fontSize: "13px", color: "#94A3B8", fontWeight: "600", marginBottom: "12px", display: "block" }}>
-                          {notices[activeNoticeIndex].date}
-                        </span>
-                        <h2 style={{ fontSize: "clamp(20px, 3vw, 28px)", fontWeight: "800", color: "#FFFFFF", margin: "0 0 16px 0", lineHeight: "1.2" }}>
-                          {notices[activeNoticeIndex].title}
-                        </h2>
-                        <p style={{ fontSize: "15px", color: "#CBD5E1", lineHeight: "1.7", margin: "0 0 24px 0", flex: 1 }}>
-                          {notices[activeNoticeIndex].desc}
-                        </p>
-                        
-                        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <span style={{ fontSize: "13px", color: "#64748B" }}>Value for Money Office</span>
+                        <div style={{ padding: "0 24px 32px", display: "flex", flexDirection: "column", flex: 1, marginTop: "-20px", position: "relative", zIndex: 2 }}>
+                          <span style={{ fontSize: "13px", color: "#94A3B8", fontWeight: "600", marginBottom: "12px", display: "block" }}>
+                            {notices[activeNoticeIndex || 0].date}
+                          </span>
+                          <h2 style={{ fontSize: "clamp(20px, 3vw, 28px)", fontWeight: "800", color: "#FFFFFF", margin: "0 0 16px 0", lineHeight: "1.2" }}>
+                            {notices[activeNoticeIndex || 0].title}
+                          </h2>
+                          <p style={{ fontSize: "15px", color: "#CBD5E1", lineHeight: "1.7", margin: "0 0 24px 0", flex: 1 }}>
+                            {notices[activeNoticeIndex || 0].desc}
+                          </p>
+                          
+                          <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span style={{ fontSize: "13px", color: "#64748B" }}>Value for Money Office</span>
+                          </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  </AnimatePresence>
-                </Reveal>
+                      </motion.div>
+                    </AnimatePresence>
+                  </Reveal>
+                )}
 
-                {/* RIGHT: VERTICAL PLAYLIST (Marquee) */}
+                {/* RIGHT: PLAYLIST */}
                 <div>
                   <div style={{ marginBottom: "16px", paddingLeft: "8px" }}>
-                    <h3 style={{ fontSize: "18px", fontWeight: "800", color: "#FFFFFF", margin: 0 }}>Up Next</h3>
+                    <h3 style={{ fontSize: "18px", fontWeight: "800", color: "#FFFFFF", margin: 0 }}>{isMobile ? "Latest Updates" : "Up Next"}</h3>
                   </div>
-                  <div className="playlist-container hide-scrollbar">
-                    <div className="playlist-track">
-                      {playlistNotices.map((notice, index) => {
-                        const originalIndex = index % notices.length;
-                        const isActive = activeNoticeIndex === originalIndex;
-                        
-                        return (
-                          <div 
-                            key={index} 
-                            className="playlist-card-wrapper"
-                            onClick={() => setActiveNoticeIndex(originalIndex)}
-                          >
-                            <motion.div 
-                              whileHover={prefersReduced ? {} : { backgroundColor: isActive ? "#133E66" : "#1A426B" }}
-                              style={{ 
-                                backgroundColor: isActive ? "#133E66" : "#0A2E4D", 
-                                borderRadius: "12px", padding: "16px",
-                                border: isActive ? "1px solid #FCD116" : "1px solid rgba(255,255,255,0.1)", 
-                                display: "flex", gap: "16px", cursor: "pointer",
-                                transition: "background-color 0.2s ease, border-color 0.2s ease"
-                              }}
-                            >
-                              {/* Thumbnail */}
-                              <div style={{ width: "100px", height: "70px", borderRadius: "6px", overflow: "hidden", flexShrink: 0 }}>
-                                <img src={notice.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                              </div>
-                              
-                              {/* Text */}
-                              <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                                <span style={{ fontSize: "10px", fontWeight: "800", color: isActive ? "#FCD116" : "#94A3B8", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px" }}>
-                                  {notice.tag}
-                                </span>
-                                <h4 style={{ fontSize: "13px", fontWeight: "700", color: isActive ? "#FFFFFF" : "#CBD5E1", margin: 0, lineHeight: "1.4", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                                  {notice.title}
-                                </h4>
-                              </div>
-                            </motion.div>
-                          </div>
-                        );
-                      })}
+
+                  {/* Desktop Vertical Marquee */}
+                  {!isMobile ? (
+                    <div className="playlist-container hide-scrollbar">
+                      <div className="playlist-track">
+                        {playlistNotices.map((notice, index) => {
+                          const originalIndex = index % notices.length;
+                          const isActive = activeNoticeIndex === originalIndex;
+                          return (
+                            <div key={index} className="playlist-card-wrapper" onClick={() => setActiveNoticeIndex(originalIndex)}>
+                              <motion.div whileHover={prefersReduced ? {} : { backgroundColor: isActive ? "#133E66" : "#1A426B" }}
+                                style={{ 
+                                  backgroundColor: isActive ? "#133E66" : "#0A2E4D", borderRadius: "12px", padding: "16px",
+                                  border: isActive ? "1px solid #FCD116" : "1px solid rgba(255,255,255,0.1)", 
+                                  display: "flex", gap: "16px", cursor: "pointer", transition: "background-color 0.2s ease, border-color 0.2s ease"
+                                }}
+                              >
+                                <div style={{ width: "100px", height: "70px", borderRadius: "6px", overflow: "hidden", flexShrink: 0 }}>
+                                  <img src={notice.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                </div>
+                                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                                  <span style={{ fontSize: "10px", fontWeight: "800", color: isActive ? "#FCD116" : "#94A3B8", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px" }}>{notice.tag}</span>
+                                  <h4 style={{ fontSize: "13px", fontWeight: "700", color: isActive ? "#FFFFFF" : "#CBD5E1", margin: 0, lineHeight: "1.4", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{notice.title}</h4>
+                                </div>
+                              </motion.div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    /* Mobile Vertical List with Auto-Scroll */
+                    <div 
+                      className="mobile-news-container"
+                      ref={mobileNewsRef}
+                      onTouchStart={handleNewsInteractionStart}
+                      onTouchEnd={handleNewsInteractionEnd}
+                      onScroll={handleNewsInteractionStart}
+                    >
+                      {notices.map((notice, index) => (
+                        <motion.div
+                          key={index}
+                          whileTap={prefersReduced ? {} : { scale: 0.98 }}
+                          onClick={() => setActiveNoticeIndex(index)}
+                          style={{ 
+                            backgroundColor: "#0A2E4D", borderRadius: "12px", padding: "16px",
+                            border: "1px solid rgba(255,255,255,0.1)", display: "flex", gap: "16px", cursor: "pointer",
+                            flexShrink: 0
+                          }}
+                        >
+                          <div style={{ width: "100px", height: "70px", borderRadius: "6px", overflow: "hidden", flexShrink: 0 }}>
+                            <img src={notice.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                            <span style={{ fontSize: "10px", fontWeight: "800", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px" }}>{notice.tag}</span>
+                            <h4 style={{ fontSize: "13px", fontWeight: "700", color: "#FFFFFF", margin: 0, lineHeight: "1.4" }}>{notice.title}</h4>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
               </div>
@@ -452,48 +544,31 @@ export default function Publications() {
               </div>
             </Reveal>
 
-            {/* Filter Tabs - Fixed for Mobile with minWidth */}
+            {/* Filter Tabs - Hybrid Autoscroll / Swipe */}
             <Reveal delay={0.1}>
               <div 
-                className="hide-scrollbar"
-                style={{ 
-                  display: "flex", 
-                  gap: "12px", 
-                  marginBottom: "40px",
-                  overflowX: "auto", 
-                  paddingBottom: "12px", 
-                  flexWrap: "nowrap",
-                  scrollSnapType: "x mandatory",
-                  WebkitOverflowScrolling: "touch",
-                  width: "100%",
-                  minWidth: 0 /* Crucial for flex children to allow scrolling instead of squishing */
-                }}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                onTouchStart={() => setIsHovered(true)}
-                onTouchEnd={() => setIsHovered(false)}
+                className="tabs-container"
+                ref={tabsRef}
+                onMouseEnter={handleTabsInteractionStart}
+                onMouseLeave={handleTabsInteractionEnd}
+                onTouchStart={handleTabsInteractionStart}
+                onTouchEnd={handleTabsInteractionEnd}
+                onScroll={handleTabsInteractionStart}
               >
-                {filters.map((filter) => {
+                {filters.map((filter, index) => {
                   const isActive = activeFilter === filter;
                   return (
                     <button
-                      key={filter}
+                      key={`${filter}-${index}`}
                       onClick={() => setActiveFilter(filter)}
                       style={{
-                        padding: "12px 24px", 
-                        borderRadius: "6px", 
-                        fontSize: "14px", 
-                        fontWeight: "700", 
-                        cursor: "pointer",
+                        padding: "12px 24px", borderRadius: "6px", fontSize: "14px", fontWeight: "700", cursor: "pointer",
                         border: isActive ? "1px solid #001F3F" : "1px solid #CBD5E1",
                         backgroundColor: isActive ? "#001F3F" : "#FFFFFF",
                         color: isActive ? "#FFFFFF" : "#475569",
-                        transition: "all 0.2s ease", 
-                        flexShrink: 0, 
-                        whiteSpace: "nowrap",
+                        transition: "all 0.2s ease", flexShrink: 0, whiteSpace: "nowrap",
                         boxShadow: isActive ? "0 4px 12px rgba(0,31,63,0.15)" : "none",
-                        scrollSnapAlign: "start",
-                        minWidth: "max-content" /* Force button to fit its text without wrapping */
+                        minWidth: "max-content"
                       }}
                     >
                       {filter}
@@ -531,12 +606,8 @@ export default function Publications() {
                         overflow: "hidden"
                       }}
                     >
-                      {/* Top row: Hand-drawn Icon and Date */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
-                        <div style={{ 
-                          width: "56px", height: "56px", borderRadius: "16px", backgroundColor: "#F0F4F8", 
-                          display: "flex", alignItems: "center", justifyContent: "center" 
-                        }}>
+                        <div style={{ width: "56px", height: "56px", borderRadius: "16px", backgroundColor: "#F0F4F8", display: "flex", alignItems: "center", justifyContent: "center" }}>
                           <HandDrawnDocument />
                         </div>
                         <span style={{ fontSize: "13px", color: "#64748B", fontWeight: "600", backgroundColor: "#F8FAFC", padding: "4px 10px", borderRadius: "4px" }}>
@@ -544,7 +615,6 @@ export default function Publications() {
                         </span>
                       </div>
 
-                      {/* Title & Category */}
                       <span style={{ fontSize: "11px", fontWeight: "800", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px", display: "block" }}>
                         {doc.category}
                       </span>
@@ -552,12 +622,10 @@ export default function Publications() {
                         {doc.title}
                       </h3>
 
-                      {/* Description */}
                       <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6", margin: "0 0 32px 0", flex: 1 }}>
                         {doc.desc}
                       </p>
 
-                      {/* Action Area - Fixed Mobile Layout */}
                       <div style={{ borderTop: "1px solid #F1F5F9", paddingTop: "24px", display: "flex", justifyContent: "flex-end" }}>
                         <button 
                           className="download-btn-mobile-fix"
@@ -565,8 +633,7 @@ export default function Publications() {
                             backgroundColor: "#001F3F", color: "#FFFFFF", border: "none", 
                             padding: "12px 24px", borderRadius: "8px", fontSize: "14px", 
                             fontWeight: "700", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px",
-                            transition: "background-color 0.2s ease, transform 0.1s ease",
-                            whiteSpace: "nowrap" /* Prevents text from wrapping inside the button */
+                            transition: "background-color 0.2s ease, transform 0.1s ease", whiteSpace: "nowrap"
                           }}
                           onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#0A2E4D"; }}
                           onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#001F3F"; }}
@@ -593,6 +660,82 @@ export default function Publications() {
         </section>
 
       </div>
+
+      {/* MOBILE FULL-SCREEN MODAL (YouTube Player Style) */}
+      <AnimatePresence>
+        {isMobile && activeNoticeIndex !== null && (
+          <motion.div
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            style={{
+              position: "fixed",
+              top: 0, left: 0, right: 0, bottom: 0,
+              backgroundColor: "#001F3F",
+              zIndex: 9999,
+              display: "flex",
+              flexDirection: "column",
+              overflowY: "auto"
+            }}
+          >
+            {/* Modal Header / Close Button */}
+            <div style={{ 
+              padding: "20px 24px", 
+              display: "flex", 
+              justifyContent: "space-between", 
+              alignItems: "center",
+              position: "sticky",
+              top: 0,
+              backgroundColor: "rgba(0,31,63,0.95)",
+              backdropFilter: "blur(10px)",
+              zIndex: 10
+            }}>
+              <span style={{ color: "#FCD116", fontWeight: "800", fontSize: "12px", letterSpacing: "1px", textTransform: "uppercase" }}>
+                {notices[activeNoticeIndex].tag}
+              </span>
+              <button 
+                onClick={() => setActiveNoticeIndex(null)}
+                style={{ 
+                  background: "rgba(255,255,255,0.1)", border: "none", borderRadius: "50%", 
+                  width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center",
+                  color: "#FFFFFF", cursor: "pointer"
+                }}
+              >
+                <HandDrawnClose />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div style={{ padding: "0 24px 40px" }}>
+              <div style={{ borderRadius: "12px", overflow: "hidden", marginBottom: "24px", marginTop: "8px" }}>
+                <img 
+                  src={notices[activeNoticeIndex].image} 
+                  alt="" 
+                  style={{ width: "100%", height: "240px", objectFit: "cover", display: "block" }} 
+                />
+              </div>
+              
+              <span style={{ fontSize: "13px", color: "#94A3B8", fontWeight: "600", marginBottom: "12px", display: "block" }}>
+                {notices[activeNoticeIndex].date}
+              </span>
+              
+              <h2 style={{ fontSize: "24px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 20px 0", lineHeight: "1.3" }}>
+                {notices[activeNoticeIndex].title}
+              </h2>
+              
+              <p style={{ fontSize: "16px", color: "#CBD5E1", lineHeight: "1.8", margin: "0 0 32px 0" }}>
+                {notices[activeNoticeIndex].desc}
+              </p>
+
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "13px", color: "#64748B" }}>Value for Money Office</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }
