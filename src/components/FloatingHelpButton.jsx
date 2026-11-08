@@ -179,14 +179,11 @@ export default function FloatingHelpButton() {
     return () => window.removeEventListener("resize", updateCoordinates);
   }, [anchorX, anchorY, dockX, dockY, baseSize]);
 
-  // FIX: Do NOT close the modal on route change if it's already open.
-  // This prevents the component from unmounting and re-calculating height mid-scroll.
   useEffect(() => {
-    if (!isOpen) {
-      setSearchQuery("");
-      setOpenArticle(null);
-    }
-  }, [location.pathname, isOpen]);
+    setIsOpen(false);
+    setSearchQuery("");
+    setOpenArticle(null);
+  }, [location.pathname]);
 
   const filteredArticles = searchArticles(searchQuery, helpArticles);
 
@@ -209,8 +206,7 @@ export default function FloatingHelpButton() {
     location.pathname === "/portal" ||
     location.pathname.startsWith("/dashboard");
 
-  // FIX: If the drawer is open, we STILL render it even on excluded routes to prevent layout crush
-  if (!isReady || (isExcludedRoute && !isOpen)) {
+  if (isExcludedRoute || !isReady) {
     return null;
   }
 
@@ -275,30 +271,25 @@ export default function FloatingHelpButton() {
             />
 
             <motion.div
-              initial={{ x: isMobile ? "0%" : "100%", y: isMobile ? "100%" : "0%", opacity: 0 }}
-              animate={{ x: 0, y: 0, opacity: 1 }}
-              exit={{ x: isMobile ? "0%" : "100%", y: isMobile ? "100%" : "0%", opacity: 0 }}
+              initial={{ x: "100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: "100%", opacity: 0 }}
               transition={{ type: "spring", damping: 28, stiffness: 260 }}
               style={{
                 position: "fixed",
-                // On mobile, lock it to the bottom of the screen, taking up the full width and height minus safe area
-                top: isMobile ? "auto" : "16px",
-                bottom: "0px",
-                left: isMobile ? "0px" : "auto",
-                right: isMobile ? "0px" : "16px",
-                width: isMobile ? "100%" : "calc(100vw - 32px)",
-                maxWidth: isMobile ? "100%" : "380px",
-                height: isMobile ? "85dvh" : "calc(100dvh - 32px)", // Fixed height using dvh
-                maxHeight: isMobile ? "85dvh" : "calc(100vh - 32px)", // Fallback
+                top: "16px",
+                bottom: "16px",
+                right: "16px",
+                width: "calc(100vw - 32px)",
+                maxWidth: "380px",
                 backgroundColor: "#FFFFFF",
-                borderRadius: isMobile ? "20px 20px 0 0" : "20px",
+                borderRadius: "20px",
                 boxShadow: "0 25px 60px -15px rgba(0, 31, 63, 0.35)",
                 zIndex: 9999,
                 display: "flex",
                 flexDirection: "column",
                 overflow: "hidden",
                 border: "1px solid #E2E8F0",
-                borderBottom: "none"
               }}
             >
               {/* Header */}
@@ -311,7 +302,7 @@ export default function FloatingHelpButton() {
                   justifyContent: "space-between",
                   backgroundColor: "#001F3F",
                   color: "#FFFFFF",
-                  flexShrink: 0
+                  flexShrink: 0, // Prevents header from being crushed
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -353,7 +344,7 @@ export default function FloatingHelpButton() {
                 </button>
               </div>
 
-              {/* Search Bar */}
+              {/* Search Bar Container - flexShrink: 0 */}
               <div style={{ padding: "16px 20px 8px 20px", flexShrink: 0 }}>
                 <div
                   style={{
@@ -412,7 +403,7 @@ export default function FloatingHelpButton() {
                         cursor: "pointer",
                         fontWeight: "600",
                         transition: "all 0.15s ease",
-                        flexShrink: 0,
+                        flexShrink: 0, 
                         whiteSpace: "nowrap",
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E2E8F0")}
@@ -559,13 +550,13 @@ export default function FloatingHelpButton() {
                 )}
               </div>
 
-              {/* Footer CTA */}
+              {/* Footer CTA - flexShrink: 0 */}
               <div
                 style={{
                   padding: "16px 20px",
                   borderTop: "1px solid #F1F5F9",
                   backgroundColor: "#FAFAFA",
-                  flexShrink: 0
+                  flexShrink: 0,
                 }}
               >
                 <Link
