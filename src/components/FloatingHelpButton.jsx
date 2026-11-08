@@ -4,7 +4,7 @@ import { Search, X, ChevronDown, ExternalLink, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import { helpArticles } from "../data/helpData";
 
-// Conversational filler words to strip out so natural language queries match
+// Conversational filler words
 const STOP_WORDS = new Set([
   "how", "do", "i", "can", "we", "the", "a", "an", "is", "are", 
   "to", "for", "of", "in", "on", "what", "where", "when", "why", 
@@ -101,30 +101,33 @@ export default function FloatingHelpButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [openArticle, setOpenArticle] = useState(null);
-  const [isMobile, setIsMobile] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [isDocked, setIsDocked] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Dynamic coordinates
   const anchorX = useMotionValue(0);
   const anchorY = useMotionValue(0);
   const dockX = useMotionValue(0);
   const dockY = useMotionValue(0);
+  const baseSize = useMotionValue(42);
 
+  // 1. SCROLL-INDUCED FLIGHT (Runs on both Mobile and Desktop)
   const { scrollY } = useScroll();
-  const flightProgress = useTransform(scrollY, [10, 220], [0, 1]);
+  const flightProgress = useTransform(scrollY, [10, 200], [0, 1]);
   const smoothFlight = useSpring(flightProgress, { stiffness: 140, damping: 22, mass: 0.6 });
 
+  // Real-time flight coordinates
   const currentX = useTransform([smoothFlight, anchorX, dockX], ([p, ax, dx]) => ax + p * (dx - ax));
   const currentY = useTransform(
     [smoothFlight, anchorY, dockY],
     ([p, ay, dy]) => ay + p * (dy - ay) + Math.sin(p * Math.PI) * 25
   );
 
-  const buttonWidth = useTransform(smoothFlight, [0, 1], [42, 50]);
-  const buttonHeight = useTransform(smoothFlight, [0, 1], [42, 54]);
+  const buttonWidth = useTransform([smoothFlight, baseSize], ([p, bs]) => bs + p * (50 - bs));
+  const buttonHeight = useTransform([smoothFlight, baseSize], ([p, bs]) => bs + p * (54 - bs));
   const borderRadius = useTransform(smoothFlight, [0, 0.5, 1], [
     "4px 4px 4px 4px",
     "16px 16px 16px 16px",
@@ -138,12 +141,16 @@ export default function FloatingHelpButton() {
     ["0 0 0 rgba(0,0,0,0)", "0 8px 20px rgba(0,31,63,0.18)", "0 8px 25px rgba(0,31,63,0.25)"]
   );
 
+  // Measure start and dock positions (Switches dynamically between desktop & mobile slots)
   useEffect(() => {
     const updateCoordinates = () => {
-      const mobile = window.innerWidth <= 1200;
-      setIsMobile(mobile);
+      const isMob = window.innerWidth <= 1200;
+      baseSize.set(isMob ? 38 : 42);
 
-      const navSlot = document.getElementById("navbar-search-anchor");
+      // Measure mobile slot next to hamburger on mobile, or desktop slot on desktop
+      const targetId = isMob ? "navbar-search-anchor-mobile" : "navbar-search-anchor";
+      const navSlot = document.getElementById(targetId);
+
       if (navSlot) {
         const rect = navSlot.getBoundingClientRect();
         if (rect.width > 0 && rect.height > 0) {
@@ -161,7 +168,7 @@ export default function FloatingHelpButton() {
     updateCoordinates();
     window.addEventListener("resize", updateCoordinates);
     return () => window.removeEventListener("resize", updateCoordinates);
-  }, [anchorX, anchorY, dockX, dockY]);
+  }, [anchorX, anchorY, dockX, dockY, baseSize]);
 
   useEffect(() => {
     return smoothFlight.on("change", (latest) => {
@@ -202,7 +209,7 @@ export default function FloatingHelpButton() {
 
   return (
     <>
-      {/* SCROLL-INDUCED FLYING ICON */}
+      {/* SCROLL-INDUCED FLYING ICON (Unified for Mobile & Desktop) */}
       {!isOpen && (
         <motion.div
           onClick={() => {
@@ -214,17 +221,16 @@ export default function FloatingHelpButton() {
           }}
           style={{
             position: "fixed",
-            left: isMobile ? "auto" : currentX,
-            right: isMobile ? 0 : "auto",
-            top: isMobile ? "50%" : currentY,
-            x: isMobile ? "25%" : isDocked ? "-65%" : "-50%",
+            left: currentX,
+            top: currentY,
+            x: isDocked ? "-65%" : "-50%",
             y: "-50%",
-            width: isMobile ? 48 : buttonWidth,
-            height: isMobile ? 54 : buttonHeight,
-            borderRadius: isMobile ? "27px 0 0 27px" : borderRadius,
-            backgroundColor: isMobile ? "#FCD116" : backgroundColor,
-            border: isMobile ? "none" : borderStyle,
-            boxShadow: isMobile ? "0 8px 25px rgba(0,31,63,0.25)" : boxShadow,
+            width: buttonWidth,
+            height: buttonHeight,
+            borderRadius: borderRadius,
+            backgroundColor: backgroundColor,
+            border: borderStyle,
+            boxShadow: boxShadow,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -234,13 +240,13 @@ export default function FloatingHelpButton() {
             transition: "x 0.25s ease",
           }}
           whileHover={{
-            x: isDocked || isMobile ? "-100%" : "-50%",
+            x: isDocked ? "-100%" : "-50%",
             scale: isDocked ? 1.05 : 1.02,
           }}
           whileTap={{ scale: 0.95 }}
           title="Search Help Center"
         >
-          <Search size={isDocked || isMobile ? 22 : 20} color="#001F3F" strokeWidth={2.4} />
+          <Search size={isDocked ? 22 : 19} color="#001F3F" strokeWidth={2.4} />
         </motion.div>
       )}
 
@@ -375,7 +381,7 @@ export default function FloatingHelpButton() {
                   )}
                 </div>
 
-                {/* Quick-Suggestion Pills (Star icon removed) */}
+                {/* Suggested Chips */}
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px", marginTop: "10px" }}>
                   <span style={{ fontSize: "11px", color: "#64748B", fontWeight: "600" }}>
                     Suggested:
@@ -404,7 +410,7 @@ export default function FloatingHelpButton() {
                 </div>
               </div>
 
-              {/* Scrollable FAQ Content */}
+              {/* Scrollable Content */}
               <div style={{ flex: 1, overflowY: "auto", padding: "12px 20px 20px 20px" }}>
                 {filteredArticles.length > 0 ? (
                   Object.entries(groupedArticles).map(([category, articles]) => (

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search } from "lucide-react"; // <-- ADDED THE MISSING IMPORT HERE
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -36,27 +35,26 @@ export default function Navbar() {
             transition: background-color 0.2s;
           }
           .dropdown-item:hover { background-color: #F0F4F8; color: #001F3F; }
-          .mobile-menu-btn { display: none; background: none; border: none; color: #001F3F; cursor: pointer; }
+
+          .mobile-actions-group { display: none; align-items: center; gap: 12px; }
+          .mobile-menu-btn { background: none; border: none; color: #001F3F; cursor: pointer; display: flex; align-items: center; }
 
           @media (max-width: 1200px) {
             .nav-links { display: none; }
             .desktop-actions { display: none !important; } 
-            .mobile-menu-btn { display: block; z-index: 10001; position: relative; }
+            .mobile-actions-group { display: flex !important; }
             
-            /* FIXED MOBILE DROPDOWN */
             .mobile-dropdown {
-              position: fixed; /* Fixed to screen, not header */
-              top: 0; left: 0; right: 0; bottom: 0;
-              background-color: #FFFFFF; 
-              padding: 80px 24px 40px; /* Space for the close button */
-              display: flex; flex-direction: column; gap: 20px;
-              z-index: 10000; /* Above everything else */
-              overflow-y: auto;
-              animation: fadeIn 0.2s ease-out forwards;
+              position: absolute; top: 100%; left: 0; right: 0;
+              background-color: #FFFFFF; border-top: 1px solid #E2E8F0;
+              padding: 24px; display: flex; flex-direction: column; gap: 20px;
+              box-shadow: 0 10px 20px rgba(0,0,0,0.1); transform-origin: top;
+              animation: slideDown 0.3s ease-out forwards; z-index: 1000;
+              max-height: calc(100vh - 80px); overflow-y: auto;
             }
-            @keyframes fadeIn {
-              from { opacity: 0; transform: translateY(-10px); }
-              to { opacity: 1; transform: translateY(0); }
+            @keyframes slideDown {
+              from { opacity: 0; transform: scaleY(0.9); }
+              to { opacity: 1; transform: scaleY(1); }
             }
             .mobile-dropdown a {
               color: #001F3F; text-decoration: none; font-size: 16px; font-weight: 600;
@@ -120,7 +118,7 @@ export default function Navbar() {
 
         {/* Desktop Right Actions */}
         <div className="desktop-actions" style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-          
+          {/* DESKTOP SEARCH ANCHOR SLOT */}
           <div id="navbar-search-anchor" style={{ width: "42px", height: "42px", flexShrink: 0 }} />
 
           <Link to="/submit" title="Report a Concern" style={{ display: "flex", alignItems: "center", justifyContent: "center", color: "#001F3F", textDecoration: "none", border: "1px solid #CBD5E1", width: "42px", height: "42px", borderRadius: "4px", transition: "all 0.2s ease" }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#F8FAFC"; e.currentTarget.style.borderColor = "#001F3F"; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.borderColor = "#CBD5E1"; }}>
@@ -134,13 +132,22 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile Hamburger */}
-        <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          {isMobileMenuOpen ? <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> : <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>}
-        </button>
+        {/* MOBILE ACTIONS GROUP: SEARCH ANCHOR + HAMBURGER BUTTON */}
+        <div className="mobile-actions-group">
+          {/* MOBILE SEARCH SLOT: Sits immediately to the left of the hamburger button */}
+          <div id="navbar-search-anchor-mobile" style={{ width: "38px", height: "38px", flexShrink: 0 }} />
+
+          <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? (
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            ) : (
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
         <div className="mobile-dropdown">
           <Link to="/" onClick={closeMenus}>Home</Link>
@@ -159,12 +166,9 @@ export default function Navbar() {
           </div>
 
           <Link to="/contact" onClick={closeMenus}>Contact</Link>
-          
           <Link to="/faq" onClick={closeMenus} style={{ fontSize: "16px", fontWeight: "600", color: "#001F3F", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: "8px" }}>
-            <Search size={18} />
             Search Help Center
           </Link>
-          
           <Link to="/submit" onClick={closeMenus} style={{ fontSize: "16px", fontWeight: "600", color: "#001F3F", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: "8px" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             Report a Concern
