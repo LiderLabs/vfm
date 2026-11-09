@@ -4,11 +4,15 @@ import { Search, X, ChevronDown, ExternalLink, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import { helpArticles } from "../data/helpData";
 
+// Final (docked) size of the button. Must match the end value used in buttonWidth below.
+const DOCKED_WIDTH = 48;
+const DOCKED_HEIGHT = 52;
+
 // Conversational filler words
 const STOP_WORDS = new Set([
-  "how", "do", "i", "can", "we", "the", "a", "an", "is", "are", 
-  "to", "for", "of", "in", "on", "what", "where", "when", "why", 
-  "who", "which", "my", "our", "it", "with", "about", "at", "by", 
+  "how", "do", "i", "can", "we", "the", "a", "an", "is", "are",
+  "to", "for", "of", "in", "on", "what", "where", "when", "why",
+  "who", "which", "my", "our", "it", "with", "about", "at", "by",
   "or", "and", "from", "be", "get", "need", "want"
 ]);
 
@@ -116,11 +120,11 @@ export default function FloatingHelpButton() {
   const { scrollY } = useScroll();
   const rawFlight = useTransform(scrollY, [0, 180], [0, 1]);
 
-  const smoothFlight = useSpring(rawFlight, { 
-    stiffness: 120, 
-    damping: 26, 
+  const smoothFlight = useSpring(rawFlight, {
+    stiffness: 120,
+    damping: 26,
     mass: 0.5,
-    restDelta: 0.001 
+    restDelta: 0.001
   });
 
   const flight = useTransform(smoothFlight, (v) => Math.min(Math.max(v, 0), 1));
@@ -131,13 +135,13 @@ export default function FloatingHelpButton() {
     ([p, ay, dy]) => ay + p * (dy - ay) + Math.sin(p * Math.PI) * 18
   );
 
-  const buttonWidth = useTransform([flight, baseSize], ([p, bs]) => bs + p * (48 - bs));
-  const buttonHeight = useTransform([flight, baseSize], ([p, bs]) => bs + p * (52 - bs));
-  
+  const buttonWidth = useTransform([flight, baseSize], ([p, bs]) => bs + p * (DOCKED_WIDTH - bs));
+  const buttonHeight = useTransform([flight, baseSize], ([p, bs]) => bs + p * (DOCKED_HEIGHT - bs));
+
   const borderRadius = useTransform(flight, [0, 0.4, 1], [
     "4px 4px 4px 4px",
     "16px 16px 16px 16px",
-    "26px 0px 0px 26px",
+    "24px 0px 0px 24px",
   ]);
 
   const backgroundColor = useTransform(flight, [0, 0.35, 1], ["#FFFFFF", "#FEEF85", "#FCD116"]);
@@ -148,7 +152,7 @@ export default function FloatingHelpButton() {
     ["0 0 0 rgba(0,0,0,0)", "0 6px 16px rgba(0,31,63,0.12)", "0 8px 25px rgba(0,31,63,0.22)"]
   );
 
-  const xOffset = useTransform(flight, [0, 0.85, 1], ["-50%", "-50%", "-65%"]);
+  const xOffset = useTransform(flight, [0, 0.85, 1], ["-50%", "-50%", "0%"]);
 
   useEffect(() => {
     const updateCoordinates = () => {
@@ -163,20 +167,34 @@ export default function FloatingHelpButton() {
         const rect = navSlot.getBoundingClientRect();
         const currentScroll = window.scrollY;
         const trueTop = rect.top + currentScroll;
-        
+
         anchorX.set(rect.left + rect.width / 2);
         anchorY.set(trueTop + rect.height / 2);
       }
 
-      dockX.set(window.innerWidth);
+      // FIX: clientWidth excludes the scrollbar (innerWidth includes it), and we subtract
+      // the full docked width so the whole tab sits flush against the visible right edge.
+      dockX.set(document.documentElement.clientWidth - DOCKED_WIDTH);
       dockY.set(window.innerHeight * 0.5);
 
       setIsReady(true);
     };
 
     updateCoordinates();
+
     window.addEventListener("resize", updateCoordinates);
-    return () => window.removeEventListener("resize", updateCoordinates);
+
+    // Recalculate if the page size changes (e.g. the scrollbar appears/disappears)
+    let resizeObserver;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(updateCoordinates);
+      resizeObserver.observe(document.documentElement);
+    }
+
+    return () => {
+      window.removeEventListener("resize", updateCoordinates);
+      if (resizeObserver) resizeObserver.disconnect();
+    };
   }, [anchorX, anchorY, dockX, dockY, baseSize]);
 
   useEffect(() => {
@@ -230,6 +248,7 @@ export default function FloatingHelpButton() {
             y: "-50%",
             width: buttonWidth,
             height: buttonHeight,
+            boxSizing: "border-box", // padding no longer widens the button
             borderRadius: borderRadius,
             backgroundColor: backgroundColor,
             border: borderStyle,
@@ -239,10 +258,10 @@ export default function FloatingHelpButton() {
             justifyContent: "center",
             cursor: "pointer",
             zIndex: 9990,
-            overflow: "hidden",
+            paddingRight: "4px", // keeps the icon optically centered in the rounded tab
           }}
           whileHover={{
-            x: flight.get() > 0.75 ? "-100%" : "-50%",
+            x: flight.get() > 0.75 ? "-10%" : "-50%",
             scale: flight.get() > 0.75 ? 1.05 : 1.02,
           }}
           whileTap={{ scale: 0.95 }}
@@ -302,7 +321,7 @@ export default function FloatingHelpButton() {
                   justifyContent: "space-between",
                   backgroundColor: "#001F3F",
                   color: "#FFFFFF",
-                  flexShrink: 0, // Prevents header from being crushed
+                  flexShrink: 0,
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -344,7 +363,7 @@ export default function FloatingHelpButton() {
                 </button>
               </div>
 
-              {/* Search Bar Container - flexShrink: 0 */}
+              {/* Search Bar */}
               <div style={{ padding: "16px 20px 8px 20px", flexShrink: 0 }}>
                 <div
                   style={{
@@ -384,7 +403,6 @@ export default function FloatingHelpButton() {
                   )}
                 </div>
 
-                {/* Suggested Chips */}
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px", marginTop: "10px" }}>
                   <span style={{ fontSize: "11px", color: "#64748B", fontWeight: "600", flexShrink: 0 }}>
                     Suggested:
@@ -403,7 +421,7 @@ export default function FloatingHelpButton() {
                         cursor: "pointer",
                         fontWeight: "600",
                         transition: "all 0.15s ease",
-                        flexShrink: 0, 
+                        flexShrink: 0,
                         whiteSpace: "nowrap",
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E2E8F0")}
@@ -550,7 +568,7 @@ export default function FloatingHelpButton() {
                 )}
               </div>
 
-              {/* Footer CTA - flexShrink: 0 */}
+              {/* Footer CTA */}
               <div
                 style={{
                   padding: "16px 20px",

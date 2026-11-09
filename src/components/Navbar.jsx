@@ -96,6 +96,9 @@ export default function Navbar() {
 
           <Link to="/what-we-do" className="nav-link" onClick={closeMenus}>What We Do</Link>
 
+          {/* News & Publications moved to main navbar */}
+          <Link to="/publications" className="nav-link" onClick={closeMenus}>News & Publications</Link>
+
           <div className="dropdown-container" onMouseEnter={() => setActiveDropdown("compliance")} onMouseLeave={() => setActiveDropdown(null)}>
             <span className="nav-link">
               Compliance & Transparency <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -113,7 +116,6 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* NEW: Forms directly on the main navbar */}
           <Link to="/forms" className="nav-link" onClick={closeMenus}>Forms</Link>
           
           <Link to="/contact" className="nav-link" onClick={closeMenus}>Contact</Link>
@@ -154,6 +156,9 @@ export default function Navbar() {
           <Link to="/" onClick={closeMenus}>Home</Link>
           <Link to="/about" onClick={closeMenus}>About Us</Link>
           <Link to="/what-we-do" onClick={closeMenus}>What We Do</Link>
+          
+          {/* News & Publications added to mobile menu */}
+          <Link to="/publications" onClick={closeMenus}>News & Publications</Link>
           
           <div style={{ display: "flex", flexDirection: "column", gap: "8px", borderBottom: "1px solid #F1F5F9", paddingBottom: "12px" }}>
             <span style={{ fontSize: "12px", fontWeight: "800", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1px" }}>Compliance & Transparency</span>
