@@ -32,16 +32,13 @@ export default function Footer() {
           </Link>
         </div>
 
-        {/* Column 2: Quick Links (Now includes Publications) */}
+        {/* Column 2: Quick Links */}
         <div style={{ minWidth: "150px" }}>
           <h4 style={{ fontSize: "14px", fontWeight: "800", margin: "0 0 20px 0", color: "#FCD116", letterSpacing: "1px", textTransform: "uppercase" }}>Quick Links</h4>
           <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "4px" }}>
             <li><Link to="/about" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#FCD116"} onMouseLeave={(e) => e.target.style.color = "#FFFFFF"}>About Us</Link></li>
             <li><Link to="/what-we-do" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#FCD116"} onMouseLeave={(e) => e.target.style.color = "#FFFFFF"}>What We Do</Link></li>
-            
-            {/* MOVED NEWS & PUBLICATIONS HERE */}
             <li><Link to="/publications" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#FCD116"} onMouseLeave={(e) => e.target.style.color = "#FFFFFF"}>News & Publications</Link></li>
-            
             <li><Link to="/contact" style={{ color: "#FFFFFF", textDecoration: "none", fontSize: "14px", display: "block", padding: "8px 0", transition: "color 0.2s" }} onMouseEnter={(e) => e.target.style.color = "#FCD116"} onMouseLeave={(e) => e.target.style.color = "#FFFFFF"}>Contact</Link></li>
           </ul>
         </div>
@@ -66,11 +63,11 @@ export default function Footer() {
           <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px", color: "#A0B3C6", fontSize: "14px", marginBottom: "32px" }}>
             <li style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginTop: "2px", flexShrink: 0 }}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              Ministry of Finance, Accra, Ghana
+              Ministry of Finance, Kanda-Accra, Ghana
             </li>
             <li style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginTop: "2px", flexShrink: 0 }}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-              info@vfm.gov.gh
+              <a href="mailto:info@vfmo.gov.gh" style={{ color: "#A0B3C6", textDecoration: "none" }}>info@vfmo.gov.gh</a>
             </li>
           </ul>
 

@@ -112,13 +112,15 @@ export default function Navbar() {
               </div>
             )}
           </div>
+
+          {/* NEW: Forms directly on the main navbar */}
+          <Link to="/forms" className="nav-link" onClick={closeMenus}>Forms</Link>
           
           <Link to="/contact" className="nav-link" onClick={closeMenus}>Contact</Link>
         </nav>
 
         {/* Desktop Right Actions */}
         <div className="desktop-actions" style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-          {/* DESKTOP SEARCH ANCHOR SLOT */}
           <div id="navbar-search-anchor" style={{ width: "42px", height: "42px", flexShrink: 0 }} />
 
           <Link to="/submit" title="Report a Concern" style={{ display: "flex", alignItems: "center", justifyContent: "center", color: "#001F3F", textDecoration: "none", border: "1px solid #CBD5E1", width: "42px", height: "42px", borderRadius: "4px", transition: "all 0.2s ease" }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#F8FAFC"; e.currentTarget.style.borderColor = "#001F3F"; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.borderColor = "#CBD5E1"; }}>
@@ -132,9 +134,8 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* MOBILE ACTIONS GROUP: SEARCH ANCHOR + HAMBURGER BUTTON */}
+        {/* MOBILE ACTIONS GROUP */}
         <div className="mobile-actions-group">
-          {/* MOBILE SEARCH SLOT: Sits immediately to the left of the hamburger button */}
           <div id="navbar-search-anchor-mobile" style={{ width: "38px", height: "38px", flexShrink: 0 }} />
 
           <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
@@ -165,7 +166,9 @@ export default function Navbar() {
             <Link to="/whistleblower" onClick={closeMenus} style={{ paddingLeft: "12px", fontSize: "14px", fontWeight: "500" }}>Whistleblower Policy</Link>
           </div>
 
+          <Link to="/forms" onClick={closeMenus}>Forms</Link>
           <Link to="/contact" onClick={closeMenus}>Contact</Link>
+          
           <Link to="/faq" onClick={closeMenus} style={{ fontSize: "16px", fontWeight: "600", color: "#001F3F", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: "8px" }}>
             Search Help Center
           </Link>

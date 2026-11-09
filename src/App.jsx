@@ -20,6 +20,7 @@ import Engagement from "./pages/Engagement";
 import ReviewPanel from "./pages/ReviewPanel"; 
 import Whistleblower from "./pages/Whistleblower";
 import Faq from "./pages/Faq";
+import Forms from "./pages/Forms"; // <--- ADDED IMPORT
 import Placeholder from "./pages/Placeholder";
 
 function Layout() {
@@ -50,6 +51,7 @@ function Layout() {
           
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<Faq />} />
+          <Route path="/forms" element={<Forms />} /> {/* <--- ADDED ROUTE */}
           
           {/* Public Submission, Tracking, Clearance, Sanctions, Open Data & Engagement Routes */}
           <Route path="/submit" element={<Submit />} />
