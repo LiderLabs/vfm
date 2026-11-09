@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VFMO Showcase</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #F8F9FA;
+      overflow: hidden; /* Hide scrollbars for TV */
+    }
+    #root {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Load React, ReactDOM, Babel (for JSX), and Framer Motion -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/framer-motion@10/dist/framer-motion.js"></script>
+
+  <script type="text/babel">
+    const { useState, useRef, useEffect, useMemo } = React;
+    const { motion, useScroll, useTransform, useSpring, useMotionValue } = window.framerMotion;
+
+    // --- SPLIT TEXT COMPONENT ---
+    const SplitText = ({ text, hoveredWord, baseColor, hoverColor }) => {
+      const chars = text.split("");
+      return (
+        <span style={{ display: "inline-block", whiteSpace: "nowrap" }}>
+          {chars.map((char, i) => {
+            const isHovered = hoveredWord === text;
+            return (
+              <span
+                key={i}
+                style={{
+                  display: "inline-block",
+                  color: isHovered ? hoverColor : baseColor,
+                  transition: "color 0.2s ease, transform 0.2s ease",
+                  transform: isHovered ? "translateY(-2px)" : "translateY(0)",
+                }}
+              >
+                {char === " " ? "\u00A0" : char}
+              </span>
+            );
+          })}
+        </span>
+      );
+    };
+
+    // --- WORD ITEM COMPONENT ---
+    function WordItem({
+      word,
+      isActive,
+      isDimmed,
+      isBeingDragged,
+      repelX,
+      repelY,
+      scrollAssemble,
+      smoothMouseX,
+      smoothMouseY,
+      onSelect,
+      onDeselect,
+      onDrag,
+      onDragEnd,
+    }) {
+      const parallaxX = useTransform(smoothMouseX, [-0.5, 0.5], [-word.depth * 0.4, word.depth * 0.4]);
+      const parallaxY = useTransform(smoothMouseY, [-0.5, 0.5], [-word.depth * 0.4, word.depth * 0.4]);
+      
+      const baseX = useTransform([parallaxX], ([p]) => p);
+      const baseY = useTransform([parallaxY], ([p]) => p);
+
+      return (
+        <div
+          style={{
+            position: "absolute",
+            top: word.top,
+            left: word.left,
+            transform: "translate(-50%, -50%)",
+            transformStyle: "preserve-3d",
+            zIndex: isBeingDragged ? 100 : isActive ? 50 : Math.floor(word.depth),
+          }}
+        >
+          <motion.div
+            style={{
+              x: baseX,
+              y: baseY,
+              z: word.depth,
+              rotate: word.rotate || "0deg",
+            }}
+            animate={{
+              x: repelX,
+              y: repelY,
+            }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          >
+            <motion.div
+              drag
+              dragSnapToOrigin={true}
+              dragElastic={0.4}
+              onDrag={(e, info) => onDrag(info)}
+              onDragEnd={onDragEnd}
+              onMouseEnter={onSelect}
+              onMouseLeave={onDeselect}
+              whileDrag={{ scale: 1.18, zIndex: 100, cursor: "grabbing" }}
+              style={{
+                fontSize: word.size,
+                fontWeight: word.weight,
+                userSelect: "none",
+                cursor: isBeingDragged ? "grabbing" : "grab",
+                whiteSpace: "nowrap",
+                letterSpacing: "-0.035em",
+                wordSpacing: "-0.06em",
+                lineHeight: 1,
+                transformOrigin: "center center",
+                filter: isDimmed ? "blur(1px)" : "blur(0px)",
+              }}
+              animate={{
+                scale: isActive ? 1.15 : 1,
+                opacity: isDimmed ? 0.2 : 1,
+              }}
+              transition={{ type: "spring", stiffness: 350, damping: 25 }}
+            >
+              <SplitText
+                text={word.text}
+                hoveredWord={isActive ? word.text : null}
+                baseColor="#2d3748"
+                hoverColor={word.color}
+              />
+            </motion.div>
+          </motion.div>
+        </div>
+      );
+    }
+
+    // --- MAIN SHOWCASE COMPONENT ---
+    function Showcase() {
+      const [hoveredWord, setHoveredWord] = useState(null);
+      const [autoWord, setAutoWord] = useState(null);
+      const [lastInteraction, setLastInteraction] = useState(Date.now());
+      const [dragState, setDragState] = useState({ activeWord: null, x: 0, y: 0 });
+      const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+      const containerRef = useRef(null);
+      const mouseX = useMotionValue(0);
+      const mouseY = useMotionValue(0);
+      const springConfig = { damping: 25, stiffness: 120 };
+      const smoothMouseX = useSpring(mouseX, springConfig);
+      const smoothMouseY = useSpring(mouseY, springConfig);
+      const rotateX = useTransform(smoothMouseY, [-0.5, 0.5], [6, -6]);
+      const rotateY = useTransform(smoothMouseX, [-0.5, 0.5], [-6, 6]);
+
+      // Auto breathing for the TV
+      useEffect(() => {
+        const interval = setInterval(() => {
+          if (Date.now() - lastInteraction < 2500) return;
+          const randomIndex = Math.floor(Math.random() * words.length);
+          setAutoWord(words[randomIndex].text);
+          setTimeout(() => setAutoWord(null), 1500);
+        }, 2000);
+        return () => clearInterval(interval);
+      }, [lastInteraction]);
+
+      useEffect(() => {
+        const handleResize = () => setWindowWidth(window.innerWidth);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+      }, []);
+
+      const virtualWidth = 1200;
+      const virtualHeight = 720;
+      // Scale to fill the screen for the TV
+      const currentScale = Math.min(windowWidth / virtualWidth, window.innerHeight / virtualHeight) * 1.1;
+
+      const rawWords = [
+        { text: "ACCOUNTABILITY", top: "26%", left: "41.5%", size: "26px", weight: "900", depth: 25, color: "#2563EB" },
+        { text: "LIFECYCLE COST", top: "30.5%", left: "41.5%", size: "20px", weight: "600", depth: 15, color: "#059669" },
+        { text: "COST CONTROL", top: "34.5%", left: "45%", size: "22px", weight: "800", depth: 20, color: "#D97706" },
+        { text: "COST EFFICIENCY", top: "39.5%", left: "43.5%", size: "34px", weight: "900", depth: 35, color: "#7C3AED" },
+        { text: "RESOURCE USE", top: "31%", left: "21.5%", size: "16px", weight: "600", depth: 16, color: "#0284C7" },
+        { text: "BEST VALUE", top: "34.5%", left: "21.5%", size: "18px", weight: "800", depth: 20, color: "#EA580C" },
+        { text: "TRUST", top: "39%", left: "23%", size: "28px", weight: "900", depth: 30, color: "#E11D48" },
+        { text: "BUDGET", top: "32%", left: "28.5%", size: "22px", weight: "900", rotate: "90deg", depth: 28, color: "#0D9488" },
+        { text: "GOOD RETURNS", top: "17%", left: "57.5%", size: "15px", weight: "800", rotate: "90deg", depth: 22, color: "#16A34A" },
+        { text: "BENEFIT", top: "32%", left: "57.5%", size: "19px", weight: "900", rotate: "90deg", depth: 28, color: "#C026D3" },
+        { text: "SMART SPENDING", top: "27%", left: "61%", size: "17px", weight: "800", rotate: "90deg", depth: 25, color: "#4F46E5" },
+        { text: "ECONOMY", top: "32.6%", left: "67.5%", size: "20px", weight: "800", depth: 22, color: "#CA8A04" },
+        { text: "PERFORMANCE", top: "38.2%", left: "68%", size: "19px", weight: "800", depth: 24, color: "#DC2626" },
+        { text: "INVESTMENT", top: "26%", left: "77%", size: "22px", weight: "900", rotate: "90deg", depth: 32, color: "#0284C7" },
+        { text: "SAVINGS", top: "47%", left: "81.5%", size: "18px", weight: "900", rotate: "90deg", depth: 28, color: "#059669" },
+        { text: "NO WASTE", top: "47%", left: "84.5%", size: "18px", weight: "800", rotate: "90deg", depth: 28, color: "#059669" },
+        { text: "VALUE FOR MONEY", top: "47.5%", left: "48%", size: "72px", weight: "900", depth: 40, color: "#1D4ED8" },
+        { text: "MAXIMUM OUTPUT", top: "57%", left: "47.5%", size: "40px", weight: "900", depth: 34, color: "#7C3AED" },
+        { text: "COST BENEFIT", top: "57%", left: "72%", size: "26px", weight: "800", depth: 26, color: "#DC2626" },
+        { text: "UTILITY", top: "43.5%", left: "14.5%", size: "18px", weight: "600", depth: 15, color: "#0891B2" },
+        { text: "OUTCOME", top: "48.5%", left: "14.5%", size: "18px", weight: "600", depth: 18, color: "#9333EA" },
+        { text: "DURABILITY", top: "65%", left: "10%", size: "22px", weight: "800", rotate: "90deg", depth: 26, color: "#B45309" },
+        { text: "QUALITY ASSET", top: "55%", left: "20.5%", size: "16px", weight: "700", depth: 18, color: "#059669" },
+        { text: "STRATEGY", top: "58.5%", left: "19%", size: "20px", weight: "800", depth: 24, color: "#E11D48" },
+        { text: "PLANNING", top: "62.5%", left: "19%", size: "20px", weight: "800", depth: 24, color: "#2563EB" },
+        { text: "LONGEVITY", top: "66.5%", left: "19.5%", size: "24px", weight: "900", depth: 28, color: "#D97706" },
+        { text: "OPTIMIZATION", top: "62.5%", left: "26%", size: "14px", weight: "700", rotate: "90deg", depth: 22, color: "#0284C7" },
+        { text: "WISE CHOICE", top: "62.5%", left: "28%", size: "14px", weight: "700", rotate: "90deg", depth: 22, color: "#7C3AED" },
+        { text: "RELIABILITY", top: "62.5%", left: "30%", size: "14px", weight: "700", rotate: "90deg", depth: 22, color: "#16A34A" },
+        { text: "SMART CHOICE", top: "69.5%", left: "34%", size: "16px", weight: "700", rotate: "90deg", depth: 20, color: "#EA580C" },
+        { text: "SUSTAINABILITY", top: "62.5%", left: "44%", size: "22px", weight: "800", depth: 25, color: "#059669" },
+        { text: "MONITORING", top: "62.5%", left: "58.5%", size: "19px", weight: "700", depth: 18, color: "#0284C7" },
+        { text: "STANDARD", top: "71%", left: "66.5%", size: "18px", weight: "800", rotate: "90deg", depth: 24, color: "#4F46E5" },
+        { text: "PRODUCTIVITY", top: "62.5%", left: "75%", size: "20px", weight: "800", depth: 24, color: "#D97706" },
+        { text: "RETURN ON INVESTMENT", top: "66.5%", left: "49.5%", size: "22px", weight: "800", depth: 28, color: "#E11D48" },
+        { text: "KNOWLEDGE", top: "71%", left: "49.5%", size: "26px", weight: "900", depth: 32, color: "#7C3AED" },
+      ];
+
+      const words = useMemo(() => {
+        return rawWords.map((w) => ({
+          ...w,
+          canvasX: (parseFloat(w.left) / 100) * virtualWidth,
+          canvasY: (parseFloat(w.top) / 100) * virtualHeight,
+        }));
+      }, []);
+
+      const handleMouseMove = (e) => {
+        if (!containerRef.current || dragState.activeWord) return;
+        const rect = containerRef.current.getBoundingClientRect();
+        mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+        mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+      };
+
+      const handleMouseLeave = () => {
+        mouseX.set(0);
+        mouseY.set(0);
+        setHoveredWord(null);
+      };
+
+      const handleWordDrag = (word, info) => {
+        if (!info || !info.offset) return;
+        setLastInteraction(Date.now());
+        setDragState({
+          activeWord: word.text,
+          x: word.canvasX + info.offset.x / currentScale,
+          y: word.canvasY + info.offset.y / currentScale,
+        });
+      };
+
+      const handleWordDragEnd = () => {
+        setDragState({ activeWord: null, x: 0, y: 0 });
+      };
+
+      return (
+        <motion.div
+          ref={containerRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{
+            position: "relative",
+            width: `${virtualWidth}px`,
+            height: `${virtualHeight}px`,
+            transform: `scale(${currentScale})`,
+            transformOrigin: "center center",
+            backgroundColor: "#FFFFFF",
+            borderRadius: "0px",
+            boxShadow: "none",
+            overflow: "hidden",
+            transformStyle: "preserve-3d",
+          }}
+          animate={{
+            rotateX: dragState.activeWord ? 0 : rotateX.get(),
+            rotateY: dragState.activeWord ? 0 : rotateY.get(),
+          }}
+          transition={{ type: "spring", stiffness: 100, damping: 25 }}
+        >
+          {words.map((word, index) => {
+            const isHovered = hoveredWord === word.text;
+            const isAuto = autoWord === word.text;
+            const isBeingDragged = dragState.activeWord === word.text;
+            const isActive = isHovered || isAuto || isBeingDragged;
+            const isDimmed = (hoveredWord !== null || autoWord !== null || dragState.activeWord !== null) && !isActive;
+
+            let repelX = 0;
+            let repelY = 0;
+            if (dragState.activeWord && !isBeingDragged) {
+              const dx = word.canvasX - dragState.x;
+              const dy = word.canvasY - dragState.y;
+              const dist = Math.hypot(dx, dy);
+              const partRadius = 135;
+
+              if (dist < partRadius && dist > 0) {
+                const force = (1 - dist / partRadius) * 55;
+                repelX = (dx / dist) * force;
+                repelY = (dy / dist) * force;
+              }
+            }
+
+            return (
+              <WordItem
+                key={index}
+                word={word}
+                isActive={isActive}
+                isDimmed={isDimmed}
+                isBeingDragged={isBeingDragged}
+                repelX={repelX}
+                repelY={repelY}
+                scrollAssemble={1}
+                smoothMouseX={smoothMouseX}
+                smoothMouseY={smoothMouseY}
+                onSelect={() => {
+                  setHoveredWord(word.text);
+                  setLastInteraction(Date.now());
+                }}
+                onDeselect={() => setHoveredWord(null)}
+                onDrag={(info) => handleWordDrag(word, info)}
+                onDragEnd={handleWordDragEnd}
+              />
+            );
+          })}
+        </motion.div>
+      );
+    }
+
+    // Render the App
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<Showcase />);
+  </script>
+</body>
+</html>

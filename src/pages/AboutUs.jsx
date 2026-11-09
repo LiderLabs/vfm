@@ -249,58 +249,78 @@ export default function AboutUs() {
             </Reveal>
           </div>
 
+          {/* STATS BANNER - REDESIGNED (Borderless) */}
           <Reveal delay={0.1} isMobile={isMobile}>
             <div style={{ 
-              backgroundColor: "#FFFFFF", borderRadius: "20px", padding: "40px 32px", 
-              boxShadow: "0 20px 45px -10px rgba(0, 31, 63, 0.08)", 
-              display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", 
-              gap: "28px", border: "1px solid #E2E8F0", marginBottom: "80px", position: "relative"
+              display: "grid", 
+              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", 
+              gap: "40px 24px", 
+              borderTop: "1px solid #E2E8F0",
+              paddingTop: "40px",
+              marginBottom: "80px"
             }}>
               {stats.map((stat, index) => {
                 const IconComponent = stat.icon;
                 const accentColor = stat.isGold ? "#B8860B" : "#001F3F";
-                const lightBadge = stat.isGold ? "rgba(252, 209, 22, 0.15)" : "rgba(0, 31, 63, 0.05)";
 
                 return (
                   <div 
                     key={index} 
                     style={{ 
-                      display: "flex", flexDirection: "column", padding: "12px 16px",
-                      borderRight: index < stats.length - 1 ? "1px solid #F1F5F9" : "none",
-                      transition: "transform 0.25s ease",
+                      display: "flex", 
+                      flexDirection: "column", 
+                      alignItems: "flex-start",
+                      paddingLeft: index === 0 ? 0 : "24px",
+                      borderLeft: index === 0 ? "none" : "1px solid #E2E8F0",
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-4px)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
                   >
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
-                      <div style={{ 
-                        width: "50px", height: "50px", borderRadius: "12px", 
-                        backgroundColor: lightBadge,
-                        display: "flex", alignItems: "center", justifyContent: "center" 
-                      }}>
+                    {/* Top row: Icon and Label inline */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <IconComponent color={accentColor} />
                       </div>
                       <span style={{ 
-                        fontSize: "10px", fontWeight: "800", color: accentColor, 
-                        letterSpacing: "1px", textTransform: "uppercase",
-                        backgroundColor: lightBadge, padding: "4px 8px", borderRadius: "6px"
+                        fontSize: "11px", 
+                        fontWeight: "800", 
+                        color: accentColor, 
+                        letterSpacing: "1px", 
+                        textTransform: "uppercase"
                       }}>
                         {stat.label}
                       </span>
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "6px" }}>
-                      <h3 style={{ fontSize: "34px", fontWeight: "900", margin: 0, color: accentColor, lineHeight: 1.1, letterSpacing: "-0.5px" }}>
+                    {/* Number and Unit */}
+                    <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "8px" }}>
+                      <h3 style={{ 
+                        fontSize: "32px", 
+                        fontWeight: "900", 
+                        margin: 0, 
+                        color: accentColor, 
+                        lineHeight: 1,
+                        letterSpacing: "-0.5px"
+                      }}>
                         {stat.number}
                       </h3>
                       {stat.unit && (
-                        <span style={{ fontSize: "20px", fontWeight: "800", color: accentColor, lineHeight: 1 }}>
+                        <span style={{ 
+                          fontSize: "18px", 
+                          fontWeight: "700", 
+                          color: accentColor,
+                          lineHeight: 1
+                        }}>
                           {stat.unit}
                         </span>
                       )}
                     </div>
 
-                    <p style={{ fontSize: "13px", color: "#64748B", margin: 0, lineHeight: "1.45", fontWeight: "500" }}>
+                    <p style={{ 
+                      fontSize: "14px", 
+                      color: "#64748B", 
+                      margin: 0, 
+                      lineHeight: "1.5",
+                      fontWeight: "500"
+                    }}>
                       {stat.sub}
                     </p>
                   </div>
@@ -345,7 +365,7 @@ export default function AboutUs() {
         </section>
       </div>
 
-      {/* 4. INTERACTIVE VFM WALL (Restored for both desktop and mobile) */}
+      {/* 4. INTERACTIVE VFM WALL */}
       <InteractiveVfmWall />
 
       {/* 5. STATUTORY MANDATE */}

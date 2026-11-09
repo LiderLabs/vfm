@@ -5,9 +5,34 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden; /* Prevents horizontal shake */
+  overscroll-behavior-y: none; /* Stops Mac/Mobile rubber-band jitter */
 }
 
 *, *::before, *::after {
   box-sizing: inherit;
   font-family: inherit; /* Ensures ALL elements inherit the Inter font */
+}
+
+/* =========================================
+   GLOBAL SCROLL & JITTER FIXES
+   ========================================= */
+
+/* 1. Force GPU Rendering for all major sections to stop the jittery edges */
+section, header, footer {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* 2. Smooth out the scrollbar itself */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 3. Stop fixed elements (like your gold scrollbar or navbar) from repainting the whole page */
+#root > div > div:first-child {
+  will-change: transform;
+  transform: translateZ(0);
 }

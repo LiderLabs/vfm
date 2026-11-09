@@ -44,7 +44,7 @@ export default function Submit() {
             font-size: 16px !important;
             font-weight: 800 !important;
             margin-top: 8px !important;
-            transition: background-color 0.2s ease !important;
+            transition: background-color 0.2s ease, color 0.2s ease !important;
           }
         `}
       </style>
@@ -210,12 +210,14 @@ export default function Submit() {
                 </label>
               </div>
 
+              {/* FIXED BUTTON TEXT COLOR */}
               <button 
                 type="submit" 
                 disabled={!agreedToTerms}
                 className="submit-btn-force"
                 style={{ 
                   backgroundColor: agreedToTerms ? "#001F3F" : "#94A3B8", 
+                  color: agreedToTerms ? "#FFFFFF" : "#475569", // <-- Dynamically changes text color
                   cursor: agreedToTerms ? "pointer" : "not-allowed"
                 }}
               >

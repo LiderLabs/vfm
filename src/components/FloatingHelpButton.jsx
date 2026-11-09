@@ -172,8 +172,6 @@ export default function FloatingHelpButton() {
         anchorY.set(trueTop + rect.height / 2);
       }
 
-      // FIX: clientWidth excludes the scrollbar (innerWidth includes it), and we subtract
-      // the full docked width so the whole tab sits flush against the visible right edge.
       dockX.set(document.documentElement.clientWidth - DOCKED_WIDTH);
       dockY.set(window.innerHeight * 0.5);
 
@@ -184,7 +182,6 @@ export default function FloatingHelpButton() {
 
     window.addEventListener("resize", updateCoordinates);
 
-    // Recalculate if the page size changes (e.g. the scrollbar appears/disappears)
     let resizeObserver;
     if (typeof ResizeObserver !== "undefined") {
       resizeObserver = new ResizeObserver(updateCoordinates);
@@ -248,7 +245,7 @@ export default function FloatingHelpButton() {
             y: "-50%",
             width: buttonWidth,
             height: buttonHeight,
-            boxSizing: "border-box", // padding no longer widens the button
+            boxSizing: "border-box",
             borderRadius: borderRadius,
             backgroundColor: backgroundColor,
             border: borderStyle,
@@ -258,7 +255,12 @@ export default function FloatingHelpButton() {
             justifyContent: "center",
             cursor: "pointer",
             zIndex: 9990,
-            paddingRight: "4px", // keeps the icon optically centered in the rounded tab
+            paddingRight: "4px",
+            
+            /* THE FIX: Force GPU rendering to stop the page shake */
+            willChange: "transform",
+            transform: "translateZ(0)",
+            backfaceVisibility: "hidden",
           }}
           whileHover={{
             x: flight.get() > 0.75 ? "-10%" : "-50%",
