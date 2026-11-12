@@ -16,13 +16,13 @@ export default function Navbar() {
         {`
           .nav-container {
             display: flex; justify-content: space-between; align-items: center; 
-            max-width: 1300px; margin: 0 auto; padding: 12px 24px; gap: 20px;
+            max-width: 1300px; margin: 0 auto; padding: 20px 24px; gap: 20px;
           }
           .nav-links { display: flex; gap: 20px; font-size: 14px; font-weight: 600; align-items: center; }
           .nav-link { color: #001F3F; text-decoration: none; transition: color 0.2s; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
           .nav-link:hover { color: #FCD116; }
           
-          .logo-image { height: 55px; width: auto; object-fit: contain; }
+          .logo-image { height: 85px; width: auto; object-fit: contain; }
           .dropdown-container { position: relative; padding: 10px 0; }
           .dropdown-menu {
             position: absolute; top: 100%; left: 0; margin-top: 0px;
@@ -50,7 +50,7 @@ export default function Navbar() {
               padding: 24px; display: flex; flex-direction: column; gap: 20px;
               box-shadow: 0 10px 20px rgba(0,0,0,0.1); transform-origin: top;
               animation: slideDown 0.3s ease-out forwards; z-index: 1000;
-              max-height: calc(100vh - 80px); overflow-y: auto;
+              max-height: calc(100vh - 100px); overflow-y: auto;
             }
             @keyframes slideDown {
               from { opacity: 0; transform: scaleY(0.9); }
@@ -67,7 +67,7 @@ export default function Navbar() {
               cursor: pointer; margin-top: 12px; width: 100%;
               box-shadow: 0 4px 15px rgba(252, 209, 22, 0.2);
             }
-            .logo-image { height: 40px; }
+            .logo-image { height: 55px; }
           }
         `}
       </style>

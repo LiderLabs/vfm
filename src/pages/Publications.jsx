@@ -134,28 +134,8 @@ export default function Publications() {
   const newsTimerRef = useRef(null);
   const docsTimerRef = useRef(null);
 
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.matchMedia("(max-width: 992px)").matches);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  const heroRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroBgY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
-  const heroContentY = useTransform(scrollYProgress, [0, 1], [0, 80]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
-
-  const filters = [
-    "Annual Reviews",
-    "Methodology Frameworks",
-    "VFMO Evaluation Guidelines",
-    "Advisory Briefs",
-  ];
-
-  const notices = [
+  // 1. STATE FOR NOTICES (So CMS can update it)
+  const [notices, setNotices] = useState([
     {
       date: "May 11, 2026",
       tag: "PRESIDENTIAL ASSENT",
@@ -177,8 +157,50 @@ export default function Publications() {
       desc: "All covered entities are required to establish internal Value for Money Units over a five-year phased implementation. These units will prioritise infrastructure, education, and health sectors, ensuring internal compliance before contracts reach the national Office. (Section 28)",
       image: "/about-bg.jpg",
     },
+  ]);
+
+  // 2. CMS CONNECTION SCRIPT
+  useEffect(() => {
+    const cmsData = localStorage.getItem("vfmo_publications");
+    if (cmsData) {
+      try {
+        const parsedData = JSON.parse(cmsData);
+        const formattedData = parsedData.map((pub) => ({
+          date: pub.date,
+          tag: pub.tag,
+          title: pub.title,
+          desc: pub.desc,
+          image: pub.image || "/utilisation-bg.jpg"
+        }));
+        setNotices((prev) => [...formattedData, ...prev]);
+      } catch (error) {
+        console.error("Failed to parse CMS data", error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.matchMedia("(max-width: 992px)").matches);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const heroBgY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+  const heroContentY = useTransform(scrollYProgress, [0, 1], [0, 80]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+
+  const filters = [
+    "Annual Reviews",
+    "Methodology Frameworks",
+    "VFMO Evaluation Guidelines",
+    "Advisory Briefs",
   ];
 
+  // We use a spread here so if CMS added data, the loop includes it
   const playlistNotices = [...notices, ...notices, ...notices];
 
   const documents = [
@@ -256,6 +278,10 @@ export default function Publications() {
   const handleDocsTouchEnd = () => {
     setTimeout(() => setIsDocsInteracting(false), 4000);
   };
+
+  // Determine which notice to show as the big featured card
+  // If a specific one is selected, use it. Otherwise, use the newest one (which is at the end of the array after CMS pushes).
+  const featuredNotice = notices[activeNoticeIndex !== null ? activeNoticeIndex : notices.length - 1];
 
   return (
     <div style={{ position: "relative", backgroundColor: "#F4F5F0", minHeight: "100vh", overflowX: "hidden", fontFamily: "'Inter', sans-serif" }}>
@@ -347,14 +373,14 @@ export default function Publications() {
                     <AnimatePresence mode="wait">
                       <motion.div key={activeNoticeIndex} initial={prefersReduced ? { opacity: 1 } : { opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={prefersReduced ? { opacity: 1 } : { opacity: 0, position: "absolute" }} transition={{ duration: 0.4, ease: "easeOut" }} style={{ backgroundColor: "#0A2E4D", borderRadius: "16px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)", display: "flex", flexDirection: "column", height: "100%", boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}>
                         <div style={{ position: "relative", height: "300px", overflow: "hidden" }}>
-                          <img src={notices[activeNoticeIndex || 0].image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          <img src={featuredNotice.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(10,46,77,0) 20%, rgba(10,46,77,1) 100%)" }} />
-                          <div style={{ position: "absolute", top: "24px", left: "24px", backgroundColor: "#FCD116", color: "#001F3F", padding: "6px 14px", borderRadius: "4px", fontSize: "12px", fontWeight: "800", letterSpacing: "1px", textTransform: "uppercase" }}>{notices[activeNoticeIndex || 0].tag}</div>
+                          <div style={{ position: "absolute", top: "24px", left: "24px", backgroundColor: "#FCD116", color: "#001F3F", padding: "6px 14px", borderRadius: "4px", fontSize: "12px", fontWeight: "800", letterSpacing: "1px", textTransform: "uppercase" }}>{featuredNotice.tag}</div>
                         </div>
                         <div style={{ padding: "0 24px 32px", display: "flex", flexDirection: "column", flex: 1, marginTop: "-20px", position: "relative", zIndex: 2 }}>
-                          <span style={{ fontSize: "13px", color: "#94A3B8", fontWeight: "600", marginBottom: "12px", display: "block" }}>{notices[activeNoticeIndex || 0].date}</span>
-                          <h2 style={{ fontSize: "clamp(20px, 3vw, 28px)", fontWeight: "800", color: "#FFFFFF", margin: "0 0 16px 0", lineHeight: "1.2" }}>{notices[activeNoticeIndex || 0].title}</h2>
-                          <p style={{ fontSize: "15px", color: "#CBD5E1", lineHeight: "1.7", margin: "0 0 24px 0", flex: 1 }}>{notices[activeNoticeIndex || 0].desc}</p>
+                          <span style={{ fontSize: "13px", color: "#94A3B8", fontWeight: "600", marginBottom: "12px", display: "block" }}>{featuredNotice.date}</span>
+                          <h2 style={{ fontSize: "clamp(20px, 3vw, 28px)", fontWeight: "800", color: "#FFFFFF", margin: "0 0 16px 0", lineHeight: "1.2" }}>{featuredNotice.title}</h2>
+                          <p style={{ fontSize: "15px", color: "#CBD5E1", lineHeight: "1.7", margin: "0 0 24px 0", flex: 1 }}>{featuredNotice.desc}</p>
                           <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}><span style={{ fontSize: "13px", color: "#64748B" }}>Value for Money Office</span></div>
                         </div>
                       </motion.div>

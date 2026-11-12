@@ -3,6 +3,8 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import FloatingHelpButton from "./components/FloatingHelpButton";
+
+// Public Pages
 import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import WhatWeDo from "./pages/WhatWeDo";
@@ -20,19 +22,41 @@ import Engagement from "./pages/Engagement";
 import ReviewPanel from "./pages/ReviewPanel"; 
 import Whistleblower from "./pages/Whistleblower";
 import Faq from "./pages/Faq";
-import Forms from "./pages/Forms"; // <--- ADDED IMPORT
+import Forms from "./pages/Forms";
 import Placeholder from "./pages/Placeholder";
+
+// CMS Pages
+import CMSLayout from "./cms/components/CMSLayout";
+import CMSLogin from "./cms/pages/Login";
+import CMSDashboard from "./cms/pages/Dashboard";
+import ManagePublications from "./cms/pages/Publications"; // <--- ADDED IMPORT
 
 function Layout() {
   const location = useLocation();
   
   const isPortal = location.pathname === "/portal";
   const isDashboard = location.pathname.startsWith("/dashboard");
+  const isCMS = location.pathname.startsWith("/cms");
 
+  // --- CMS LAYOUT (Completely separate from public website) ---
+  if (isCMS) {
+    return (
+      <Routes>
+        <Route path="/cms/login" element={<CMSLogin />} />
+        <Route path="/cms" element={<CMSLayout />}>
+          <Route index element={<Navigate to="/cms/dashboard" replace />} />
+          <Route path="dashboard" element={<CMSDashboard />} />
+          <Route path="publications" element={<ManagePublications />} /> {/* <--- ADDED ROUTE */}
+        </Route>
+      </Routes>
+    );
+  }
+
+  // --- PUBLIC WEBSITE LAYOUT ---
   return (
     <div style={{ margin: 0, padding: 0, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       
-      {!isPortal && !isDashboard && <Navbar />}
+      {!isPortal && !isDashboard && !isCMS && <Navbar />}
       
       <div style={{ flex: 1 }}>
         <Routes>
@@ -51,7 +75,7 @@ function Layout() {
           
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<Faq />} />
-          <Route path="/forms" element={<Forms />} /> {/* <--- ADDED ROUTE */}
+          <Route path="/forms" element={<Forms />} />
           
           {/* Public Submission, Tracking, Clearance, Sanctions, Open Data & Engagement Routes */}
           <Route path="/submit" element={<Submit />} />
@@ -75,9 +99,9 @@ function Layout() {
         </Routes>
       </div>
 
-      {!isPortal && !isDashboard && <Footer />}
-      {!isPortal && !isDashboard && <ScrollToTop />}
-      {!isPortal && !isDashboard && <FloatingHelpButton />}
+      {!isPortal && !isDashboard && !isCMS && <Footer />}
+      {!isPortal && !isDashboard && !isCMS && <ScrollToTop />}
+      {!isPortal && !isDashboard && !isCMS && <FloatingHelpButton />}
     </div>
   );
 }
