@@ -1,15 +1,117 @@
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import MandateCards from "./components/MandateCards";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
+import FloatingHelpButton from "./components/FloatingHelpButton";
+
+// Public Pages
+import Home from "./pages/Home";
+import AboutUs from "./pages/AboutUs";
+import WhatWeDo from "./pages/WhatWeDo";
+import Publications from "./pages/Publications";
+import Contact from "./pages/Contact";
+import Portal from "./pages/Portal";
+import Dashboard from "./pages/Dashboard";
+import Assessments from "./pages/Assessments";
+import Submit from "./pages/Submit"; 
+import Track from "./pages/Track"; 
+import Clearance from "./pages/Clearance"; 
+import Sanctions from "./pages/Sanctions"; 
+import OpenData from "./pages/OpenData"; 
+import Engagement from "./pages/Engagement"; 
+import ReviewPanel from "./pages/ReviewPanel"; 
+import Whistleblower from "./pages/Whistleblower";
+import Faq from "./pages/Faq";
+import Forms from "./pages/Forms";
+import Placeholder from "./pages/Placeholder";
+
+// CMS Pages
+import CMSLayout from "./cms/components/CMSLayout";
+import CMSLogin from "./cms/pages/Login";
+import CMSDashboard from "./cms/pages/Dashboard";
+import ManagePublications from "./cms/pages/ManagePublications";
+import ManageSanctions from "./cms/pages/ManageSanctions"; // <--- ADDED IMPORT
+
+function Layout() {
+  const location = useLocation();
+  
+  const isPortal = location.pathname === "/portal";
+  const isDashboard = location.pathname.startsWith("/dashboard");
+  const isCMS = location.pathname.startsWith("/cms");
+
+  // --- CMS LAYOUT (Completely separate from public website) ---
+  if (isCMS) {
+    return (
+      <Routes>
+        <Route path="/cms/login" element={<CMSLogin />} />
+        <Route path="/cms" element={<CMSLayout />}>
+          <Route index element={<Navigate to="/cms/dashboard" replace />} />
+          <Route path="dashboard" element={<CMSDashboard />} />
+          <Route path="publications" element={<ManagePublications />} />
+          <Route path="sanctions" element={<ManageSanctions />} /> {/* <--- ADDED ROUTE */}
+        </Route>
+      </Routes>
+    );
+  }
+
+  // --- PUBLIC WEBSITE LAYOUT ---
+  return (
+    <div style={{ margin: 0, padding: 0, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      
+      {!isPortal && !isDashboard && !isCMS && <Navbar />}
+      
+      <div style={{ flex: 1 }}>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutUs />} />
+          
+          {/* REDIRECT: /mandate now goes to /about */}
+          <Route path="/mandate" element={<Navigate to="/about" replace />} />
+          
+          <Route path="/what-we-do" element={<WhatWeDo />} />
+          <Route path="/publications" element={<Publications />} />
+          
+          {/* REDIRECT: /news now goes to /publications */}
+          <Route path="/news" element={<Navigate to="/publications" replace />} />
+          
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<Faq />} />
+          <Route path="/forms" element={<Forms />} />
+          
+          {/* Public Submission, Tracking, Clearance, Sanctions, Open Data & Engagement Routes */}
+          <Route path="/submit" element={<Submit />} />
+          <Route path="/track" element={<Track />} />
+          <Route path="/clearance" element={<Clearance />} />
+          <Route path="/sanctions" element={<Sanctions />} />
+          <Route path="/open-data" element={<OpenData />} />
+          <Route path="/engagement" element={<Engagement />} />
+          <Route path="/review-panel" element={<ReviewPanel />} />
+          <Route path="/whistleblower" element={<Whistleblower />} />
+          
+          {/* Secure Portal Routes */}
+          <Route path="/portal" element={<Portal />} />
+          
+          {/* Internal Dashboard Routes */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/assessments" element={<Assessments />} />
+          
+          {/* Fallback */}
+          <Route path="*" element={<Placeholder />} />
+        </Routes>
+      </div>
+
+      {!isPortal && !isDashboard && !isCMS && <Footer />}
+      {!isPortal && !isDashboard && !isCMS && <ScrollToTop />}
+      {!isPortal && !isDashboard && !isCMS && <FloatingHelpButton />}
+    </div>
+  );
+}
 
 export default function App() {
   return (
-    <div style={{ fontFamily: "sans-serif", margin: 0, padding: 0, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Navbar />
-      <Hero />
-      <MandateCards />
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <Layout />
+    </BrowserRouter>
   );
 }
