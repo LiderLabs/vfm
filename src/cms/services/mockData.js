@@ -67,3 +67,48 @@ export function resetPublications() {
   localStorage.removeItem(LS_PUBLICATIONS_KEY);
   window.dispatchEvent(new Event(LS_PUBLICATIONS_EVENT));
 }
+
+// --- SANCTIONS DATA ---
+export const initialSanctions = [
+  {
+    id: "san-1",
+    company: "Apex Construction Ltd.",
+    tin: "C0012345678",
+    reason: "Contract inflation on Ministry of Roads project.",
+    duration: "2 Years",
+    date: "Jan 15, 2026",
+  },
+  {
+    id: "san-2",
+    company: "Golden Builders Ghana",
+    tin: "C0087654321",
+    reason: "Abandonment of hospital project after 40% payment.",
+    duration: "5 Years",
+    date: "Mar 02, 2026",
+  }
+];
+
+export const LS_SANCTIONS_KEY = "vfmo_sanctions";
+export const LS_SANCTIONS_EVENT = "vfmo_sanctions_changed";
+
+export function getSanctions() {
+  try {
+    const saved = localStorage.getItem(LS_SANCTIONS_KEY);
+    if (saved === null) return initialSanctions;
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed) ? parsed : initialSanctions;
+  } catch (e) {
+    console.error("Failed to read sanctions", e);
+    return initialSanctions;
+  }
+}
+
+export function saveSanctions(list) {
+  localStorage.setItem(LS_SANCTIONS_KEY, JSON.stringify(list));
+  window.dispatchEvent(new Event(LS_SANCTIONS_EVENT));
+}
+
+export function resetSanctions() {
+  localStorage.removeItem(LS_SANCTIONS_KEY);
+  window.dispatchEvent(new Event(LS_SANCTIONS_EVENT));
+}

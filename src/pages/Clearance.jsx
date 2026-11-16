@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 // ========================================================
-// 3 CUSTOM HAND-DRAWN ICONS
+// CUSTOM HAND-DRAWN ICONS
 // ========================================================
 
 const HandDrawnSubmitDoc = () => (
@@ -32,6 +32,17 @@ const HandDrawnCertStamp = () => (
     <circle cx="24" cy="27" r="7.5" strokeWidth="2.2" fill="rgba(252,209,22,0.25)" />
     <path d="M20 27 L23 30 L28 24" strokeWidth="2.6" stroke="#001F3F" />
     <path d="M20 34 L17 41 L22 39 L26 41 L24 34" strokeWidth="1.8" fill="rgba(252,209,22,0.35)" />
+  </svg>
+);
+
+// NEW HAND-DRAWN WARNING ICON
+const HandDrawnWarning = () => (
+  <svg width="44" height="44" viewBox="0 0 48 48" fill="none" stroke="#B91C1C" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M24 7 L42 38 C43 40, 41.5 42, 39.5 42 L8.5 42 C6.5 42, 5 40, 6 38 L24 7 Z" />
+    <path d="M24 18 L24 29" strokeWidth="3" />
+    <circle cx="24" cy="35.5" r="1.8" fill="#B91C1C" stroke="none" />
+    <path d="M12 21 L8 18" strokeWidth="2" stroke="#DC2626" opacity="0.6" />
+    <path d="M36 21 L40 18" strokeWidth="2" stroke="#DC2626" opacity="0.6" />
   </svg>
 );
 
@@ -146,12 +157,12 @@ export default function Clearance() {
             boxShadow: "0 15px 35px -5px rgba(239, 68, 68, 0.12)",
           }}
         >
-          <div style={{ width: "48px", height: "48px", backgroundColor: "#FEE2E2", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.5">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
+          <div style={{ 
+            width: "64px", height: "64px", backgroundColor: "#FEE2E2", borderRadius: "50%", 
+            display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 
+          }}>
+            {/* REPLACED WITH HAND-DRAWN WARNING ICON */}
+            <HandDrawnWarning />
           </div>
           <div>
             <h3 style={{ fontSize: "20px", fontWeight: "800", color: "#991B1B", margin: "0 0 8px 0" }}>

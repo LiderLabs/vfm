@@ -1,6 +1,48 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
+// ========================================================
+// 1. COLORFUL HAND-DRAWN ICONS (From OpenData)
+// ========================================================
+const HandDrawnSavings = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="#1E3A8A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="10" y="14" width="28" height="24" rx="4" />
+    <path d="M10 20 L38 20" />
+    <path d="M16 32 L20 28 L24 32 L32 24" strokeWidth="2.8" />
+    <path d="M26 24 L32 24 L32 30" strokeWidth="2.8" />
+    <path d="M16 14 L16 8 L20 8" strokeWidth="2" />
+  </svg>
+);
+
+const HandDrawnAssessment = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="#047857" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M10 7 C10 5.5, 11.5 4, 13 4 L28 4 L38 14 L38 42 C38 43.5, 36.5 45, 35 45 L13 45 C11.5 45, 10 43.5, 10 42 Z" />
+    <path d="M28 4 L28 14 L38 14" />
+    <circle cx="21" cy="25" r="7.5" strokeWidth="2.5" />
+    <path d="M26.5 30.5 L34 38" strokeWidth="3" />
+    <path d="M16 13 L22 13" strokeWidth="2" />
+  </svg>
+);
+
+const HandDrawnFlagged = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="#B91C1C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 42 L12 6" strokeWidth="3" />
+    <path d="M12 8 L34 12 L12 24 Z" fill="rgba(185,28,28,0.05)" strokeWidth="2.5" />
+    <circle cx="12" cy="42" r="2" fill="#B91C1C" />
+  </svg>
+);
+
+const HandDrawnInvestigation = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="#B45309" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="22" cy="22" r="14" strokeWidth="2.5" />
+    <path d="M33 33 L42 42" strokeWidth="3" />
+    <path d="M15 22 L19 26 L29 16" strokeWidth="2.5" />
+    <path d="M22 4 L22 8" strokeWidth="2" />
+    <path d="M6 22 L10 22" strokeWidth="2" />
+    <path d="M22 36 L22 40" strokeWidth="2" />
+  </svg>
+);
+
 export default function Hero() {
   const slides = [
     {
@@ -30,7 +72,6 @@ export default function Hero() {
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
-
   const touchStart = useRef(null);
   const touchEnd = useRef(null);
 
@@ -66,6 +107,15 @@ export default function Hero() {
     touchEnd.current = null;
   };
 
+  const dashboardStats = [
+    { label: "Assessments Conducted", value: "1,245", icon: HandDrawnAssessment, color: "#047857" },
+    { label: "Contracts Flagged", value: "86", icon: HandDrawnFlagged, color: "#B91C1C" },
+    { label: "Active Investigations", value: "14", icon: HandDrawnInvestigation, color: "#B45309" },
+    { label: "Total Savings Identified", value: "GH₵ 250M+", icon: HandDrawnSavings, color: "#1E3A8A" }
+  ];
+
+  const marqueeStats = [...dashboardStats, ...dashboardStats];
+
   return (
     <section style={{ 
       position: "relative", 
@@ -73,7 +123,7 @@ export default function Hero() {
       overflow: "hidden", 
       display: "flex", 
       flexDirection: "column", 
-      height: "80vh",
+      height: "80vh", 
       minHeight: "600px" 
     }}>
       
@@ -107,10 +157,57 @@ export default function Hero() {
             background-color: #FFDE45;
           }
 
+          @keyframes scrollMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } 
+          }
+
+          .marquee-container {
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+            padding: 20px 0;
+            background: #FFFFFF;
+            border-top: 1px solid #E2E8F0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            /* REMOVED: mask-image lines */
+          }
+
+          .marquee-track {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            width: max-content;
+            animation: scrollMarquee 35s linear infinite;
+          }
+
+          .marquee-track:hover {
+            animation-play-state: paused;
+          }
+
+          .marquee-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
+            padding-right: 60px;
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+          }
+          .marquee-item:last-child {
+            border-right: none;
+          }
+
           @media (max-width: 768px) {
             .hero-btn {
               width: 100%;
               padding: 16px 24px;
+            }
+            .marquee-item {
+              gap: 12px;
+              padding-right: 30px;
+            }
+            .marquee-track {
+              gap: 30px;
             }
           }
         `}
@@ -154,13 +251,11 @@ export default function Hero() {
                 zIndex: 1 
               }} />
 
-              {/* TEXT CONTENT */}
               <div style={{ 
-                maxWidth: "900px", 
+                maxWidth: "1000px", 
                 margin: "0 auto", 
                 width: "100%", 
-                // FIX 1: Increased bottom padding to push the button up away from the dots
-                padding: "40px 24px 80px 24px", 
+                padding: "20px 24px 110px 24px", 
                 position: "relative", 
                 zIndex: 2,
                 textAlign: "center", 
@@ -169,19 +264,6 @@ export default function Hero() {
                 alignItems: "center"
               }}>
                 
-                <div style={{ marginBottom: "16px" }}>
-                  <span style={{ 
-                    fontSize: "14px", 
-                    fontWeight: "800", 
-                    color: "#FCD116", 
-                    textTransform: "uppercase", 
-                    letterSpacing: "1.5px", 
-                    textShadow: "0 2px 5px rgba(0,0,0,0.8)" 
-                  }}>
-                    Value For Money Office
-                  </span>
-                </div>
-
                 <h1 style={{ 
                   fontSize: "clamp(42px, 6vw, 64px)", 
                   fontWeight: "800", 
@@ -190,7 +272,7 @@ export default function Hero() {
                   lineHeight: "1.1", 
                   textShadow: "0 4px 12px rgba(0,0,0,0.8)" 
                 }}>
-                  {slide.headline1} <br/> 
+                  {slide.headline1}{" "} 
                   <span style={{ color: "#FCD116" }}>{slide.headline2}</span>
                 </h1>
                 
@@ -220,16 +302,15 @@ export default function Hero() {
       {/* DOTS */}
       <div style={{ 
         position: "absolute", 
-        // FIX 2: Raised the dots slightly and added a subtle backdrop to separate them
-        bottom: "24px", 
+        bottom: "105px", 
         left: "50%", 
         transform: "translateX(-50%)", 
         display: "flex", 
         gap: "12px", 
-        zIndex: 10,
+        zIndex: 20,
         padding: "8px 16px",
         borderRadius: "20px",
-        backgroundColor: "rgba(0, 31, 63, 0.4)", // Gives them a tiny dark pill background so they stand out
+        backgroundColor: "rgba(0, 31, 63, 0.4)", 
         backdropFilter: "blur(4px)" 
       }}>
         {slides.map((_, index) => (
@@ -246,6 +327,30 @@ export default function Hero() {
             }} 
           />
         ))}
+      </div>
+
+      {/* INFINITE MARQUEE STATS BAR */}
+      <div className="marquee-container" style={{ position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 10 }}>
+        <div className="marquee-track">
+          {marqueeStats.map((stat, index) => {
+            const IconComponent = stat.icon;
+            return (
+              <div key={index} className="marquee-item">
+                <div style={{ flexShrink: 0 }}>
+                  <IconComponent />
+                </div>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div style={{ fontSize: "32px", fontWeight: "900", color: stat.color, margin: "0 0 4px 0", lineHeight: "1" }}>
+                    {stat.value}
+                  </div>
+                  <h3 style={{ fontSize: "12px", fontWeight: "800", color: "#64748B", textTransform: "uppercase", letterSpacing: "1.5px", margin: 0 }}>
+                    {stat.label}
+                  </h3>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
     </section>
