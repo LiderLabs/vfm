@@ -19,7 +19,6 @@ const StackCard = ({ children, index, id, total }) => {
     offset: ["start start", "end start"],
   });
 
-  // Background card scales down subtly as the next card slides over it
   const scale = useTransform(scrollYProgress, [0, 1], [1, isMobile ? 1 : 0.95]);
 
   return (
@@ -28,7 +27,6 @@ const StackCard = ({ children, index, id, total }) => {
       id={id}
       style={{
         position: isMobile ? "relative" : "sticky",
-        // Incremental sticky offset creates the visible tabbed stack like in the video
         top: isMobile ? "auto" : `calc(80px + ${index * 16}px)`,
         zIndex: index + 1,
         width: "100%",
@@ -40,7 +38,6 @@ const StackCard = ({ children, index, id, total }) => {
           scale,
           transformOrigin: "top center",
           borderRadius: "28px",
-          // Deep upward shadow so the incoming card visibly casts a shadow onto the previous card
           boxShadow: isMobile ? "0 10px 25px rgba(0,0,0,0.06)" : "0 -18px 45px rgba(0, 0, 0, 0.16)",
           overflow: "hidden",
         }}
@@ -71,7 +68,6 @@ export default function WhatWeDo() {
     }
   }, [hash]);
 
-  // Alternating card themes (Light vs Navy) to maximize visual overlap contrast
   const pillars = [
     {
       id: "assessments",
@@ -79,7 +75,7 @@ export default function WhatWeDo() {
       title: "Pre-Contract & Technical VfM Assessments",
       description: "Conducting mandatory ex-ante reviews of major capital projects to ensure proposed costs are reasonable and represent maximum value before public funds are committed.",
       detailText: "Our technical teams examine the intricacies of every proposal, from conducting detailed bid evaluations to applying value engineering principles. We work to establish accurate cost benchmarks, ensuring that the government is not paying inflated prices before a single contract is signed.",
-      image: "/site-review.jpg",
+      image: "/site-review.jpg", // KEPT AS IS
       isDark: false,
       bgColor: "#FFFFFF",
       textColor: "#0F172A",
@@ -91,9 +87,9 @@ export default function WhatWeDo() {
       title: "Project Scrutiny & Impact Evaluation",
       description: "Continuous monitoring of ongoing infrastructure to prevent cost overruns and post-implementation audits to measure actual socio-economic impact.",
       detailText: "A contract award is not the finish line; it is the starting block. We deploy compliance audits and rigorous impact metrics to track progress on the ground, proactively identifying risks and preventing the costly delays that derail public projects.",
-      image: "/boardroom.jpg",
+      image: "/boardroom.jpg", // KEPT AS IS
       isDark: true,
-      bgColor: "#001F3F", // Deep Navy Card
+      bgColor: "#001F3F",
       textColor: "#FFFFFF",
       subColor: "#CBD5E1",
     },
@@ -103,9 +99,9 @@ export default function WhatWeDo() {
       title: "Public Expenditure Utilisation Review",
       description: "Tracking the actual disbursement and utilisation of funds across Metropolitan, Municipal, and District Assemblies to ensure fiscal discipline.",
       detailText: "By auditing how funds are actually disbursed to the MMDAs, we ensure that fiscal discipline is maintained at the local level. Our review process tracks the journey of every Cedi from the national treasury to its intended project site.",
-      image: "/utilisation-bg.jpg",
+      image: "/whatwedo-slide-3.jpg", // REPLACED (3rd Image)
       isDark: false,
-      bgColor: "#F8F9FA", // Crisp Warm Pearl
+      bgColor: "#F8F9FA",
       textColor: "#0F172A",
       subColor: "#475569",
     },
@@ -115,7 +111,7 @@ export default function WhatWeDo() {
       title: "Performance & Service Delivery Benchmarking",
       description: "Establishing rigorous public sector metrics to compare unit costs and service outputs against regional peer nations and international standards.",
       detailText: "We develop comprehensive unit cost metrics and delivery standards that allow us to compare Ghana's public projects against regional peers. This data-driven approach ensures that our procurement practices remain competitive and efficient on a global scale.",
-      image: "/about-bg.jpg",
+      image: "/whatwedo-slide-4.jpg", // REPLACED (4th Image)
       isDark: false,
       bgColor: "#FFFFFF",
       textColor: "#0F172A",
@@ -127,9 +123,9 @@ export default function WhatWeDo() {
       title: "Research, Standards & Technical Guidance",
       description: "Formulating national reference manuals, standardized costing guides, and econometric models to inform evidence-based public policy decisions.",
       detailText: "To institutionalize value for money, we publish gazetted reference manuals and standardized costing guides. Our econometric lifecycle models provide policymakers with the evidence-based tools they need to make informed decisions on major capital expenditures.",
-      image: "/site-review.jpg",
+      image: "/whatwedo-slide-5.jpg", // REPLACED (5th Image)
       isDark: true,
-      bgColor: "#0F172A", // Slate Charcoal Card
+      bgColor: "#0F172A",
       textColor: "#FFFFFF",
       subColor: "#CBD5E1",
     },
@@ -139,7 +135,7 @@ export default function WhatWeDo() {
       title: "Institutional Capacity Building & Training",
       description: "Equipping procurement officers, ministry executives, and local government leaders with the technical skills required to execute value-for-money protocols.",
       detailText: "We believe that sustainable change requires empowered people. Through executive seminars and technical certification programs, we equip procurement officers and local government leaders with the skills necessary to enforce value-for-money protocols in their daily operations.",
-      image: "/boardroom.jpg",
+      image: "/whatwedo-slide-6.jpg", // REPLACED (6th Image)
       isDark: false,
       bgColor: "#FFFFFF",
       textColor: "#0F172A",
@@ -147,7 +143,6 @@ export default function WhatWeDo() {
     }
   ];
 
-  // Auto-slide hero
   useEffect(() => {
     const timer = setInterval(() => {
       setActivePillar((prev) => (prev === pillars.length - 1 ? 0 : prev + 1));
@@ -214,7 +209,15 @@ export default function WhatWeDo() {
       </style>
 
       {/* 1. CINEMATIC SLIDESHOW HERO */}
-      <section style={{ position: "relative", backgroundColor: "#001F3F", overflow: "hidden", display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <section style={{ 
+        position: "relative", 
+        backgroundColor: "#001F3F", 
+        overflow: "hidden", 
+        display: "flex", 
+        flexDirection: "column", 
+        height: "80vh", 
+        minHeight: "600px" 
+      }}>
         <div style={{ position: "relative", zIndex: 10, padding: "40px 24px 24px", maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
           <h1 style={{ fontSize: "42px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 12px 0", lineHeight: "1.1", maxWidth: "800px", textShadow: "0 4px 12px rgba(0,0,0,0.8)" }}>
             Operational Scope & Focus Areas
@@ -251,7 +254,7 @@ export default function WhatWeDo() {
                   background: "linear-gradient(180deg, rgba(0,31,63,0.2) 0%, rgba(0,31,63,0.95) 100%)", zIndex: 1 
                 }} />
 
-                <div style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", padding: "40px 24px 100px", position: "relative", zIndex: 2 }}>
+                <div style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", padding: "20px 24px 80px", position: "relative", zIndex: 2 }}>
                   <div style={{ marginBottom: "16px" }}>
                     <span style={{ fontSize: "14px", fontWeight: "800", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1.5px", textShadow: "0 2px 5px rgba(0,0,0,0.8)" }}>
                       {pillar.category}
@@ -284,7 +287,7 @@ export default function WhatWeDo() {
             ))}
           </div>
 
-          <div style={{ position: "absolute", bottom: "40px", left: "50%", transform: "translateX(-50%)", display: "flex", gap: "12px", zIndex: 10 }}>
+          <div style={{ position: "absolute", bottom: "24px", left: "50%", transform: "translateX(-50%)", display: "flex", gap: "12px", zIndex: 10 }}>
             {pillars.map((_, index) => (
               <div 
                 key={index} 
@@ -300,10 +303,9 @@ export default function WhatWeDo() {
         </div>
       </section>
 
-      {/* 2. THE STACKING CARDS DECK (SERIOUS.BUSINESS STYLE OVERLAPPING ANIMATION) */}
+      {/* 2. THE STACKING CARDS DECK */}
       <div style={{ backgroundColor: "#F4F5F0", padding: "80px 24px 160px" }}>
         
-        {/* Intro Headline */}
         <div style={{ maxWidth: "1200px", margin: "0 auto 60px", textAlign: "center" }}>
           <span style={{ fontSize: "12px", fontWeight: "800", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1.5px", display: "block", marginBottom: "12px" }}>
             Statutory Focus
@@ -316,7 +318,6 @@ export default function WhatWeDo() {
           </p>
         </div>
 
-        {/* Stack Container */}
         <div style={{ maxWidth: "1300px", margin: "0 auto", position: "relative" }}>
           {pillars.map((pillar, index) => (
             <StackCard 
@@ -337,7 +338,6 @@ export default function WhatWeDo() {
                   border: pillar.isDark ? "none" : "1px solid #E2E8F0"
                 }}
               >
-                {/* Image Side */}
                 <div style={{ order: index % 2 === 0 ? 1 : 2, position: "relative", width: "100%", height: "100%", minHeight: "360px" }}>
                   <img 
                     src={pillar.image} 
@@ -350,7 +350,6 @@ export default function WhatWeDo() {
                   <div style={{ position: "absolute", inset: 0, background: pillar.isDark ? "linear-gradient(to top, rgba(0,31,63,0.5) 0%, transparent 60%)" : "linear-gradient(to top, rgba(0,0,0,0.15) 0%, transparent 60%)" }} />
                 </div>
                 
-                {/* Content Side */}
                 <div style={{ 
                   order: index % 2 === 0 ? 2 : 1, 
                   padding: "60px 48px", 
@@ -358,7 +357,6 @@ export default function WhatWeDo() {
                   flexDirection: "column", 
                   justifyContent: "center" 
                 }}>
-                  {/* Category Tag (Pure category, no 'Pillar 01/02') */}
                   <div style={{ marginBottom: "16px" }}>
                     <span style={{ 
                       fontSize: "12px", 
@@ -387,7 +385,6 @@ export default function WhatWeDo() {
                     {pillar.detailText}
                   </p>
 
-                  {/* AUTHORITATIVE ACTION BUTTON */}
                   <Link 
                     to="/contact" 
                     style={{ 

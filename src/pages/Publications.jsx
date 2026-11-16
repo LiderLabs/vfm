@@ -1,5 +1,7 @@
+// src/pages/Publications.jsx
 import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion, AnimatePresence } from "framer-motion";
+import { getPublications, LS_PUBLICATIONS_EVENT } from "../cms/services/mockData";
 
 // ========================================================
 // 1. HAND-DRAWN ICONS
@@ -127,56 +129,27 @@ export default function Publications() {
 
   const mobileNewsRef = useRef(null);
   const mobileDocsRef = useRef(null);
-  
+
   const [isNewsInteracting, setIsNewsInteracting] = useState(false);
   const [isDocsInteracting, setIsDocsInteracting] = useState(false);
-  
+
   const newsTimerRef = useRef(null);
   const docsTimerRef = useRef(null);
 
-  // 1. STATE FOR NOTICES (So CMS can update it)
-  const [notices, setNotices] = useState([
-    {
-      date: "May 11, 2026",
-      tag: "PRESIDENTIAL ASSENT",
-      title: "Value for Money Office Act, 2026 (Act 1172) Becomes Law",
-      desc: "The President of the Republic of Ghana has formally assented to the Value for Money Office Act, 2026 (Act 1172), establishing the Office as an independent statutory body corporate. This landmark legislation empowers the Office to enforce strict cost benchmarking across all public sector projects.",
-      image: "/utilisation-bg.jpg",
-    },
-    {
-      date: "May 11, 2026",
-      tag: "MINISTERIAL DIRECTIVE",
-      title: "Interim Monetary Thresholds for Mandatory VFMO Assessments",
-      desc: "Pursuant to Section 30(2) of Act 1172, the Minister for Finance, on the advice of the Board, will prescribe interim monetary thresholds for public sector projects. Any project exceeding these thresholds must undergo a mandatory pre-award assessment.",
-      image: "/boardroom.jpg",
-    },
-    {
-      date: "May 11, 2026",
-      tag: "INSTITUTIONAL NOTICE",
-      title: "Establishment of Value for Money Units in Covered Entities",
-      desc: "All covered entities are required to establish internal Value for Money Units over a five-year phased implementation. These units will prioritise infrastructure, education, and health sectors, ensuring internal compliance before contracts reach the national Office. (Section 28)",
-      image: "/about-bg.jpg",
-    },
-  ]);
+  // ---- REACTIVE CMS SYNC ----
+  // getPublications() returns the original site content unless the CMS has saved changes.
+  const [notices, setNotices] = useState(() => getPublications());
 
-  // 2. CMS CONNECTION SCRIPT
   useEffect(() => {
-    const cmsData = localStorage.getItem("vfmo_publications");
-    if (cmsData) {
-      try {
-        const parsedData = JSON.parse(cmsData);
-        const formattedData = parsedData.map((pub) => ({
-          date: pub.date,
-          tag: pub.tag,
-          title: pub.title,
-          desc: pub.desc,
-          image: pub.image || "/utilisation-bg.jpg"
-        }));
-        setNotices((prev) => [...formattedData, ...prev]);
-      } catch (error) {
-        console.error("Failed to parse CMS data", error);
-      }
-    }
+    const refresh = () => setNotices(getPublications());
+    window.addEventListener(LS_PUBLICATIONS_EVENT, refresh); // same-tab (CMS publish / delete / reset)
+    window.addEventListener("storage", refresh);             // cross-tab
+    window.addEventListener("focus", refresh);               // tab refocus
+    return () => {
+      window.removeEventListener(LS_PUBLICATIONS_EVENT, refresh);
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener("focus", refresh);
+    };
   }, []);
 
   useEffect(() => {
@@ -200,7 +173,7 @@ export default function Publications() {
     "Advisory Briefs",
   ];
 
-  // We use a spread here so if CMS added data, the loop includes it
+  // Triplicated so the vertical carousel can loop seamlessly
   const playlistNotices = [...notices, ...notices, ...notices];
 
   const documents = [
@@ -215,7 +188,9 @@ export default function Publications() {
   const desktopFilteredDocuments = documents.filter((doc) => doc.category === activeFilter);
   const mobileDisplayedDocuments = documents;
 
+  // Auto-rotate the featured notice on desktop
   useEffect(() => {
+    if (notices.length === 0) return;
     if (isHovered || prefersReduced || isMobile) return;
     const interval = setInterval(() => {
       setActiveNoticeIndex((prev) => (prev === null ? 0 : (prev + 1) % notices.length));
@@ -223,6 +198,7 @@ export default function Publications() {
     return () => clearInterval(interval);
   }, [isHovered, prefersReduced, isMobile, notices.length]);
 
+  // Mobile news auto-scroll
   useEffect(() => {
     if (!isMobile || isNewsInteracting || prefersReduced) return;
     const startAutoScroll = () => {
@@ -251,6 +227,7 @@ export default function Publications() {
     setTimeout(() => setIsNewsInteracting(false), 4000);
   };
 
+  // Mobile docs auto-scroll
   useEffect(() => {
     if (!isMobile || isDocsInteracting || prefersReduced) return;
     const startAutoScroll = () => {
@@ -279,9 +256,11 @@ export default function Publications() {
     setTimeout(() => setIsDocsInteracting(false), 4000);
   };
 
-  // Determine which notice to show as the big featured card
-  // If a specific one is selected, use it. Otherwise, use the newest one (which is at the end of the array after CMS pushes).
-  const featuredNotice = notices[activeNoticeIndex !== null ? activeNoticeIndex : notices.length - 1];
+  // Featured card: use the selected notice, otherwise the newest (index 0),
+  // which is the most recent CMS publish. Guarded so deleting items or a reset
+  // can never leave us pointing at an index that no longer exists.
+  const featuredNotice = notices[activeNoticeIndex ?? 0] ?? notices[0];
+  const activeNotice = activeNoticeIndex !== null ? notices[activeNoticeIndex] ?? null : null;
 
   return (
     <div style={{ position: "relative", backgroundColor: "#F4F5F0", minHeight: "100vh", overflowX: "hidden", fontFamily: "'Inter', sans-serif" }}>
@@ -368,10 +347,10 @@ export default function Publications() {
 
               <div className="theater-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: "32px" }}>
                 
-                {!isMobile && (
+                {!isMobile && featuredNotice && (
                   <Reveal delay={0.1} y={30}>
                     <AnimatePresence mode="wait">
-                      <motion.div key={activeNoticeIndex} initial={prefersReduced ? { opacity: 1 } : { opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={prefersReduced ? { opacity: 1 } : { opacity: 0, position: "absolute" }} transition={{ duration: 0.4, ease: "easeOut" }} style={{ backgroundColor: "#0A2E4D", borderRadius: "16px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)", display: "flex", flexDirection: "column", height: "100%", boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}>
+                      <motion.div key={featuredNotice.id || featuredNotice.title} initial={prefersReduced ? { opacity: 1 } : { opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={prefersReduced ? { opacity: 1 } : { opacity: 0, position: "absolute" }} transition={{ duration: 0.4, ease: "easeOut" }} style={{ backgroundColor: "#0A2E4D", borderRadius: "16px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)", display: "flex", flexDirection: "column", height: "100%", boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}>
                         <div style={{ position: "relative", height: "300px", overflow: "hidden" }}>
                           <img src={featuredNotice.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(10,46,77,0) 20%, rgba(10,46,77,1) 100%)" }} />
@@ -414,7 +393,7 @@ export default function Publications() {
                       </div>
                     </div>
                   ) : (
-                    <div ref={mobileNewsRef} className="mobile-scroll-container" onTouchStart={handleNewsTouchStart} onTouchEnd={handleNewsTouchEnd} onScroll={handleNewsTouchStart}>
+                    <div ref={mobileNewsRef} className="mobile-scroll-container" onTouchStart={handleNewsTouchStart} onTouchEnd={handleNewsTouchEnd}>
                       {playlistNotices.map((notice, index) => {
                         const originalIndex = index % notices.length;
                         return (
@@ -486,7 +465,7 @@ export default function Publications() {
                   </motion.div>
                 </AnimatePresence>
               ) : (
-                <div ref={mobileDocsRef} className="mobile-scroll-container" onTouchStart={handleDocsTouchStart} onTouchEnd={handleDocsTouchEnd} onScroll={handleDocsTouchStart}>
+                <div ref={mobileDocsRef} className="mobile-scroll-container" onTouchStart={handleDocsTouchStart} onTouchEnd={handleDocsTouchEnd}>
                   {mobileDisplayedDocuments.map((doc, index) => (
                     <div key={index} className="mobile-doc-card" onClick={() => setActiveDocIndex(index)} style={{ cursor: "pointer" }}>
                       <div style={{ padding: "24px 20px", display: "flex", flexDirection: "column", flex: 1 }}>
@@ -511,24 +490,23 @@ export default function Publications() {
       </div>
 
       <AnimatePresence>
-        {isMobile && activeNoticeIndex !== null && (
+        {isMobile && activeNotice && (
           <motion.div initial={{ opacity: 0, y: "100%" }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "#001F3F", zIndex: 9999, display: "flex", flexDirection: "column", overflowY: "auto" }}>
             <div style={{ padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, backgroundColor: "rgba(0,31,63,0.95)", backdropFilter: "blur(10px)", zIndex: 10 }}>
-              <span style={{ color: "#FCD116", fontWeight: "800", fontSize: "12px", letterSpacing: "1px", textTransform: "uppercase" }}>{notices[activeNoticeIndex].tag}</span>
+              <span style={{ color: "#FCD116", fontWeight: "800", fontSize: "12px", letterSpacing: "1px", textTransform: "uppercase" }}>{activeNotice.tag}</span>
               <button onClick={() => setActiveNoticeIndex(null)} style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: "50%", width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFFFFF", cursor: "pointer" }}><HandDrawnClose /></button>
             </div>
             <div style={{ padding: "0 24px 40px" }}>
-              <div style={{ borderRadius: "12px", overflow: "hidden", marginBottom: "24px", marginTop: "8px" }}><img src={notices[activeNoticeIndex].image} alt="" style={{ width: "100%", height: "240px", objectFit: "cover", display: "block" }} /></div>
-              <span style={{ fontSize: "13px", color: "#94A3B8", fontWeight: "600", marginBottom: "12px", display: "block" }}>{notices[activeNoticeIndex].date}</span>
-              <h2 style={{ fontSize: "24px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 20px 0", lineHeight: "1.3" }}>{notices[activeNoticeIndex].title}</h2>
-              <p style={{ fontSize: "16px", color: "#CBD5E1", lineHeight: "1.8", margin: "0 0 32px 0" }}>{notices[activeNoticeIndex].desc}</p>
+              <div style={{ borderRadius: "12px", overflow: "hidden", marginBottom: "24px", marginTop: "8px" }}><img src={activeNotice.image} alt="" style={{ width: "100%", height: "240px", objectFit: "cover", display: "block" }} /></div>
+              <span style={{ fontSize: "13px", color: "#94A3B8", fontWeight: "600", marginBottom: "12px", display: "block" }}>{activeNotice.date}</span>
+              <h2 style={{ fontSize: "24px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 20px 0", lineHeight: "1.3" }}>{activeNotice.title}</h2>
+              <p style={{ fontSize: "16px", color: "#CBD5E1", lineHeight: "1.8", margin: "0 0 32px 0" }}>{activeNotice.desc}</p>
               <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}><span style={{ fontSize: "13px", color: "#64748B" }}>Value for Money Office</span></div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* FIXED MOBILE PUBLICATION MODAL */}
       <AnimatePresence>
         {isMobile && activeDocIndex !== null && (
           <motion.div initial={{ opacity: 0, y: "100%" }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "#F4F5F0", zIndex: 9999, display: "flex", flexDirection: "column", overflowY: "auto" }}>

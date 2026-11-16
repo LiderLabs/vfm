@@ -29,7 +29,7 @@ import Placeholder from "./pages/Placeholder";
 import CMSLayout from "./cms/components/CMSLayout";
 import CMSLogin from "./cms/pages/Login";
 import CMSDashboard from "./cms/pages/Dashboard";
-import ManagePublications from "./cms/pages/Publications"; // <--- ADDED IMPORT
+import ManagePublications from "./cms/pages/ManagePublications"; // <--- ADDED IMPORT
 
 function Layout() {
   const location = useLocation();

@@ -1,19 +1,40 @@
-import { useNavigate } from "react-router-dom";
+// src/cms/pages/Dashboard.jsx
+import { useState, useEffect } from "react";
+import {
+  getPublications,
+  resetPublications,
+  LS_PUBLICATIONS_EVENT,
+} from "../services/mockData";
 
 export default function CMSDashboard() {
-  const navigate = useNavigate();
+  const [pubCount, setPubCount] = useState(() => getPublications().length);
+
+  // Keep the "Published Notices" count in sync with publish / delete / reset
+  useEffect(() => {
+    const update = () => setPubCount(getPublications().length);
+    window.addEventListener(LS_PUBLICATIONS_EVENT, update);
+    window.addEventListener("storage", update);
+    return () => {
+      window.removeEventListener(LS_PUBLICATIONS_EVENT, update);
+      window.removeEventListener("storage", update);
+    };
+  }, []);
 
   const stats = [
     { label: "Pending Complaints", value: "12", color: "#EF4444", icon: "📝" },
-    { label: "Published Notices", value: "48", color: "#10B981", icon: "📰" },
+    { label: "Published Notices", value: String(pubCount), color: "#10B981", icon: "📰" },
     { label: "Active Projects", value: "24", color: "#FCD116", icon: "🏗️" },
     { label: "Debarred Contractors", value: "3", color: "#001F3F", icon: "⚖️" },
   ];
 
   const handleResetDemo = () => {
-    if (window.confirm("This will clear all CMS data and restore the website to its default hardcoded state. Continue?")) {
-      localStorage.removeItem("vfmo_publications");
-      window.location.reload(); // Reloads the page to show the original data
+    if (
+      window.confirm(
+        "This will remove everything published from the CMS and restore the website to its original content. Continue?"
+      )
+    ) {
+      // Clears the CMS data and notifies the website. No page reload needed.
+      resetPublications();
     }
   };
 
@@ -21,13 +42,13 @@ export default function CMSDashboard() {
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
         <h1 style={{ margin: 0, fontSize: "24px", fontWeight: "800", color: "#0F172A" }}>Dashboard Overview</h1>
-        
+
         {/* THE MAGIC BUTTON */}
-        <button 
+        <button
           onClick={handleResetDemo}
-          style={{ 
-            backgroundColor: "#FEF2F2", color: "#B91C1C", border: "1px solid #FECACA", 
-            padding: "10px 20px", borderRadius: "8px", fontSize: "14px", fontWeight: "700", 
+          style={{
+            backgroundColor: "#FEF2F2", color: "#B91C1C", border: "1px solid #FECACA",
+            padding: "10px 20px", borderRadius: "8px", fontSize: "14px", fontWeight: "700",
             cursor: "pointer", transition: "all 0.2s"
           }}
         >
