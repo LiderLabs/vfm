@@ -71,11 +71,10 @@ export default function WhatWeDo() {
   const pillars = [
     {
       id: "assessments",
-      category: "Assessments",
       title: "Pre-Contract & Technical VfM Assessments",
       description: "Conducting mandatory ex-ante reviews of major capital projects to ensure proposed costs are reasonable and represent maximum value before public funds are committed.",
       detailText: "Our technical teams examine the intricacies of every proposal, from conducting detailed bid evaluations to applying value engineering principles. We work to establish accurate cost benchmarks, ensuring that the government is not paying inflated prices before a single contract is signed.",
-      image: "/site-review.jpg", // KEPT AS IS
+      image: "/site-review.jpg",
       isDark: false,
       bgColor: "#FFFFFF",
       textColor: "#0F172A",
@@ -83,11 +82,10 @@ export default function WhatWeDo() {
     },
     {
       id: "evaluation",
-      category: "Evaluation",
       title: "Project Scrutiny & Impact Evaluation",
       description: "Continuous monitoring of ongoing infrastructure to prevent cost overruns and post-implementation audits to measure actual socio-economic impact.",
       detailText: "A contract award is not the finish line; it is the starting block. We deploy compliance audits and rigorous impact metrics to track progress on the ground, proactively identifying risks and preventing the costly delays that derail public projects.",
-      image: "/boardroom.jpg", // KEPT AS IS
+      image: "/boardroom.jpg",
       isDark: true,
       bgColor: "#001F3F",
       textColor: "#FFFFFF",
@@ -95,11 +93,10 @@ export default function WhatWeDo() {
     },
     {
       id: "utilisation",
-      category: "Utilisation",
       title: "Public Expenditure Utilisation Review",
       description: "Tracking the actual disbursement and utilisation of funds across Metropolitan, Municipal, and District Assemblies to ensure fiscal discipline.",
       detailText: "By auditing how funds are actually disbursed to the MMDAs, we ensure that fiscal discipline is maintained at the local level. Our review process tracks the journey of every Cedi from the national treasury to its intended project site.",
-      image: "/whatwedo-slide-3.jpg", // REPLACED (3rd Image)
+      image: "/whatwedo-slide-3.jpg",
       isDark: false,
       bgColor: "#F8F9FA",
       textColor: "#0F172A",
@@ -107,11 +104,10 @@ export default function WhatWeDo() {
     },
     {
       id: "benchmarks",
-      category: "Benchmarks",
       title: "Performance & Service Delivery Benchmarking",
       description: "Establishing rigorous public sector metrics to compare unit costs and service outputs against regional peer nations and international standards.",
       detailText: "We develop comprehensive unit cost metrics and delivery standards that allow us to compare Ghana's public projects against regional peers. This data-driven approach ensures that our procurement practices remain competitive and efficient on a global scale.",
-      image: "/whatwedo-slide-4.jpg", // REPLACED (4th Image)
+      image: "/whatwedo-slide-4.jpg",
       isDark: false,
       bgColor: "#FFFFFF",
       textColor: "#0F172A",
@@ -119,11 +115,10 @@ export default function WhatWeDo() {
     },
     {
       id: "standards",
-      category: "Standards",
       title: "Research, Standards & Technical Guidance",
       description: "Formulating national reference manuals, standardized costing guides, and econometric models to inform evidence-based public policy decisions.",
       detailText: "To institutionalize value for money, we publish gazetted reference manuals and standardized costing guides. Our econometric lifecycle models provide policymakers with the evidence-based tools they need to make informed decisions on major capital expenditures.",
-      image: "/whatwedo-slide-5.jpg", // REPLACED (5th Image)
+      image: "/whatwedo-slide-5.jpg",
       isDark: true,
       bgColor: "#0F172A",
       textColor: "#FFFFFF",
@@ -131,11 +126,10 @@ export default function WhatWeDo() {
     },
     {
       id: "training",
-      category: "Training",
       title: "Institutional Capacity Building & Training",
       description: "Equipping procurement officers, ministry executives, and local government leaders with the technical skills required to execute value-for-money protocols.",
       detailText: "We believe that sustainable change requires empowered people. Through executive seminars and technical certification programs, we equip procurement officers and local government leaders with the skills necessary to enforce value-for-money protocols in their daily operations.",
-      image: "/whatwedo-slide-6.jpg", // REPLACED (6th Image)
+      image: "/whatwedo-slide-6.jpg",
       isDark: false,
       bgColor: "#FFFFFF",
       textColor: "#0F172A",
@@ -255,11 +249,7 @@ export default function WhatWeDo() {
                 }} />
 
                 <div style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", padding: "20px 24px 80px", position: "relative", zIndex: 2 }}>
-                  <div style={{ marginBottom: "16px" }}>
-                    <span style={{ fontSize: "14px", fontWeight: "800", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1.5px", textShadow: "0 2px 5px rgba(0,0,0,0.8)" }}>
-                      {pillar.category}
-                    </span>
-                  </div>
+                  {/* CATEGORY LABEL REMOVED HERE */}
 
                   <h2 style={{ fontSize: "48px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 24px 0", lineHeight: "1.2", maxWidth: "900px", textShadow: "0 4px 12px rgba(0,0,0,0.8)" }}>
                     {pillar.title}
@@ -307,9 +297,7 @@ export default function WhatWeDo() {
       <div style={{ backgroundColor: "#F4F5F0", padding: "80px 24px 160px" }}>
         
         <div style={{ maxWidth: "1200px", margin: "0 auto 60px", textAlign: "center" }}>
-          <span style={{ fontSize: "12px", fontWeight: "800", color: "#8B7355", textTransform: "uppercase", letterSpacing: "1.5px", display: "block", marginBottom: "12px" }}>
-            Statutory Focus
-          </span>
+          {/* "STATUTORY FOCUS" LABEL REMOVED HERE */}
           <h2 style={{ fontSize: "clamp(32px, 4vw, 44px)", fontWeight: "900", color: "#001F3F", margin: "0 0 16px 0", letterSpacing: "-0.5px" }}>
             Statutory Methodology & Areas
           </h2>
@@ -357,21 +345,7 @@ export default function WhatWeDo() {
                   flexDirection: "column", 
                   justifyContent: "center" 
                 }}>
-                  <div style={{ marginBottom: "16px" }}>
-                    <span style={{ 
-                      fontSize: "12px", 
-                      fontWeight: "800", 
-                      color: pillar.isDark ? "#FCD116" : "#8B7355", 
-                      backgroundColor: pillar.isDark ? "rgba(252, 209, 22, 0.12)" : "rgba(139, 115, 85, 0.08)",
-                      padding: "6px 14px",
-                      borderRadius: "6px",
-                      textTransform: "uppercase", 
-                      letterSpacing: "1.5px",
-                      display: "inline-block"
-                    }}>
-                      {pillar.category}
-                    </span>
-                  </div>
+                  {/* CATEGORY BADGE REMOVED HERE */}
 
                   <h3 style={{ fontSize: "clamp(26px, 3vw, 36px)", fontWeight: "900", color: pillar.textColor, margin: "0 0 20px 0", lineHeight: "1.2", letterSpacing: "-0.5px" }}>
                     {pillar.title}
