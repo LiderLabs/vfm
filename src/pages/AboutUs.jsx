@@ -189,9 +189,12 @@ export default function AboutUs() {
       {/* 1. PAGE HEADER */}
       <section style={{ position: "relative", backgroundColor: "#F8F9FA", width: "100%" }}>
         <div style={{ 
-          width: "100%", height: "clamp(300px, 50vw, 600px)",
-          backgroundImage: "url(/about-hero-banner.jpg)", backgroundSize: "cover",
-          backgroundPosition: "center 60%", position: "relative",
+          width: "100%", height: "clamp(400px, 55vw, 650px)", // Adjusted height slightly
+          backgroundImage: "url(/about-hero-banner.jpg)", 
+          backgroundSize: "cover",
+          // FIX: Changed from "center 60%" to "center top"
+          backgroundPosition: "center top", 
+          position: "relative",
           display: "flex", alignItems: "flex-end"
         }}>
           <div style={{ 
@@ -274,7 +277,6 @@ export default function AboutUs() {
                       borderLeft: index === 0 ? "none" : "1px solid #E2E8F0",
                     }}
                   >
-                    {/* Top row: Icon and Label inline */}
                     <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <IconComponent color={accentColor} />
@@ -290,7 +292,6 @@ export default function AboutUs() {
                       </span>
                     </div>
 
-                    {/* Number and Unit */}
                     <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "8px" }}>
                       <h3 style={{ 
                         fontSize: "32px", 

@@ -1,5 +1,5 @@
 // src/components/InteractiveVfmWall.jsx
-// Value for Money word wall: real-looking 3D navy letters on a lit wall.
+// Value for Money word wall: flat charcoal letters on a plain white wall, like the real one.
 // No dependencies except React (framer-motion is no longer needed).
 //
 //  - Letters assemble on scroll. One switch controls every letter, so a word can never be
@@ -14,15 +14,14 @@ import { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback, mem
 // ---------- SETTINGS ----------
 const SW = 1280; // stage size (everything is laid out on this and scaled to fit)
 const SH = 720;
-const FLOOR_Y = 680; // fallen words land here (the base of the wall)
+const FLOOR_Y = 680; // bottom limit for the words on the wall
 const WORD_MS = 8000; // time each word and its meaning stay on screen
 const PAUSE_MS = 5000; // pause after a click, then the loop carries on
 const BATCH = 5;
 const ASSEMBLE_MS = 3600;
-const SEQUENCE = ["vortex", "flip", "ripple", "sway", "spotlight", "orbit", "storm", "dolly"];
-const FX_MS = { vortex: 4800, flip: 4400, ripple: 4800, sway: 4700, spotlight: 5400, orbit: 5300, storm: 4800, dolly: 5300 };
-const FACE = "#13306a";
-const SIDE = "#071330";
+const SEQUENCE = ["vortex", "hop", "ripple", "sway", "spotlight", "swing", "storm", "dolly"];
+const FX_MS = { vortex: 4800, hop: 4400, ripple: 4800, sway: 4700, spotlight: 5400, swing: 5300, storm: 4800, dolly: 5300 };
+const FACE = "#4a4e54"; // letter colour from the photo of the real wall
 
 // ---------- WORDS AND MEANINGS ----------
 const RAW = [
@@ -79,8 +78,6 @@ const WORDS = RAW.map((w, i) => ({
       ch,
       dx: Math.round((rnd(s) - 0.5) * 900),
       dy: Math.round((rnd(s + 1) - 0.5) * 700),
-      rx: Math.round((rnd(s + 2) - 0.5) * 360),
-      ry: Math.round((rnd(s + 3) - 0.5) * 360),
       rz: Math.round((rnd(s + 4) - 0.5) * 180),
       j: rnd(s + 5),
     };
@@ -154,22 +151,6 @@ function computeLayout(base) {
   };
 }
 
-// ---------- 3D LETTER LOOK ----------
-const darken = (hex, f = 0.45) => {
-  const n = parseInt(hex.slice(1), 16);
-  return `rgb(${Math.round(((n >> 16) & 255) * f)},${Math.round(((n >> 8) & 255) * f)},${Math.round((n & 255) * f)})`;
-};
-// Light comes from the top left, so the thickness and shadow fall to the bottom right.
-// --f is 1 for vertical words, so the offsets turn with the word and stay pointing the same way.
-const off = (a, b) => `calc(${a}px * (1 - var(--f)) + ${b}px * var(--f)) calc(${-a}px * var(--f) + ${b}px * (1 - var(--f)))`;
-function shadow(side, depth, soft) {
-  const L = [`${off(-0.6, -0.6)} 0 rgba(255,255,255,.3)`];
-  for (let i = 1; i <= depth; i++) L.push(`${off((0.7 * i).toFixed(2), (0.9 * i).toFixed(2))} 0 ${side}`);
-  L.push(`${off(depth * 1.3, depth * 1.7 + 4)} ${depth * 2 + 6}px ${soft}`);
-  L.push(`${off(depth * 0.5, depth * 0.7)} ${depth}px rgba(0,0,0,.25)`);
-  return L.join(",");
-}
-
 // ---------- BREAK ANIMATIONS ----------
 // Each takes the stage elements and returns a function that stops it and puts everything back.
 function getCtx(stage, layout) {
@@ -177,7 +158,6 @@ function getCtx(stage, layout) {
   const w3 = q(".vfm-w3");
   return {
     items: layout.items,
-    w1: q(".vfm-w1"),
     w2: q(".vfm-w2"),
     w3,
     letters: w3.map((e) => Array.from(e.querySelectorAll(".vfm-l"))),
@@ -186,7 +166,7 @@ function getCtx(stage, layout) {
   };
 }
 const stopAnims = (list) => () => list.forEach((a) => a.cancel());
-const ID3 = "perspective(800px) translate3d(0px,0px,0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1)";
+const ID = "translate(0px,0px) rotate(0deg) scale(1)";
 
 // 1. VORTEX: the whole wall is pulled into a spinning whirlpool at the centre, then bursts back out into place
 function fxVortex(c) {
@@ -208,29 +188,35 @@ function fxVortex(c) {
   return stopAnims(list);
 }
 
-// 2. FLIP: every letter flips over like a split-flap board, in a wave across the wall
-function fxFlip(c) {
+// 2. HOP: every letter jumps in turn, a wave of hopping letters sweeping across the wall
+function fxHop(c) {
   const list = [];
   c.letters.forEach((ls, i) => {
     const base = (c.items[i].cx / SW) * 1500 + (c.items[i].cy / SH) * 700;
-    ls.forEach((l, k) => list.push(l.animate(
-      [{ transform: "perspective(520px) rotateX(0deg)" }, { transform: "perspective(520px) rotateX(360deg)" }],
-      { duration: 950, delay: base + k * 45, easing: "cubic-bezier(.5,0,.2,1)" })));
+    ls.forEach((l, k) => {
+      const tilt = (k % 2 ? 1 : -1) * 10;
+      list.push(l.animate([
+        { transform: "translateY(0px) rotate(0deg) scale(1)", offset: 0 },
+        { transform: `translateY(-34px) rotate(${tilt}deg) scale(1.18)`, offset: 0.4 },
+        { transform: "translateY(3px) rotate(0deg) scale(.96)", offset: 0.75 },
+        { transform: "translateY(0px) rotate(0deg) scale(1)", offset: 1 },
+      ], { duration: 900, delay: base + k * 45, easing: "ease-in-out" }));
+    });
   });
   return stopAnims(list);
 }
 
-// 3. RIPPLE: a shockwave leaves VALUE FOR MONEY and lifts each word off the wall as it passes
+// 3. RIPPLE: a shockwave leaves VALUE FOR MONEY and swells each word as it passes
 function fxRipple(c) {
   const list = [], o = c.items[VFM];
-  const P = "perspective(800px)";
   c.w2.forEach((e, i) => {
-    const d = Math.hypot(c.items[i].cx - o.cx, c.items[i].cy - o.cy);
+    const dx = c.items[i].cx - o.cx, dy = c.items[i].cy - o.cy, d = Math.hypot(dx, dy) || 1;
+    const ox = (dx / d) * 18, oy = (dy / d) * 18;
     list.push(e.animate([
-      { transform: `${P} translate3d(0,0,0) scale(1)`, offset: 0 },
-      { transform: `${P} translate3d(0,-14px,170px) scale(1.12) rotateX(-8deg)`, offset: 0.28 },
-      { transform: `${P} translate3d(0,4px,-30px) scale(.97)`, offset: 0.55 },
-      { transform: `${P} translate3d(0,0,0) scale(1)`, offset: 1 },
+      { transform: "translate(0px,0px) scale(1)", offset: 0 },
+      { transform: `translate(${ox}px,${oy}px) scale(1.22)`, offset: 0.28 },
+      { transform: `translate(${-ox * 0.3}px,${-oy * 0.3}px) scale(.97)`, offset: 0.55 },
+      { transform: "translate(0px,0px) scale(1)", offset: 1 },
     ], { duration: 1500, delay: d * 1.5, iterations: 2, easing: "ease-in-out" }));
   });
   return stopAnims(list);
@@ -265,33 +251,30 @@ function fxSpotlight(c) {
   return () => { dead = true; cancelAnimationFrame(raf); d.style.opacity = "0"; };
 }
 
-// 6. ORBIT: the camera swings around the wall and the words separate into depth layers
-function fxOrbit(c) {
-  const list = [], D = 5200;
+// 6. SWING: the whole wall swings like a hanging frame, then settles
+function fxSwing(c) {
+  const list = [];
+  c.orbit.style.transformOrigin = "50% 0px";
   list.push(c.orbit.animate([
-    { transform: "rotateY(0deg) rotateX(0deg)" },
-    { transform: "rotateY(-32deg) rotateX(6deg)", offset: 0.3 },
-    { transform: "rotateY(32deg) rotateX(-6deg)", offset: 0.65 },
-    { transform: "rotateY(-12deg) rotateX(2deg)", offset: 0.88 },
-    { transform: "rotateY(0deg) rotateX(0deg)" },
-  ], { duration: D, easing: "ease-in-out" }));
-  c.w1.forEach((e, i) => list.push(e.animate([
-    { transform: "translateZ(0px)" },
-    { transform: `translateZ(${WORDS[i].d * 4}px)`, offset: 0.14 },
-    { transform: `translateZ(${WORDS[i].d * 4}px)`, offset: 0.86 },
-    { transform: "translateZ(0px)" },
-  ], { duration: D, easing: "ease-in-out" })));
-  return stopAnims(list);
+    { transform: "rotate(0deg)" },
+    { transform: "rotate(-8deg)", offset: 0.2 },
+    { transform: "rotate(7deg)", offset: 0.42 },
+    { transform: "rotate(-4.5deg)", offset: 0.62 },
+    { transform: "rotate(2.5deg)", offset: 0.8 },
+    { transform: "rotate(0deg)" },
+  ], { duration: 5200, easing: "ease-in-out" }));
+  const stop = stopAnims(list);
+  return () => { stop(); c.orbit.style.transformOrigin = ""; };
 }
 
-// 7. STORM: every single letter is thrown into the air in 3D, hangs there, then snaps back
+// 7. STORM: every single letter is thrown across the wall, hangs there, then snaps back
 function fxStorm(c) {
   const list = [];
   c.letters.forEach((ls, i) => ls.forEach((l, k) => {
-    const s = i * 131 + k * 17 + 500, P = "perspective(800px)";
-    const far = `${P} translate3d(${Math.round((rnd(s) - 0.5) * 900)}px,${Math.round((rnd(s + 1) - 0.5) * 520)}px,${Math.round(rnd(s + 2) * 420 - 60)}px) rotateX(${Math.round((rnd(s + 3) - 0.5) * 540)}deg) rotateY(${Math.round((rnd(s + 4) - 0.5) * 540)}deg) rotateZ(${Math.round((rnd(s + 5) - 0.5) * 360)}deg) scale(${(0.6 + rnd(s + 6) * 0.8).toFixed(2)})`;
+    const s = i * 131 + k * 17 + 500;
+    const far = `translate(${Math.round((rnd(s) - 0.5) * 900)}px,${Math.round((rnd(s + 1) - 0.5) * 520)}px) rotate(${Math.round((rnd(s + 5) - 0.5) * 540)}deg) scale(${(0.6 + rnd(s + 6) * 0.9).toFixed(2)})`;
     list.push(l.animate([
-      { transform: ID3, offset: 0 }, { transform: far, offset: 0.42 }, { transform: far, offset: 0.55 }, { transform: ID3, offset: 1 },
+      { transform: ID, offset: 0 }, { transform: far, offset: 0.42 }, { transform: far, offset: 0.55 }, { transform: ID, offset: 1 },
     ], { duration: 3600, delay: (i % 9) * 60 + k * 18, easing: "cubic-bezier(.3,.1,.2,1)" }));
   }));
   return stopAnims(list);
@@ -317,43 +300,30 @@ function fxDolly(c) {
   return () => { stop(); c.orbit.style.transformOrigin = ""; };
 }
 
-const FX = { vortex: fxVortex, flip: fxFlip, ripple: fxRipple, sway: fxSway, spotlight: fxSpotlight, orbit: fxOrbit, storm: fxStorm, dolly: fxDolly };
+const FX = { vortex: fxVortex, hop: fxHop, ripple: fxRipple, sway: fxSway, spotlight: fxSpotlight, swing: fxSwing, storm: fxStorm, dolly: fxDolly };
 
 // ---------- STYLES ----------
 const CSS = `
-.vfm-stage{position:absolute;overflow:hidden;touch-action:manipulation;transform-origin:0 0;perspective:1400px;--face:${FACE};
- font-family:"Poppins","Montserrat","Gotham","Segoe UI",Helvetica,Arial,sans-serif;user-select:none;-webkit-user-select:none}
-.vfm-tilt,.vfm-fit,.vfm-orbit,.vfm-w{transform-style:preserve-3d}
-.vfm-tilt{position:absolute;inset:0;animation:vfm-sway 16s ease-in-out infinite alternate}
-@keyframes vfm-sway{from{transform:rotateY(-1.4deg) rotateX(.8deg)}to{transform:rotateY(1.4deg) rotateX(-.8deg)}}
-@media (prefers-reduced-motion:reduce){.vfm-tilt{animation:none}}
-.vfm-wallbg{position:absolute;left:-80px;top:-80px;width:${SW + 160}px;height:${SH + 160}px;
- background:radial-gradient(ellipse 330px 300px at 298px 70px,rgba(255,255,255,.95),rgba(255,255,255,0)),
-  radial-gradient(ellipse 330px 300px at 746px 70px,rgba(255,255,255,.95),rgba(255,255,255,0)),
-  radial-gradient(ellipse 330px 300px at 1168px 70px,rgba(255,255,255,.95),rgba(255,255,255,0)),
-  linear-gradient(180deg,#e9ebee 0%,#e3e6e9 100%)}
-.vfm-fit,.vfm-orbit{position:absolute;inset:0}
+.vfm-stage{position:absolute;overflow:hidden;touch-action:manipulation;transform-origin:0 0;--face:${FACE};
+ font-family:"Poppins","Montserrat","Segoe UI",Helvetica,Arial,sans-serif;user-select:none;-webkit-user-select:none}
+.vfm-tilt,.vfm-fit,.vfm-orbit{position:absolute;inset:0}
+.vfm-wallbg{position:absolute;inset:0;background:#f3f3f2}
 .vfm-fit{transition:transform .5s cubic-bezier(.65,0,.35,1)}
 .vfm-w{position:absolute;transform:translate(-50%,-50%);cursor:pointer;outline:none}
 .vfm-fs .vfm-w{cursor:none}
 .vfm-w2{display:block}
-.vfm-w3{--s:1;--rot:0deg;--f:0;display:inline-flex;white-space:nowrap;line-height:1;letter-spacing:-.02em;
+.vfm-w3{--s:1;--rot:0deg;position:relative;display:inline-flex;white-space:nowrap;line-height:1;
  transform:rotate(var(--rot)) scale(var(--s));transition:transform .45s cubic-bezier(.3,1.4,.5,1),opacity .4s ease,filter .4s ease}
-.vfm-w3{position:relative}
 .vfm-w3::before{content:"";position:absolute;inset:-12px}
-.vfm-w3[data-flat="1"]{--f:0 !important;--rot:0deg !important}
 .vfm-w3.act{--s:1.18}
 .vfm-w3.dim{opacity:.22;filter:blur(1.2px)}
 .vfm-sp{display:inline-block;width:.28em}
-.vfm-l{display:inline-block;color:var(--face);text-shadow:var(--ts);opacity:0;
- transform:perspective(900px) translate3d(var(--dx),var(--dy),0px) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz)) scale(.25);
- transition:transform 1.5s cubic-bezier(.16,1.22,.3,1) var(--dl),opacity .45s ease var(--dl),
-  color .3s ease calc(var(--i) * 22ms),text-shadow .3s ease calc(var(--i) * 22ms)}
-.vfm-w3.act .vfm-l,.vfm-w3.lit .vfm-l{color:var(--c);text-shadow:var(--ts-on)}
-.vfm-stage[data-phase="assembling"] .vfm-l,.vfm-stage[data-phase="ready"] .vfm-l{opacity:1;
- transform:perspective(900px) translate3d(0px,0px,0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1)}
-.vfm-stage[data-phase="ready"] .vfm-l{transform:none;
- transition:color .3s ease calc(var(--i) * 22ms),text-shadow .3s ease calc(var(--i) * 22ms)}
+.vfm-l{display:inline-block;color:var(--face);opacity:0;
+ transform:translate(var(--dx),var(--dy)) rotate(var(--rz)) scale(.25);
+ transition:transform 1.5s cubic-bezier(.16,1.22,.3,1) var(--dl),opacity .45s ease var(--dl),color .3s ease calc(var(--i) * 22ms)}
+.vfm-w3.act .vfm-l,.vfm-w3.lit .vfm-l{color:var(--c)}
+.vfm-stage[data-phase="assembling"] .vfm-l,.vfm-stage[data-phase="ready"] .vfm-l{opacity:1;transform:translate(0px,0px) rotate(0deg) scale(1)}
+.vfm-stage[data-phase="ready"] .vfm-l{transform:none;transition:color .3s ease calc(var(--i) * 22ms)}
 .vfm-dark{position:absolute;inset:0;z-index:150;pointer-events:none;opacity:0;transition:opacity .7s ease;
  background:radial-gradient(circle 260px at var(--sx,50%) var(--sy,50%),rgba(8,14,30,0) 0%,rgba(8,14,30,.1) 45%,rgba(8,14,30,.88) 100%)}
 .vfm-card{position:absolute;left:90px;right:90px;bottom:22px;text-align:center;z-index:200;opacity:0;transform:translateY(16px);
@@ -365,12 +335,6 @@ const CSS = `
 
 // ---------- ONE WORD ----------
 const Word = memo(function Word({ w, it, F, active, dim, lit, onPick }) {
-  const fs = w.s * F;
-  const depth = Math.max(2, Math.min(7, Math.round(fs * 0.085)));
-  const sh = useMemo(
-    () => ({ off: shadow(SIDE, depth, "rgba(0,0,0,.34)"), on: shadow(darken(w.c), depth, w.c + "66") }),
-    [depth, w.c]
-  );
   const delays = useMemo(() => {
     const d = it ? Math.hypot(it.cx - SW / 2, it.cy - SH / 2) * 1.1 : 0;
     return w.letters.map((l, k) => Math.round(d + k * 28 + l.j * 120) + "ms");
@@ -386,26 +350,20 @@ const Word = memo(function Word({ w, it, F, active, dim, lit, onPick }) {
       data-i={w.i}
       onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onPick(w.i)}
     >
-      <div className="vfm-w1">
-        <div className="vfm-w2">
-          <div
-            className={"vfm-w3" + (active ? " act" : "") + (dim ? " dim" : "") + (lit ? " lit" : "")}
-            style={{ fontSize: fs, fontWeight: w.w, "--c": w.c, "--f": w.rot ? 1 : 0, "--rot": w.rot ? "90deg" : "0deg", "--ts": sh.off, "--ts-on": sh.on }}
-          >
-            {w.letters.map((l, k) =>
-              l.ch === " " ? (
-                <span key={k} className="vfm-sp" />
-              ) : (
-                <span
-                  key={k}
-                  className="vfm-l"
-                  style={{ "--dx": l.dx + "px", "--dy": l.dy + "px", "--rx": l.rx + "deg", "--ry": l.ry + "deg", "--rz": l.rz + "deg", "--i": k, "--dl": delays[k] }}
-                >
-                  {l.ch}
-                </span>
-              )
-            )}
-          </div>
+      <div className="vfm-w2">
+        <div
+          className={"vfm-w3" + (active ? " act" : "") + (dim ? " dim" : "") + (lit ? " lit" : "")}
+          style={{ fontSize: w.s * F, fontWeight: w.w, letterSpacing: w.w >= 800 ? "-0.02em" : "0.02em", "--c": w.c, "--rot": w.rot ? "90deg" : "0deg" }}
+        >
+          {w.letters.map((l, k) =>
+            l.ch === " " ? (
+              <span key={k} className="vfm-sp" />
+            ) : (
+              <span key={k} className="vfm-l" style={{ "--dx": l.dx + "px", "--dy": l.dy + "px", "--rz": l.rz + "deg", "--i": k, "--dl": delays[k] }}>
+                {l.ch}
+              </span>
+            )
+          )}
         </div>
       </div>
     </div>
@@ -589,7 +547,7 @@ export default function InteractiveVfmWall({ fullscreen = false }) {
 
   const wall = (
     <div ref={rootRef} className={fullscreen ? "vfm-fs" : ""}
-      style={{ position: "relative", overflow: "hidden", background: "#e8eaed", width: fullscreen ? "100vw" : "100%", height: fullscreen ? "100vh" : SH * k, borderRadius: fullscreen ? 0 : 20 }}>
+      style={{ position: "relative", overflow: "hidden", background: "#f3f3f2", width: fullscreen ? "100vw" : "100%", height: fullscreen ? "100vh" : SH * k, borderRadius: fullscreen ? 0 : 20 }}>
       <style>{CSS}</style>
       <div ref={stageRef} className="vfm-stage" data-phase={phase} onClick={onStageClick}
         style={{ width: SW, height: SH, left: offX, top: offY, transform: `scale(${k})` }}>
