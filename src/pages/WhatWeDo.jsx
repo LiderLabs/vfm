@@ -37,7 +37,8 @@ const StackCard = ({ children, index, id, total }) => {
         style={{
           scale,
           transformOrigin: "top center",
-          borderRadius: "28px",
+          // Removed border radius on desktop so it stretches edge-to-edge
+          borderRadius: isMobile ? "0px" : "0px", 
           boxShadow: isMobile ? "0 10px 25px rgba(0,0,0,0.06)" : "0 -18px 45px rgba(0, 0, 0, 0.16)",
           overflow: "hidden",
         }}
@@ -51,9 +52,17 @@ const StackCard = ({ children, index, id, total }) => {
 export default function WhatWeDo() {
   const { hash } = useLocation();
   const [activePillar, setActivePillar] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   const touchStart = useRef(null);
   const touchEnd = useRef(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.matchMedia("(max-width: 900px)").matches);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     if (hash) {
@@ -249,8 +258,6 @@ export default function WhatWeDo() {
                 }} />
 
                 <div style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", padding: "20px 24px 80px", position: "relative", zIndex: 2 }}>
-                  {/* CATEGORY LABEL REMOVED HERE */}
-
                   <h2 style={{ fontSize: "48px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 24px 0", lineHeight: "1.2", maxWidth: "900px", textShadow: "0 4px 12px rgba(0,0,0,0.8)" }}>
                     {pillar.title}
                   </h2>
@@ -293,11 +300,12 @@ export default function WhatWeDo() {
         </div>
       </section>
 
-      {/* 2. THE STACKING CARDS DECK */}
-      <div style={{ backgroundColor: "#F4F5F0", padding: "80px 24px 160px" }}>
+      {/* 2. THE STACKING CARDS DECK - EDGE TO EDGE */}
+      {/* Removed side padding to allow full width */}
+      <div style={{ backgroundColor: "#F4F5F0", padding: "80px 0 160px" }}>
         
-        <div style={{ maxWidth: "1200px", margin: "0 auto 60px", textAlign: "center" }}>
-          {/* "STATUTORY FOCUS" LABEL REMOVED HERE */}
+        {/* Centered Header */}
+        <div style={{ maxWidth: "1200px", margin: "0 auto 60px", textAlign: "center", padding: "0 24px" }}>
           <h2 style={{ fontSize: "clamp(32px, 4vw, 44px)", fontWeight: "900", color: "#001F3F", margin: "0 0 16px 0", letterSpacing: "-0.5px" }}>
             Statutory Methodology & Areas
           </h2>
@@ -306,7 +314,8 @@ export default function WhatWeDo() {
           </p>
         </div>
 
-        <div style={{ maxWidth: "1300px", margin: "0 auto", position: "relative" }}>
+        {/* Removed maxWidth: 1300px to allow the cards to stretch the full screen width */}
+        <div style={{ width: "100%", position: "relative" }}>
           {pillars.map((pillar, index) => (
             <StackCard 
               key={pillar.id} 
@@ -317,16 +326,17 @@ export default function WhatWeDo() {
               <div 
                 style={{ 
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 500px), 1fr))",
+                  // Uses 1fr 1fr on desktop for a strict 50/50 split filling the whole screen
+                  gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
                   backgroundColor: pillar.bgColor,
                   alignItems: "stretch",
-                  minHeight: "560px",
-                  borderRadius: "28px",
+                  minHeight: "75vh", // Large height to fill the viewport
+                  width: "100%",
                   overflow: "hidden",
                   border: pillar.isDark ? "none" : "1px solid #E2E8F0"
                 }}
               >
-                <div style={{ order: index % 2 === 0 ? 1 : 2, position: "relative", width: "100%", height: "100%", minHeight: "360px" }}>
+                <div style={{ order: index % 2 === 0 ? 1 : 2, position: "relative", width: "100%", height: "100%", minHeight: "400px" }}>
                   <img 
                     src={pillar.image} 
                     alt={pillar.title} 
@@ -340,22 +350,21 @@ export default function WhatWeDo() {
                 
                 <div style={{ 
                   order: index % 2 === 0 ? 2 : 1, 
-                  padding: "60px 48px", 
+                  // Increased padding to make text look proportional on massive screens
+                  padding: "clamp(40px, 8vw, 120px)", 
                   display: "flex", 
                   flexDirection: "column", 
                   justifyContent: "center" 
                 }}>
-                  {/* CATEGORY BADGE REMOVED HERE */}
-
-                  <h3 style={{ fontSize: "clamp(26px, 3vw, 36px)", fontWeight: "900", color: pillar.textColor, margin: "0 0 20px 0", lineHeight: "1.2", letterSpacing: "-0.5px" }}>
+                  <h3 style={{ fontSize: "clamp(26px, 3vw, 42px)", fontWeight: "900", color: pillar.textColor, margin: "0 0 20px 0", lineHeight: "1.2", letterSpacing: "-0.5px" }}>
                     {pillar.title}
                   </h3>
 
-                  <p style={{ fontSize: "17px", lineHeight: "1.7", color: pillar.subColor, marginBottom: "18px", fontWeight: "500" }}>
+                  <p style={{ fontSize: "18px", lineHeight: "1.7", color: pillar.subColor, marginBottom: "18px", fontWeight: "500" }}>
                     {pillar.description}
                   </p>
                   
-                  <p style={{ fontSize: "15px", lineHeight: "1.7", color: pillar.subColor, opacity: 0.9, marginBottom: "36px" }}>
+                  <p style={{ fontSize: "16px", lineHeight: "1.7", color: pillar.subColor, opacity: 0.9, marginBottom: "36px" }}>
                     {pillar.detailText}
                   </p>
 

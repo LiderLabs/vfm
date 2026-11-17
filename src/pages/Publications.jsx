@@ -1,7 +1,12 @@
-// src/pages/Publications.jsx
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useScroll, useTransform, useReducedMotion, AnimatePresence } from "framer-motion";
 import { getPublications, LS_PUBLICATIONS_EVENT } from "../cms/services/mockData";
+
+// ---------- NEWS SETTINGS ----------
+const LIST_SPEED = 28;
+const LIST_RESUME_MS = 3000;
+const ROTATE_MS = 7000;
+const ROTATE_RESUME_MS = 15000;
 
 // ========================================================
 // 1. HAND-DRAWN ICONS
@@ -119,16 +124,17 @@ const RevealText = ({ text, as: Tag = "span", style = {}, delay = 0, wordDelay =
 // ========================================================
 export default function Publications() {
   const [activeFilter, setActiveFilter] = useState("Annual Reviews");
-  const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  const [activeNoticeIndex, setActiveNoticeIndex] = useState(null);
+  const [activeNoticeIndex, setActiveNoticeIndex] = useState(0);
   const [activeDocIndex, setActiveDocIndex] = useState(null);
+  const [isFullScreenNotice, setIsFullScreenNotice] = useState(false);
 
   const prefersReduced = useReducedMotion();
 
   const mobileNewsRef = useRef(null);
   const mobileDocsRef = useRef(null);
+  const playlistRef = useRef(null);
 
   const [isNewsInteracting, setIsNewsInteracting] = useState(false);
   const [isDocsInteracting, setIsDocsInteracting] = useState(false);
@@ -136,15 +142,21 @@ export default function Publications() {
   const newsTimerRef = useRef(null);
   const docsTimerRef = useRef(null);
 
-  // ---- REACTIVE CMS SYNC ----
-  // getPublications() returns the original site content unless the CMS has saved changes.
+  const listHoverRef = useRef(false);
+  const featHoverRef = useRef(false);
+  const lastUserRef = useRef(0);
+  const holdUntilRef = useRef(0);
+  const pickedAtRef = useRef(-1e9);
+  const fullRef = useRef(false);
+  const pushedRef = useRef(false);
+
   const [notices, setNotices] = useState(() => getPublications());
 
   useEffect(() => {
     const refresh = () => setNotices(getPublications());
-    window.addEventListener(LS_PUBLICATIONS_EVENT, refresh); // same-tab (CMS publish / delete / reset)
-    window.addEventListener("storage", refresh);             // cross-tab
-    window.addEventListener("focus", refresh);               // tab refocus
+    window.addEventListener(LS_PUBLICATIONS_EVENT, refresh);
+    window.addEventListener("storage", refresh);
+    window.addEventListener("focus", refresh);
     return () => {
       window.removeEventListener(LS_PUBLICATIONS_EVENT, refresh);
       window.removeEventListener("storage", refresh);
@@ -173,9 +185,6 @@ export default function Publications() {
     "Advisory Briefs",
   ];
 
-  // Triplicated so the vertical carousel can loop seamlessly
-  const playlistNotices = [...notices, ...notices, ...notices];
-
   const documents = [
     { date: "Jan 2027", category: "Annual Reviews", title: "2026 Annual Report to Parliament", desc: "The Office's inaugural annual report on the activities, operations, and financial performance of the VFMO Office, including a summary of public savings realised. (Section 26)", fileSize: "3.2 MB" },
     { date: "Dec 2026", category: "Annual Reviews", title: "Q4 2026 VFMO Assessment Findings", desc: "A quarterly publication summarising systemic inefficiencies identified during value for money assessments and policy recommendations arising from them. (Section 39)", fileSize: "1.9 MB" },
@@ -188,17 +197,110 @@ export default function Publications() {
   const desktopFilteredDocuments = documents.filter((doc) => doc.category === activeFilter);
   const mobileDisplayedDocuments = documents;
 
-  // Auto-rotate the featured notice on desktop
-  useEffect(() => {
-    if (notices.length === 0) return;
-    if (isHovered || prefersReduced || isMobile) return;
-    const interval = setInterval(() => {
-      setActiveNoticeIndex((prev) => (prev === null ? 0 : (prev + 1) % notices.length));
-    }, 6000);
-    return () => clearInterval(interval);
-  }, [isHovered, prefersReduced, isMobile, notices.length]);
+  const safeIndex = notices.length ? Math.min(activeNoticeIndex, notices.length - 1) : 0;
+  const featuredNotice = notices[safeIndex];
+  const activeNotice = isFullScreenNotice ? featuredNotice : null;
+  fullRef.current = isFullScreenNotice;
 
-  // Mobile news auto-scroll
+  const pickNotice = useCallback((index) => {
+    setActiveNoticeIndex(index);
+    pickedAtRef.current = performance.now();
+    lastUserRef.current = performance.now();
+  }, []);
+
+  const openFull = useCallback(() => {
+    setIsFullScreenNotice(true);
+    try {
+      window.history.pushState({ ...(window.history.state || {}), vfmNews: true }, "");
+      pushedRef.current = true;
+    } catch (e) {
+      pushedRef.current = false;
+    }
+  }, []);
+
+  const closeFull = useCallback(() => {
+    if (pushedRef.current) {
+      pushedRef.current = false;
+      window.history.back();
+    } else {
+      setIsFullScreenNotice(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isFullScreenNotice) return;
+    const onPop = () => {
+      pushedRef.current = false;
+      setIsFullScreenNotice(false);
+    };
+    const onKey = (e) => {
+      if (e.key === "Escape") closeFull();
+    };
+    window.addEventListener("popstate", onPop);
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("popstate", onPop);
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isFullScreenNotice, closeFull]);
+
+  useEffect(() => {
+    if (notices.length < 2 || prefersReduced || isMobile) return;
+    const id = setInterval(() => {
+      const now = performance.now();
+      if (featHoverRef.current || listHoverRef.current || fullRef.current) return;
+      if (now - pickedAtRef.current < ROTATE_RESUME_MS) return;
+      setActiveNoticeIndex((p) => (p + 1) % notices.length);
+    }, ROTATE_MS);
+    return () => clearInterval(id);
+  }, [notices.length, prefersReduced, isMobile]);
+
+  useEffect(() => {
+    const list = playlistRef.current;
+    if (isMobile || !list) return;
+    const card = list.querySelector(`[data-news-index="${safeIndex}"]`);
+    if (!card) return;
+    const top = card.offsetTop, bottom = top + card.offsetHeight;
+    if (top < list.scrollTop || bottom > list.scrollTop + list.clientHeight) {
+      holdUntilRef.current = performance.now() + 1000;
+      list.scrollTo({ top: Math.max(0, top - 8), behavior: "smooth" });
+    }
+  }, [safeIndex, isMobile]);
+
+  useEffect(() => {
+    if (isMobile || prefersReduced) return;
+    const el = playlistRef.current;
+    if (!el) return;
+    let raf, last = performance.now(), pos = el.scrollTop, dir = 1, hold = 0;
+    const tick = (now) => {
+      const dt = Math.min(now - last, 50);
+      last = now;
+      const max = el.scrollHeight - el.clientHeight;
+      const paused = listHoverRef.current || now < Math.max(lastUserRef.current + LIST_RESUME_MS, holdUntilRef.current);
+      if (max > 4 && !paused) {
+        if (Math.abs(el.scrollTop - pos) > 2) pos = el.scrollTop;
+        if (hold > 0) {
+          hold -= dt;
+        } else {
+          pos += dir * (dir > 0 ? LIST_SPEED : LIST_SPEED * 3) * (dt / 1000);
+          if (pos >= max) { pos = max; dir = -1; hold = 1500; }
+          else if (pos <= 0) { pos = 0; dir = 1; hold = 1500; }
+          el.scrollTop = pos;
+        }
+      } else {
+        pos = el.scrollTop;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [isMobile, prefersReduced, notices.length]);
+
+  const touchList = () => { lastUserRef.current = performance.now(); };
+
   useEffect(() => {
     if (!isMobile || isNewsInteracting || prefersReduced) return;
     const startAutoScroll = () => {
@@ -227,7 +329,6 @@ export default function Publications() {
     setTimeout(() => setIsNewsInteracting(false), 4000);
   };
 
-  // Mobile docs auto-scroll
   useEffect(() => {
     if (!isMobile || isDocsInteracting || prefersReduced) return;
     const startAutoScroll = () => {
@@ -256,11 +357,8 @@ export default function Publications() {
     setTimeout(() => setIsDocsInteracting(false), 4000);
   };
 
-  // Featured card: use the selected notice, otherwise the newest (index 0),
-  // which is the most recent CMS publish. Guarded so deleting items or a reset
-  // can never leave us pointing at an index that no longer exists.
-  const featuredNotice = notices[activeNoticeIndex ?? 0] ?? notices[0];
-  const activeNotice = activeNoticeIndex !== null ? notices[activeNoticeIndex] ?? null : null;
+  const fullText = activeNotice ? String(activeNotice.body || activeNotice.content || activeNotice.fullText || activeNotice.desc || "") : "";
+  const paragraphs = fullText.split(/\n+/).filter((p) => p.trim());
 
   return (
     <div style={{ position: "relative", backgroundColor: "#F4F5F0", minHeight: "100vh", overflowX: "hidden", fontFamily: "'Inter', sans-serif" }}>
@@ -269,24 +367,19 @@ export default function Publications() {
           .hide-scrollbar::-webkit-scrollbar { display: none; }
           .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-          @keyframes scrollPlaylist {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-33.3333%); }
-          }
           .playlist-container {
-            overflow: hidden;
             position: relative;
             height: 520px;
-            mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
-            -webkit-mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
+            overflow-y: auto;
+            padding-right: 16px;
+            overscroll-behavior: contain;
+            scrollbar-width: thin;
+            scrollbar-color: #FCD116 rgba(255,255,255,0.08);
           }
-          .playlist-track {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            animation: scrollPlaylist 28s linear infinite;
-          }
-          .playlist-container:hover .playlist-track { animation-play-state: paused; }
+          .playlist-container::-webkit-scrollbar { width: 8px; }
+          .playlist-container::-webkit-scrollbar-track { background: rgba(255,255,255,0.08); border-radius: 8px; }
+          .playlist-container::-webkit-scrollbar-thumb { background: #FCD116; border-radius: 8px; }
+          .playlist-container::-webkit-scrollbar-thumb:hover { background: #FFDE45; }
 
           .mobile-scroll-container {
             display: flex;
@@ -330,7 +423,8 @@ export default function Publications() {
 
       <div style={{ position: "relative", zIndex: 1 }}>
         <section ref={heroRef} style={{ backgroundColor: "rgba(0,31,63,0.98)", padding: "100px 24px 120px", position: "relative", overflow: "hidden" }}>
-          <motion.div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: "-15%", backgroundImage: "url(/coat-of-arms.png)", backgroundSize: "contain", backgroundRepeat: "no-repeat", backgroundPosition: "right -100px center", opacity: 0.05, zIndex: 0, y: prefersReduced ? 0 : heroBgY, scale: prefersReduced ? 1 : heroScale }} />
+          {/* VFM logo as the watermark in the news/hero section */}
+          <motion.div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: "-15%", backgroundImage: "url(/vfm-logo.png)", backgroundSize: "contain", backgroundRepeat: "no-repeat", backgroundPosition: "right -100px center", opacity: 0.05, zIndex: 0, y: prefersReduced ? 0 : heroBgY, scale: prefersReduced ? 1 : heroScale }} />
 
           <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 1 }}>
             <motion.div style={{ marginBottom: "50px", textAlign: "center", y: prefersReduced ? 0 : heroContentY, opacity: prefersReduced ? 1 : heroOpacity }}>
@@ -350,17 +444,48 @@ export default function Publications() {
                 {!isMobile && featuredNotice && (
                   <Reveal delay={0.1} y={30}>
                     <AnimatePresence mode="wait">
-                      <motion.div key={featuredNotice.id || featuredNotice.title} initial={prefersReduced ? { opacity: 1 } : { opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={prefersReduced ? { opacity: 1 } : { opacity: 0, position: "absolute" }} transition={{ duration: 0.4, ease: "easeOut" }} style={{ backgroundColor: "#0A2E4D", borderRadius: "16px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)", display: "flex", flexDirection: "column", height: "100%", boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}>
+                      <motion.div 
+                        key={featuredNotice.id || featuredNotice.title} 
+                        initial={prefersReduced ? { opacity: 1 } : { opacity: 0, scale: 0.98 }} 
+                        animate={{ opacity: 1, scale: 1 }} 
+                        exit={prefersReduced ? { opacity: 1 } : { opacity: 0 }} 
+                        transition={{ duration: 0.4, ease: "easeOut" }} 
+                        onClick={openFull}
+                        onMouseEnter={() => { featHoverRef.current = true; }}
+                        onMouseLeave={() => { featHoverRef.current = false; }}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Read the full news: ${featuredNotice.title}`}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openFull(); } }}
+                        style={{ 
+                          backgroundColor: "#0A2E4D", 
+                          borderRadius: "16px", 
+                          overflow: "hidden", 
+                          border: "1px solid rgba(255,255,255,0.1)", 
+                          display: "flex", 
+                          flexDirection: "column", 
+                          height: "100%", 
+                          boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+                          cursor: "pointer",
+                          outline: "none"
+                        }}
+                        whileHover={{ y: -4, boxShadow: "0 25px 50px rgba(0,0,0,0.4)" }}
+                      >
                         <div style={{ position: "relative", height: "300px", overflow: "hidden" }}>
                           <img src={featuredNotice.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(10,46,77,0) 20%, rgba(10,46,77,1) 100%)" }} />
-                          <div style={{ position: "absolute", top: "24px", left: "24px", backgroundColor: "#FCD116", color: "#001F3F", padding: "6px 14px", borderRadius: "4px", fontSize: "12px", fontWeight: "800", letterSpacing: "1px", textTransform: "uppercase" }}>{featuredNotice.tag}</div>
+                          {featuredNotice.tag && (
+                            <span style={{ position: "absolute", top: "30px", left: "30px", backgroundColor: "#FCD116", color: "#001F3F", fontSize: "12px", fontWeight: "800", letterSpacing: "2px", textTransform: "uppercase", padding: "8px 18px", borderRadius: "4px", zIndex: 2 }}>{featuredNotice.tag}</span>
+                          )}
                         </div>
                         <div style={{ padding: "0 24px 32px", display: "flex", flexDirection: "column", flex: 1, marginTop: "-20px", position: "relative", zIndex: 2 }}>
                           <span style={{ fontSize: "13px", color: "#94A3B8", fontWeight: "600", marginBottom: "12px", display: "block" }}>{featuredNotice.date}</span>
                           <h2 style={{ fontSize: "clamp(20px, 3vw, 28px)", fontWeight: "800", color: "#FFFFFF", margin: "0 0 16px 0", lineHeight: "1.2" }}>{featuredNotice.title}</h2>
                           <p style={{ fontSize: "15px", color: "#CBD5E1", lineHeight: "1.7", margin: "0 0 24px 0", flex: 1 }}>{featuredNotice.desc}</p>
-                          <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}><span style={{ fontSize: "13px", color: "#64748B" }}>Value for Money Office</span></div>
+                          <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span style={{ fontSize: "13px", color: "#64748B" }}>Value for Money Office</span>
+                            <span style={{ fontSize: "13px", fontWeight: "700", color: "#FCD116" }}>Read Full Article →</span>
+                          </div>
                         </div>
                       </motion.div>
                     </AnimatePresence>
@@ -368,18 +493,26 @@ export default function Publications() {
                 )}
 
                 <div>
-                  <div style={{ marginBottom: "16px", paddingLeft: "8px" }}>
+                  <div style={{ marginBottom: "16px", paddingLeft: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <h3 style={{ fontSize: "18px", fontWeight: "800", color: "#FFFFFF", margin: 0 }}>{isMobile ? "Live Statutory Updates" : "Up Next"}</h3>
                   </div>
 
                   {!isMobile ? (
-                    <div className="playlist-container hide-scrollbar">
-                      <div className="playlist-track">
-                        {playlistNotices.map((notice, index) => {
-                          const originalIndex = index % notices.length;
-                          const isActive = activeNoticeIndex === originalIndex;
+                    <div 
+                      ref={playlistRef}
+                      className="playlist-container"
+                      onPointerEnter={() => { listHoverRef.current = true; }}
+                      onPointerLeave={() => { listHoverRef.current = false; touchList(); }}
+                      onWheel={touchList}
+                      onPointerDown={touchList}
+                      onTouchStart={touchList}
+                      onTouchMove={touchList}
+                    >
+                      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                        {notices.map((notice, index) => {
+                          const isActive = safeIndex === index;
                           return (
-                            <div key={index} className="playlist-card-wrapper" onClick={() => setActiveNoticeIndex(originalIndex)}>
+                            <div key={notice.id ?? index} className="playlist-card-wrapper" data-news-index={index} onClick={() => pickNotice(index)}>
                               <motion.div whileHover={prefersReduced ? {} : { backgroundColor: isActive ? "#133E66" : "#1A426B" }} style={{ backgroundColor: isActive ? "#133E66" : "#0A2E4D", borderRadius: "12px", padding: "16px", border: isActive ? "1px solid #FCD116" : "1px solid rgba(255,255,255,0.1)", display: "flex", gap: "16px", cursor: "pointer", transition: "background-color 0.2s ease, border-color 0.2s ease" }}>
                                 <div style={{ width: "100px", height: "70px", borderRadius: "6px", overflow: "hidden", flexShrink: 0 }}><img src={notice.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></div>
                                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
@@ -394,18 +527,15 @@ export default function Publications() {
                     </div>
                   ) : (
                     <div ref={mobileNewsRef} className="mobile-scroll-container" onTouchStart={handleNewsTouchStart} onTouchEnd={handleNewsTouchEnd}>
-                      {playlistNotices.map((notice, index) => {
-                        const originalIndex = index % notices.length;
-                        return (
-                          <div key={index} className="mobile-news-card" onClick={() => setActiveNoticeIndex(originalIndex)} style={{ backgroundColor: "#0A2E4D", borderRadius: "12px", padding: "14px", border: "1px solid rgba(255,255,255,0.12)", display: "flex", flexDirection: "column", gap: "14px", cursor: "pointer", flexShrink: 0, boxShadow: "0 8px 20px rgba(0,0,0,0.25)" }}>
-                            <div style={{ width: "100%", height: "140px", borderRadius: "8px", overflow: "hidden" }}><img src={notice.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></div>
-                            <div style={{ display: "flex", flexDirection: "column" }}>
-                              <span style={{ fontSize: "10px", fontWeight: "800", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "6px" }}>{notice.tag}</span>
-                              <h4 style={{ fontSize: "14px", fontWeight: "700", color: "#FFFFFF", margin: 0, lineHeight: "1.4", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{notice.title}</h4>
-                            </div>
+                      {notices.map((notice, index) => (
+                        <div key={notice.id ?? index} className="mobile-news-card" onClick={() => { setActiveNoticeIndex(index); openFull(); }} style={{ backgroundColor: "#0A2E4D", borderRadius: "12px", padding: "14px", border: "1px solid rgba(255,255,255,0.12)", display: "flex", flexDirection: "column", gap: "14px", cursor: "pointer", flexShrink: 0, boxShadow: "0 8px 20px rgba(0,0,0,0.25)" }}>
+                          <div style={{ width: "100%", height: "140px", borderRadius: "8px", overflow: "hidden" }}><img src={notice.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></div>
+                          <div style={{ display: "flex", flexDirection: "column" }}>
+                            <span style={{ fontSize: "10px", fontWeight: "800", color: "#FCD116", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "6px" }}>{notice.tag}</span>
+                            <h4 style={{ fontSize: "14px", fontWeight: "700", color: "#FFFFFF", margin: 0, lineHeight: "1.4", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{notice.title}</h4>
                           </div>
-                        );
-                      })}
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -429,7 +559,7 @@ export default function Publications() {
 
             {!isMobile && (
               <Reveal delay={0.1}>
-                <div className="tabs-container" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} style={{ display: "flex", gap: "12px", marginBottom: "40px", flexWrap: "nowrap" }}>
+                <div className="tabs-container" style={{ display: "flex", gap: "12px", marginBottom: "40px", flexWrap: "nowrap" }}>
                   {filters.map((filter, index) => {
                     const isActive = activeFilter === filter;
                     return (
@@ -490,32 +620,34 @@ export default function Publications() {
       </div>
 
       <AnimatePresence>
-        {isMobile && activeNotice && (
+        {activeNotice && (
           <motion.div initial={{ opacity: 0, y: "100%" }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "#001F3F", zIndex: 9999, display: "flex", flexDirection: "column", overflowY: "auto" }}>
             <div style={{ padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, backgroundColor: "rgba(0,31,63,0.95)", backdropFilter: "blur(10px)", zIndex: 10 }}>
               <span style={{ color: "#FCD116", fontWeight: "800", fontSize: "12px", letterSpacing: "1px", textTransform: "uppercase" }}>{activeNotice.tag}</span>
-              <button onClick={() => setActiveNoticeIndex(null)} style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: "50%", width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFFFFF", cursor: "pointer" }}><HandDrawnClose /></button>
+              <button onClick={closeFull} aria-label="Close" style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: "50%", width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFFFFF", cursor: "pointer" }}><HandDrawnClose /></button>
             </div>
-            <div style={{ padding: "0 24px 40px" }}>
-              <div style={{ borderRadius: "12px", overflow: "hidden", marginBottom: "24px", marginTop: "8px" }}><img src={activeNotice.image} alt="" style={{ width: "100%", height: "240px", objectFit: "cover", display: "block" }} /></div>
+            <div style={{ padding: "0 24px 40px", maxWidth: "900px", margin: "0 auto", width: "100%" }}>
+              <div style={{ borderRadius: "12px", overflow: "hidden", marginBottom: "24px", marginTop: "8px" }}><img src={activeNotice.image} alt="" style={{ width: "100%", height: "auto", maxHeight: "500px", objectFit: "cover", display: "block" }} /></div>
               <span style={{ fontSize: "13px", color: "#94A3B8", fontWeight: "600", marginBottom: "12px", display: "block" }}>{activeNotice.date}</span>
-              <h2 style={{ fontSize: "24px", fontWeight: "800", color: "#FFFFFF", margin: "0 0 20px 0", lineHeight: "1.3" }}>{activeNotice.title}</h2>
-              <p style={{ fontSize: "16px", color: "#CBD5E1", lineHeight: "1.8", margin: "0 0 32px 0" }}>{activeNotice.desc}</p>
-              <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}><span style={{ fontSize: "13px", color: "#64748B" }}>Value for Money Office</span></div>
+              <h2 style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: "800", color: "#FFFFFF", margin: "0 0 20px 0", lineHeight: "1.3" }}>{activeNotice.title}</h2>
+              {paragraphs.map((p, i) => (
+                <p key={i} style={{ fontSize: "18px", color: "#CBD5E1", lineHeight: "1.8", margin: "0 0 20px 0" }}>{p}</p>
+              ))}
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "24px", marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}><span style={{ fontSize: "13px", color: "#64748B" }}>Value for Money Office</span></div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {isMobile && activeDocIndex !== null && (
+        {activeDocIndex !== null && (
           <motion.div initial={{ opacity: 0, y: "100%" }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "#F4F5F0", zIndex: 9999, display: "flex", flexDirection: "column", overflowY: "auto" }}>
             <div style={{ padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, backgroundColor: "rgba(244,245,240,0.95)", backdropFilter: "blur(10px)", zIndex: 10, borderBottom: "1px solid #E2E8F0" }}>
               <span style={{ color: "#8B7355", fontWeight: "800", fontSize: "12px", letterSpacing: "1px", textTransform: "uppercase" }}>{mobileDisplayedDocuments[activeDocIndex].category}</span>
               <button onClick={() => setActiveDocIndex(null)} style={{ background: "rgba(0,0,0,0.05)", border: "none", borderRadius: "50%", width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center", color: "#001F3F", cursor: "pointer" }}><HandDrawnClose /></button>
             </div>
             
-            <div style={{ padding: "24px", display: "flex", flexDirection: "column", flex: 1 }}>
+            <div style={{ padding: "24px", display: "flex", flexDirection: "column", flex: 1, maxWidth: "900px", margin: "0 auto", width: "100%" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px" }}>
                 <div style={{ width: "56px", height: "56px", borderRadius: "16px", backgroundColor: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 6px rgba(0,0,0,0.05)" }}><HandDrawnDocument /></div>
                 <div>

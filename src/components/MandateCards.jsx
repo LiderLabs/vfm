@@ -199,10 +199,13 @@ export default function MandateCards() {
     { title: "Public Transparency", description: "Publishing annual reports and findings to keep citizens informed about the value of public spending.", icon: HandDrawnEye }
   ];
 
+  // UPDATED: Added Equity and Sustainability
   const pillars = [
     { title: "Economy", desc: "Acquiring public resources at the appropriate cost, eliminating unjustified premiums and inflation." },
     { title: "Efficiency", desc: "Maximising programmatic outputs through responsible use of human, capital, and material resources." },
-    { title: "Effectiveness", desc: "Ensuring infrastructure and programmes achieve their intended socio-economic objectives." }
+    { title: "Effectiveness", desc: "Ensuring infrastructure and programmes achieve their intended socio-economic objectives." },
+    { title: "Equity", desc: "Ensuring the fair and equitable distribution of public goods, services, and infrastructure across all regions and demographics." },
+    { title: "Sustainability", desc: "Guaranteeing that public investments meet current needs without compromising environmental, social, or fiscal stability for future generations." }
   ];
 
   const publicActions = [
@@ -303,7 +306,7 @@ export default function MandateCards() {
                     The Statutory Definition of Value for Money.
                   </h2>
                   <p style={{ fontSize: "18px", color: "#CBD5E1", lineHeight: "1.7", margin: 0 }}>
-                    Act 1172 mandates that public expenditure be evaluated against three distinct statutory principles. These principles form the foundation of every assessment conducted by the Office.
+                    Act 1172 mandates that public expenditure be evaluated against five distinct statutory principles. These principles form the foundation of every assessment conducted by the Office.
                   </p>
                 </div>
               </MobileRise>

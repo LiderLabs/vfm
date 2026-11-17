@@ -4,6 +4,16 @@ import InteractiveVfmWall from "../components/InteractiveVfmWall";
 import { ChevronDown } from "lucide-react";
 
 // ========================================================
+// HERO IMAGE SETTINGS
+// ========================================================
+const HERO_IMG_W = 1672;          // original photo width  (px)
+const HERO_IMG_H = 941;           // original photo height (px)
+const HERO_CROP_TOP = 0.17;       // share of the photo hidden at the top (the white ceiling).
+                                  // Raise it to hide more ceiling, lower it to show more wall.
+const HERO_VISIBLE_H = HERO_IMG_H * (1 - HERO_CROP_TOP);
+const HERO_MIN_H = 240;           // minimum hero height (px) on small phones
+
+// ========================================================
 // 1. STATS SECTION HAND-DRAWN ICONS
 // ========================================================
 const HandDrawnScaleIcon = ({ color = "#001F3F" }) => (
@@ -185,31 +195,70 @@ export default function AboutUs() {
 
   return (
     <div style={{ minHeight: "100vh", overflowX: "hidden", fontFamily: "'Inter', sans-serif" }}>
-      
+
       {/* 1. PAGE HEADER */}
       <section style={{ position: "relative", backgroundColor: "#F8F9FA", width: "100%" }}>
-        <div style={{ 
-          width: "100%", height: "clamp(400px, 55vw, 650px)", // Adjusted height slightly
-          backgroundImage: "url(/about-hero-banner.jpg)", 
-          backgroundSize: "cover",
-          // FIX: Changed from "center 60%" to "center top"
-          backgroundPosition: "center top", 
-          position: "relative",
-          display: "flex", alignItems: "flex-end"
-        }}>
-          <div style={{ 
-            width: "100%", height: "100%",
-            background: "linear-gradient(to bottom, rgba(0, 31, 63, 0) 20%, rgba(0, 31, 63, 0.4) 60%, rgba(0, 31, 63, 1) 100%)"
-          }} />
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            aspectRatio: `${HERO_IMG_W} / ${HERO_VISIBLE_H}`,
+            minHeight: `${HERO_MIN_H}px`,
+            maxHeight: "88vh",
+            overflow: "hidden",
+            backgroundColor: "#001F3F",
+          }}
+        >
+          <img
+            src="/about-hero-banner.jpg"
+            alt="VfM Office Reception"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: "50%",
+              width: `max(100%, ${(HERO_MIN_H / (1 - HERO_CROP_TOP)) * (HERO_IMG_W / HERO_IMG_H)}px)`,
+              height: "auto",
+              transform: `translate(-50%, -${HERO_CROP_TOP * 100}%)`,
+              display: "block",
+              zIndex: 0,
+            }}
+          />
+
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to bottom, rgba(0, 31, 63, 0) 20%, rgba(0, 31, 63, 0.4) 60%, rgba(0, 31, 63, 1) 100%)",
+              zIndex: 1,
+            }}
+          />
         </div>
 
-        <div style={{ position: "relative", marginTop: "-80px", display: "flex", justifyContent: "center", padding: "0 24px" }}>
+        <div
+          style={{
+            position: "relative",
+            marginTop: "calc(-1 * clamp(24px, 6vw, 80px))",
+            display: "flex",
+            justifyContent: "center",
+            padding: "0 24px",
+            zIndex: 10,
+          }}
+        >
           <Reveal isMobile={isMobile}>
-            <div style={{ 
-              backgroundColor: "#001F3F", borderRadius: "16px", padding: "40px 60px", 
-              textAlign: "center", color: "white", boxShadow: "0 20px 40px rgba(0,0,0,0.2)", maxWidth: "800px",
-              position: "relative", zIndex: 10
-            }}>
+            <div
+              style={{
+                backgroundColor: "#001F3F",
+                borderRadius: "16px",
+                padding: "clamp(24px, 4vw, 40px) clamp(20px, 6vw, 60px)",
+                textAlign: "center",
+                color: "white",
+                boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
+                maxWidth: "800px",
+                margin: "0 auto",
+                position: "relative",
+              }}
+            >
               <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", fontWeight: "900", margin: "0 0 16px 0", letterSpacing: "-1px" }}>About Us</h1>
               <p style={{ fontSize: "clamp(16px, 2vw, 18px)", color: "#E2E8F0", margin: "0 auto", fontWeight: "500", lineHeight: "1.6" }}>
                 Learn more about our mandate, our leadership, and the values that drive us to ensure value for every Cedi.
@@ -224,12 +273,13 @@ export default function AboutUs() {
         <div style={{ position: "absolute", right: "-5%", top: "10%", width: "600px", height: "600px", backgroundImage: "url('/vfm-logo.png')", backgroundSize: "contain", backgroundRepeat: "no-repeat", backgroundPosition: "center", opacity: 0.03, zIndex: 0, pointerEvents: "none" }} />
 
         <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 1 }}>
-          
+
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "60px", marginBottom: "80px", alignItems: "stretch" }}>
             <Reveal isMobile={isMobile}>
               <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
                 <div style={{ marginBottom: "24px" }}>
-                  <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "1.5px", color: "#8B7355", textTransform: "uppercase" }}>
+                  {/* Humanized Heading: Larger, heavier weight, softer tracking, and a distinct color */}
+                  <span style={{ fontSize: "18px", fontWeight: "800", letterSpacing: "-0.3px", color: "#8B7355", textTransform: "uppercase" }}>
                     The Object of the Office
                   </span>
                 </div>
@@ -237,7 +287,8 @@ export default function AboutUs() {
                   To regulate, monitor, coordinate, promote, develop and conduct value for money assessments.
                 </h1>
                 <p style={{ fontSize: "18px", lineHeight: "1.6", color: "#334155", marginBottom: "20px", fontWeight: "500" }}>
-                  Established under Act 1172, our core object is to review procurement practices—including cost estimation methodologies, contract management processes, and expenditure control mechanisms—to ensure efficiency in public expenditure.
+                  {/* Removed em-dashes here */}
+                  Established under Act 1172, our core object is to review procurement practices including cost estimation methodologies, contract management processes, and expenditure control mechanisms to ensure efficiency in public expenditure.
                 </p>
                 <p style={{ fontSize: "16px", lineHeight: "1.7", color: "#64748B", marginBottom: "32px" }}>
                   We scrutinise major capital projects, establish benchmarks for public capital efficiency, and ensure every public investment translates into tangible, durable socio-economic benefits for Ghanaian citizens across all sixteen administrative regions.
@@ -254,10 +305,10 @@ export default function AboutUs() {
 
           {/* STATS BANNER - REDESIGNED (Borderless) */}
           <Reveal delay={0.1} isMobile={isMobile}>
-            <div style={{ 
-              display: "grid", 
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", 
-              gap: "40px 24px", 
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+              gap: "40px 24px",
               borderTop: "1px solid #E2E8F0",
               paddingTop: "40px",
               marginBottom: "80px"
@@ -267,11 +318,11 @@ export default function AboutUs() {
                 const accentColor = stat.isGold ? "#B8860B" : "#001F3F";
 
                 return (
-                  <div 
-                    key={index} 
-                    style={{ 
-                      display: "flex", 
-                      flexDirection: "column", 
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
                       alignItems: "flex-start",
                       paddingLeft: index === 0 ? 0 : "24px",
                       borderLeft: index === 0 ? "none" : "1px solid #E2E8F0",
@@ -281,11 +332,11 @@ export default function AboutUs() {
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <IconComponent color={accentColor} />
                       </div>
-                      <span style={{ 
-                        fontSize: "11px", 
-                        fontWeight: "800", 
-                        color: accentColor, 
-                        letterSpacing: "1px", 
+                      <span style={{
+                        fontSize: "11px",
+                        fontWeight: "800",
+                        color: accentColor,
+                        letterSpacing: "1px",
                         textTransform: "uppercase"
                       }}>
                         {stat.label}
@@ -293,20 +344,20 @@ export default function AboutUs() {
                     </div>
 
                     <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "8px" }}>
-                      <h3 style={{ 
-                        fontSize: "32px", 
-                        fontWeight: "900", 
-                        margin: 0, 
-                        color: accentColor, 
+                      <h3 style={{
+                        fontSize: "32px",
+                        fontWeight: "900",
+                        margin: 0,
+                        color: accentColor,
                         lineHeight: 1,
                         letterSpacing: "-0.5px"
                       }}>
                         {stat.number}
                       </h3>
                       {stat.unit && (
-                        <span style={{ 
-                          fontSize: "18px", 
-                          fontWeight: "700", 
+                        <span style={{
+                          fontSize: "18px",
+                          fontWeight: "700",
                           color: accentColor,
                           lineHeight: 1
                         }}>
@@ -315,10 +366,10 @@ export default function AboutUs() {
                       )}
                     </div>
 
-                    <p style={{ 
-                      fontSize: "14px", 
-                      color: "#64748B", 
-                      margin: 0, 
+                    <p style={{
+                      fontSize: "14px",
+                      color: "#64748B",
+                      margin: 0,
                       lineHeight: "1.5",
                       fontWeight: "500"
                     }}>
@@ -335,13 +386,13 @@ export default function AboutUs() {
 
       {/* 3. STATUTORY INDEPENDENCE */}
       <div style={{ position: "relative" }}>
-        <div style={{ 
+        <div style={{
           position: "absolute", top: 0, left: "50%", transform: "translate(-50%, -50%)",
           zIndex: 20, display: "flex", justifyContent: "center"
         }}>
-          <div style={{ 
-            width: "180px", height: "180px", backgroundColor: "#FFFFFF", borderRadius: "50%", 
-            display: "flex", alignItems: "center", justifyContent: "center", 
+          <div style={{
+            width: "180px", height: "180px", backgroundColor: "#FFFFFF", borderRadius: "50%",
+            display: "flex", alignItems: "center", justifyContent: "center",
             boxShadow: "0 25px 50px rgba(0,0,0,0.4), 0 0 0 4px #FCD116", padding: "25px"
           }}>
             <img src="/vfm-logo.png" alt="VfM Logo" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
@@ -351,7 +402,7 @@ export default function AboutUs() {
         <section style={{ position: "relative", padding: "140px 24px 80px", backgroundColor: "#001F3F", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url(/building-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.2, zIndex: 0 }} />
           <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "linear-gradient(90deg, rgba(0,31,63,1) 40%, rgba(0,31,63,0.8) 100%)", zIndex: 1 }} />
-          
+
           <div style={{ maxWidth: "1000px", margin: "0 auto", position: "relative", zIndex: 2 }}>
             <Reveal isMobile={isMobile}>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
@@ -394,7 +445,7 @@ export default function AboutUs() {
       {/* 6. SCOPE OF AUTHORITY */}
       <section style={{ position: "relative", padding: "100px 24px 100px", overflow: "hidden", backgroundColor: "#F0F4F8" }}>
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "url(/building-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.15, zIndex: 0 }} />
-        
+
         <div style={{ maxWidth: "900px", margin: "0 auto", position: "relative", zIndex: 1 }}>
           <Reveal isMobile={isMobile}>
             <div style={{ textAlign: "center", marginBottom: "60px" }}>
@@ -408,10 +459,10 @@ export default function AboutUs() {
               const isOpen = openScope === index;
               return (
                 <Reveal key={index} delay={index * 0.1} isMobile={isMobile}>
-                  <div 
+                  <div
                     onClick={() => setOpenScope(isOpen ? null : index)}
-                    style={{ 
-                      backgroundColor: isOpen ? "#001F3F" : "#FFFFFF", 
+                    style={{
+                      backgroundColor: isOpen ? "#001F3F" : "#FFFFFF",
                       borderRadius: "12px", cursor: "pointer",
                       transition: "all 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
                       boxShadow: isOpen ? "0 25px 50px rgba(0,31,63,0.25)" : "0 4px 6px rgba(0,0,0,0.03)",
@@ -479,12 +530,12 @@ export default function AboutUs() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px" }}>
             {boardMembers.map((member, index) => (
               <Reveal key={index} delay={index * 0.05} width="100%" isMobile={isMobile}>
-                <div style={{ 
-                  backgroundColor: member.isDG ? "#001F3F" : "#FFFFFF", 
-                  borderRadius: "12px", padding: "24px", 
-                  border: member.isDG ? "none" : "1px solid #E2E8F0", 
-                  textAlign: "center", height: "100%", 
-                  display: "flex", flexDirection: "column", 
+                <div style={{
+                  backgroundColor: member.isDG ? "#001F3F" : "#FFFFFF",
+                  borderRadius: "12px", padding: "24px",
+                  border: member.isDG ? "none" : "1px solid #E2E8F0",
+                  textAlign: "center", height: "100%",
+                  display: "flex", flexDirection: "column",
                   alignItems: "center", justifyContent: "center",
                   boxShadow: member.isDG ? "0 10px 20px rgba(0,31,63,0.2)" : "0 4px 6px rgba(0,0,0,0.02)"
                 }}>
@@ -523,12 +574,12 @@ export default function AboutUs() {
               const IconComponent = value.icon;
               return (
                 <Reveal key={index} delay={index * 0.08} isMobile={isMobile}>
-                  <div 
-                    style={{ 
-                      backgroundColor: "#FFFFFF", padding: "36px 30px", borderRadius: "16px", 
-                      border: "1px solid #E2E8F0", height: "100%", display: "flex", flexDirection: "column", 
+                  <div
+                    style={{
+                      backgroundColor: "#FFFFFF", padding: "36px 30px", borderRadius: "16px",
+                      border: "1px solid #E2E8F0", height: "100%", display: "flex", flexDirection: "column",
                       boxShadow: "0 10px 30px -5px rgba(0, 31, 63, 0.05)",
-                      transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease" 
+                      transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease"
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = "translateY(-6px)";
@@ -541,9 +592,9 @@ export default function AboutUs() {
                       e.currentTarget.style.borderColor = "#E2E8F0";
                     }}
                   >
-                    <div style={{ 
-                      width: "68px", height: "68px", backgroundColor: "rgba(0, 31, 63, 0.04)", 
-                      borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center", 
+                    <div style={{
+                      width: "68px", height: "68px", backgroundColor: "rgba(0, 31, 63, 0.04)",
+                      borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center",
                       marginBottom: "22px", border: "1px solid rgba(0, 31, 63, 0.06)"
                     }}>
                       <IconComponent />
