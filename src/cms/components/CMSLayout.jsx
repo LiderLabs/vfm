@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import { useCmsAuth } from "../auth/CmsAuth";
 
 export default function CMSLayout() {
   const location = useLocation();
-  const navigate = useNavigate();
+  const { me, logout } = useCmsAuth();
+  const displayName = [me?.firstName, me?.lastName].filter(Boolean).join(" ") || me?.email || "User";
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const menuItems = [
@@ -13,11 +15,6 @@ export default function CMSLayout() {
     { name: "Sanctions", path: "/cms/sanctions", icon: "⚖️" },
     { name: "Complaints", path: "/cms/complaints", icon: "📝" },
   ];
-
-  const handleLogout = () => {
-    // In the future, this will clear the auth token
-    navigate("/cms/login");
-  };
 
   return (
     <div style={{ display: "flex", height: "100vh", backgroundColor: "#F1F5F9", fontFamily: "'Inter', sans-serif" }}>
@@ -74,7 +71,7 @@ export default function CMSLayout() {
         {/* Logout */}
         <div style={{ padding: "20px", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
           <button 
-            onClick={handleLogout}
+            onClick={logout}
             style={{ 
               width: "100%", padding: "12px", borderRadius: "6px", 
               backgroundColor: "rgba(255,255,255,0.1)", color: "#FFFFFF", 
@@ -105,9 +102,9 @@ export default function CMSLayout() {
           </h1>
           
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <span style={{ fontSize: "14px", color: "#64748B", fontWeight: "600" }}>Admin User</span>
+            <span style={{ fontSize: "14px", color: "#64748B", fontWeight: "600" }}>{displayName}</span>
             <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "#001F3F", color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "800" }}>
-              A
+              {displayName.charAt(0).toUpperCase()}
             </div>
           </div>
         </header>

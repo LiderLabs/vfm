@@ -30,7 +30,8 @@ import CMSLayout from "./cms/components/CMSLayout";
 import CMSLogin from "./cms/pages/Login";
 import CMSDashboard from "./cms/pages/Dashboard";
 import ManagePublications from "./cms/pages/ManagePublications";
-import ManageSanctions from "./cms/pages/ManageSanctions"; // <--- ADDED IMPORT
+import ManageSanctions from "./cms/pages/ManageSanctions";
+import { CmsAuthProvider, RequireCmsAuth } from "./cms/auth/CmsAuth";
 
 function Layout() {
   const location = useLocation();
@@ -42,15 +43,17 @@ function Layout() {
   // --- CMS LAYOUT (Completely separate from public website) ---
   if (isCMS) {
     return (
-      <Routes>
-        <Route path="/cms/login" element={<CMSLogin />} />
-        <Route path="/cms" element={<CMSLayout />}>
-          <Route index element={<Navigate to="/cms/dashboard" replace />} />
-          <Route path="dashboard" element={<CMSDashboard />} />
-          <Route path="publications" element={<ManagePublications />} />
-          <Route path="sanctions" element={<ManageSanctions />} /> {/* <--- ADDED ROUTE */}
-        </Route>
-      </Routes>
+      <CmsAuthProvider>
+        <Routes>
+          <Route path="/cms/login/*" element={<CMSLogin />} />
+          <Route path="/cms" element={<RequireCmsAuth><CMSLayout /></RequireCmsAuth>}>
+            <Route index element={<Navigate to="/cms/dashboard" replace />} />
+            <Route path="dashboard" element={<CMSDashboard />} />
+            <Route path="publications" element={<ManagePublications />} />
+            <Route path="sanctions" element={<ManageSanctions />} />
+          </Route>
+        </Routes>
+      </CmsAuthProvider>
     );
   }
 
