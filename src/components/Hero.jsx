@@ -255,8 +255,8 @@ export default function Hero() {
                   fontWeight: "800", 
                   color: "#FFFFFF", 
                   margin: "0 0 24px 0", 
-                  lineHeight: "1.1", 
-                  textShadow: "0 4px 12px rgba(0,0,0,0.8)" 
+                  lineHeight: "1.1" 
+                  // Removed textShadow here
                 }}>
                   {slide.headline1}{" "} 
                   <span style={{ color: "#FCD116" }}>{slide.headline2}</span>
@@ -266,8 +266,8 @@ export default function Hero() {
                   fontSize: "18px", 
                   lineHeight: "1.8", 
                   color: "#CBD5E1", 
-                  marginBottom: "40px", 
-                  textShadow: "0 2px 6px rgba(0,0,0,0.8)" 
+                  marginBottom: "40px" 
+                  // Removed textShadow here
                 }}>
                   {slide.subheadline}
                 </p>
