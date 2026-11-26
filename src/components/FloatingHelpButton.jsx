@@ -389,7 +389,7 @@ export default function FloatingHelpButton() {
                       outline: "none",
                       backgroundColor: "transparent",
                       width: "100%",
-                      fontSize: "13px",
+                      fontSize: "16px", // FIX: 16px prevents iOS/Android auto-zoom
                       color: "#001F3F",
                     }}
                     autoFocus
@@ -405,7 +405,20 @@ export default function FloatingHelpButton() {
                   )}
                 </div>
 
-                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px", marginTop: "10px" }}>
+                {/* FIX: Overflow X allows horizontal swiping for the pills without chopping them off */}
+                <div 
+                  style={{ 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: "6px", 
+                    marginTop: "10px",
+                    overflowX: "auto",
+                    whiteSpace: "nowrap",
+                    paddingBottom: "4px",
+                    scrollbarWidth: "none", 
+                    msOverflowStyle: "none" 
+                  }}
+                >
                   <span style={{ fontSize: "11px", color: "#64748B", fontWeight: "600", flexShrink: 0 }}>
                     Suggested:
                   </span>
@@ -417,14 +430,13 @@ export default function FloatingHelpButton() {
                         backgroundColor: "#F1F5F9",
                         border: "1px solid #E2E8F0",
                         borderRadius: "12px",
-                        padding: "3px 8px",
-                        fontSize: "11px",
+                        padding: "6px 10px", // slightly larger tap target
+                        fontSize: "12px",
                         color: "#001F3F",
                         cursor: "pointer",
                         fontWeight: "600",
                         transition: "all 0.15s ease",
                         flexShrink: 0,
-                        whiteSpace: "nowrap",
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E2E8F0")}
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F1F5F9")}
@@ -436,7 +448,14 @@ export default function FloatingHelpButton() {
               </div>
 
               {/* Scrollable Content */}
-              <div style={{ flex: 1, overflowY: "auto", padding: "12px 20px 20px 20px" }}>
+              <div 
+                style={{ 
+                  flex: 1, 
+                  overflowY: "auto", 
+                  overscrollBehavior: "contain", // FIX: Prevents background page from scrolling
+                  padding: "12px 20px 20px 20px" 
+                }}
+              >
                 {filteredArticles.length > 0 ? (
                   Object.entries(groupedArticles).map(([category, articles]) => (
                     <div key={category} style={{ marginBottom: "18px" }}>
