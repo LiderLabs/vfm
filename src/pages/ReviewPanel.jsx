@@ -220,15 +220,27 @@ export default function ReviewPanel() {
             initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            style={{ textAlign: "center" }}
+            style={{ textAlign: "center", display: "flex", justifyContent: "center", width: "100%" }}
           >
             <button 
               onClick={() => setIsFormOpen(!isFormOpen)} 
               style={{ 
-                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "12px",
-                backgroundColor: "#001F3F", color: "#FFFFFF", padding: "16px 32px", borderRadius: "8px",
-                fontSize: "16px", fontWeight: "800", cursor: "pointer", border: "none",
-                boxShadow: "0 4px 15px rgba(0,31,63,0.2)", transition: "background-color 0.2s ease"
+                display: "inline-flex", 
+                alignItems: "center", 
+                justifyContent: "center", 
+                gap: "12px",
+                backgroundColor: "#001F3F", 
+                color: "#FFFFFF", 
+                padding: "16px 32px", 
+                borderRadius: "8px",
+                fontSize: "16px", 
+                fontWeight: "800", 
+                cursor: "pointer", 
+                border: "none",
+                boxShadow: "0 4px 15px rgba(0,31,63,0.2)", 
+                transition: "background-color 0.2s ease",
+                whiteSpace: "nowrap", // Prevents text wrapping
+                maxWidth: "100%", // Ensures it doesn't overflow on tiny screens
               }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#0A2E4D"}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#001F3F"}
@@ -237,6 +249,7 @@ export default function ReviewPanel() {
               <motion.div
                 animate={{ y: isFormOpen ? -4 : 4, rotate: isFormOpen ? 180 : 0 }}
                 transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.8, ease: "easeInOut" }}
+                style={{ flexShrink: 0 }}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19"></line>
