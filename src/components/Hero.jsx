@@ -137,6 +137,8 @@ export default function Hero() {
             justify-content: center;
             text-decoration: none;
             box-shadow: 0 4px 15px rgba(252, 209, 22, 0.4);
+            /* ADDED: Margin bottom to push the button up away from the dots on mobile */
+            margin-bottom: clamp(10px, 6vh, 40px); 
           }
 
           .hero-btn:hover {
@@ -187,6 +189,7 @@ export default function Hero() {
             .hero-btn {
               width: 100%;
               padding: 16px 24px;
+              margin-bottom: 35px; /* Extra space on mobile for the dots */
             }
             .marquee-item {
               gap: 12px;
@@ -256,7 +259,6 @@ export default function Hero() {
                   color: "#FFFFFF", 
                   margin: "0 0 24px 0", 
                   lineHeight: "1.1" 
-                  // Removed textShadow here
                 }}>
                   {slide.headline1}{" "} 
                   <span style={{ color: "#FCD116" }}>{slide.headline2}</span>
@@ -267,7 +269,6 @@ export default function Hero() {
                   lineHeight: "1.8", 
                   color: "#CBD5E1", 
                   marginBottom: "40px" 
-                  // Removed textShadow here
                 }}>
                   {slide.subheadline}
                 </p>
