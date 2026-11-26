@@ -125,14 +125,12 @@ export default function Navbar() {
           <div id="navbar-search-anchor" style={{ width: "42px", height: "42px", flexShrink: 0 }} />
 
           <Link to="/submit" title="Report a Concern" style={{ display: "flex", alignItems: "center", justifyContent: "center", color: "#001F3F", textDecoration: "none", border: "1px solid #CBD5E1", width: "42px", height: "42px", borderRadius: "4px", transition: "all 0.2s ease" }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#F8FAFC"; e.currentTarget.style.borderColor = "#001F3F"; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.borderColor = "#CBD5E1"; }}>
-            {/* NEW FORM ICON */}
+            
+            {/* NEW SHIELD ICON (Desktop) */}
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-              <polyline points="10 9 9 9 8 9" />
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
+
           </Link>
 
           <Link to="/portal" style={{ textDecoration: "none" }}>
@@ -182,14 +180,12 @@ export default function Navbar() {
             Search Help Center
           </Link>
           <Link to="/submit" onClick={closeMenus} style={{ fontSize: "16px", fontWeight: "600", color: "#001F3F", textDecoration: "none", paddingBottom: "12px", borderBottom: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: "8px" }}>
-            {/* NEW FORM ICON FOR MOBILE */}
+            
+            {/* NEW SHIELD ICON (Mobile) */}
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-              <polyline points="10 9 9 9 8 9" />
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
+            
             Report a Concern
           </Link>
 
