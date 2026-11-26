@@ -365,8 +365,9 @@ export default function FloatingHelpButton() {
                 </button>
               </div>
 
-              {/* Search Bar */}
+              {/* Search Bar & Pills */}
               <div style={{ padding: "16px 20px 8px 20px", flexShrink: 0 }}>
+                {/* Input Container */}
                 <div
                   style={{
                     display: "flex",
@@ -389,7 +390,7 @@ export default function FloatingHelpButton() {
                       outline: "none",
                       backgroundColor: "transparent",
                       width: "100%",
-                      fontSize: "16px", // FIX: 16px prevents iOS/Android auto-zoom
+                      fontSize: "16px", // Prevents mobile auto-zoom
                       color: "#001F3F",
                     }}
                     autoFocus
@@ -405,45 +406,59 @@ export default function FloatingHelpButton() {
                   )}
                 </div>
 
-                {/* FIX: Overflow X allows horizontal swiping for the pills without chopping them off */}
+                {/* Suggested Pills - Fixed for Mobile */}
                 <div 
                   style={{ 
                     display: "flex", 
                     alignItems: "center", 
                     gap: "6px", 
                     marginTop: "10px",
-                    overflowX: "auto",
-                    whiteSpace: "nowrap",
-                    paddingBottom: "4px",
-                    scrollbarWidth: "none", 
-                    msOverflowStyle: "none" 
                   }}
                 >
                   <span style={{ fontSize: "11px", color: "#64748B", fontWeight: "600", flexShrink: 0 }}>
                     Suggested:
                   </span>
-                  {quickPills.map((pill, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setSearchQuery(pill)}
-                      style={{
-                        backgroundColor: "#F1F5F9",
-                        border: "1px solid #E2E8F0",
-                        borderRadius: "12px",
-                        padding: "6px 10px", // slightly larger tap target
-                        fontSize: "12px",
-                        color: "#001F3F",
-                        cursor: "pointer",
-                        fontWeight: "600",
-                        transition: "all 0.15s ease",
-                        flexShrink: 0,
-                      }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E2E8F0")}
-                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F1F5F9")}
-                    >
-                      {pill}
-                    </button>
-                  ))}
+                  
+                  {/* Scrollable row for pills */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "6px",
+                      overflowX: "auto",
+                      paddingBottom: "4px",
+                      scrollbarWidth: "none", 
+                      msOverflowStyle: "none",
+                      WebkitOverflowScrolling: "touch",
+                    }}
+                  >
+                    {quickPills.map((pill, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setSearchQuery(pill)}
+                        style={{
+                          backgroundColor: "#F1F5F9",
+                          border: "1px solid #E2E8F0",
+                          borderRadius: "12px",
+                          padding: "6px 12px", 
+                          fontSize: "12px",
+                          color: "#001F3F",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          transition: "all 0.15s ease",
+                          flexShrink: 0, 
+                          whiteSpace: "nowrap", 
+                          minWidth: "max-content", 
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E2E8F0")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F1F5F9")}
+                      >
+                        {pill}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -452,7 +467,7 @@ export default function FloatingHelpButton() {
                 style={{ 
                   flex: 1, 
                   overflowY: "auto", 
-                  overscrollBehavior: "contain", // FIX: Prevents background page from scrolling
+                  overscrollBehavior: "contain", // Prevents background page from scrolling
                   padding: "12px 20px 20px 20px" 
                 }}
               >
