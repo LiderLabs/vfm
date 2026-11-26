@@ -121,7 +121,9 @@ export default function Navbar() {
         </nav>
 
         {/* Desktop Right Actions */}
-        <div className="desktop-actions" style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+        {/* FIX: Changed gap from 12px to 16px to separate the search and shield icons */}
+        <div className="desktop-actions" style={{ display: "flex", alignItems: "center", gap: "16px", flexShrink: 0 }}>
+          
           <div id="navbar-search-anchor" style={{ width: "42px", height: "42px", flexShrink: 0 }} />
 
           <Link to="/submit" title="Report a Concern" style={{ display: "flex", alignItems: "center", justifyContent: "center", color: "#001F3F", textDecoration: "none", border: "1px solid #CBD5E1", width: "42px", height: "42px", borderRadius: "4px", transition: "all 0.2s ease" }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#F8FAFC"; e.currentTarget.style.borderColor = "#001F3F"; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.borderColor = "#CBD5E1"; }}>
