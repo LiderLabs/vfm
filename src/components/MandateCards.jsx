@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { getHomepageData, LS_HOMEPAGE_EVENT } from "../cms/services/mockData";
 
 // ========================================================
 // 1. CORE MANDATE HAND-DRAWN ICONS
@@ -189,6 +190,14 @@ const StackSection = ({ children, index }) => {
 
 export default function MandateCards() {
   const [openAction, setOpenAction] = useState(null);
+  const [cmsData, setCmsData] = useState(() => getHomepageData());
+
+  // Listen for CMS updates
+  useEffect(() => {
+    const refresh = () => setCmsData(getHomepageData());
+    window.addEventListener(LS_HOMEPAGE_EVENT, refresh);
+    return () => window.removeEventListener(LS_HOMEPAGE_EVENT, refresh);
+  }, []);
 
   const mandates = [
     { title: "Pre-Contract Review", description: "Mandatory VfM certification for major government contracts before they are awarded.", icon: HandDrawnShield },
@@ -208,11 +217,15 @@ export default function MandateCards() {
     { title: "Sustainability", desc: "Guaranteeing that public investments meet current needs without compromising environmental, social, or fiscal stability for future generations." }
   ];
 
-  const publicActions = [
-    { title: "Report a Concern", desc: "Submit a confidential, legally protected report regarding contract inflation or misuse of public funds under Act 720 and Act 1172.", link: "/submit", btnText: "Submit a Report", icon: HandDrawnAlert },
-    { title: "Verify a Clearance", desc: "Search the public statutory register to confirm if a major government contract has received an authentic Certificate of Clearance.", link: "/clearance", btnText: "View Public Register", icon: HandDrawnCertificate },
-    { title: "Check Debarments", desc: "View the official gazetted register of contractors and suppliers currently banned from public procurement for cost inflation.", link: "/sanctions", btnText: "View Debarment List", icon: HandDrawnBan }
-  ];
+  // Map the CMS data to the action structure, adding back the icons and button text
+  const actionIcons = [HandDrawnAlert, HandDrawnCertificate, HandDrawnBan];
+  const actionBtnTexts = ["Submit a Report", "View Public Register", "View Debarment List"];
+
+  const publicActions = cmsData.publicActions.map((action, index) => ({
+    ...action,
+    icon: actionIcons[index] || HandDrawnAlert,
+    btnText: actionBtnTexts[index] || "Learn More"
+  }));
 
   return (
     <div style={{ overflowX: "hidden", backgroundColor: "#F8F9FA", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>

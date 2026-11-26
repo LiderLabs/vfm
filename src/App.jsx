@@ -30,7 +30,8 @@ import CMSLayout from "./cms/components/CMSLayout";
 import CMSLogin from "./cms/pages/Login";
 import CMSDashboard from "./cms/pages/Dashboard";
 import ManagePublications from "./cms/pages/ManagePublications";
-import ManageSanctions from "./cms/pages/ManageSanctions"; // <--- ADDED IMPORT
+import ManageSanctions from "./cms/pages/ManageSanctions";
+import ManageHomepage from "./cms/pages/ManageHomepage"; // <--- ADDED IMPORT
 
 function Layout() {
   const location = useLocation();
@@ -47,8 +48,9 @@ function Layout() {
         <Route path="/cms" element={<CMSLayout />}>
           <Route index element={<Navigate to="/cms/dashboard" replace />} />
           <Route path="dashboard" element={<CMSDashboard />} />
+          <Route path="homepage" element={<ManageHomepage />} /> {/* <--- ADDED ROUTE */}
           <Route path="publications" element={<ManagePublications />} />
-          <Route path="sanctions" element={<ManageSanctions />} /> {/* <--- ADDED ROUTE */}
+          <Route path="sanctions" element={<ManageSanctions />} /> 
         </Route>
       </Routes>
     );

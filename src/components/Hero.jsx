@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { getHomepageData, LS_HOMEPAGE_EVENT } from "../cms/services/mockData";
 
 // ========================================================
 // 1. COLORFUL HAND-DRAWN ICONS (From OpenData)
@@ -44,36 +45,19 @@ const HandDrawnInvestigation = () => (
 );
 
 export default function Hero() {
-  const slides = [
-    {
-      headline1: "Every Cedi Counts.",
-      headline2: "Every Outcome Matters.",
-      subheadline: "The Value for Money Office is an independent statutory authority established under Act 1172 to regulate, monitor, and conduct value for money assessments across Ghana's public sector.",
-      btnText: "Learn About Our Mandate",
-      btnLink: "/about",
-      bgImage: "/hero-bg.jpg", 
-    },
-    {
-      headline1: "Statutory Independence.",
-      headline2: "Unwavering Fiscal Integrity.",
-      subheadline: "Except as otherwise provided by law, the Office is not subject to the direction or control of any person or authority in the performance of its statutory functions. (Section 12)",
-      btnText: "Read Our Institutional Values",
-      btnLink: "/about#values",
-      bgImage: "/hero-slide-2.jpg", 
-    },
-    {
-      headline1: "Protecting the Public Purse.",
-      headline2: "Guaranteeing Citizen Value.",
-      subheadline: "We provide a confidential, legally protected mechanism for citizens and entities to report contract inflation, cost irregularities, and the abuse of public resources.",
-      btnText: "Report a Concern",
-      btnLink: "/submit",
-      bgImage: "/hero-slide-3.jpg", 
-    }
-  ];
-
+  const [data, setData] = useState(() => getHomepageData());
   const [currentSlide, setCurrentSlide] = useState(0);
   const touchStart = useRef(null);
   const touchEnd = useRef(null);
+
+  // Listen for CMS updates
+  useEffect(() => {
+    const refresh = () => setData(getHomepageData());
+    window.addEventListener(LS_HOMEPAGE_EVENT, refresh);
+    return () => window.removeEventListener(LS_HOMEPAGE_EVENT, refresh);
+  }, []);
+
+  const slides = data.heroSlides;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -107,12 +91,15 @@ export default function Hero() {
     touchEnd.current = null;
   };
 
-  const dashboardStats = [
-    { label: "Assessments Conducted", value: "1,245", icon: HandDrawnAssessment, color: "#047857" },
-    { label: "Contracts Flagged", value: "86", icon: HandDrawnFlagged, color: "#B91C1C" },
-    { label: "Active Investigations", value: "14", icon: HandDrawnInvestigation, color: "#B45309" },
-    { label: "Total Savings Identified", value: "GH₵ 250M+", icon: HandDrawnSavings, color: "#1E3A8A" }
-  ];
+  // Icons mapping for stats
+  const statIcons = [HandDrawnAssessment, HandDrawnFlagged, HandDrawnInvestigation, HandDrawnSavings];
+  const statColors = ["#047857", "#B91C1C", "#B45309", "#1E3A8A"];
+
+  const dashboardStats = data.stats.map((stat, index) => ({
+    ...stat,
+    icon: statIcons[index] || HandDrawnAssessment,
+    color: statColors[index] || "#001F3F"
+  }));
 
   const marqueeStats = [...dashboardStats, ...dashboardStats];
 
@@ -170,7 +157,6 @@ export default function Hero() {
             background: #FFFFFF;
             border-top: 1px solid #E2E8F0;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-            /* REMOVED: mask-image lines */
           }
 
           .marquee-track {

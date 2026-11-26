@@ -112,3 +112,94 @@ export function resetSanctions() {
   localStorage.removeItem(LS_SANCTIONS_KEY);
   window.dispatchEvent(new Event(LS_SANCTIONS_EVENT));
 }
+
+// ========================================================
+// --- HOMEPAGE DATA ---
+// ========================================================
+
+export const initialHomepageData = {
+  heroSlides: [
+    {
+      id: "slide-1",
+      headline1: "Every Cedi Counts.",
+      headline2: "Every Outcome Matters.",
+      subheadline: "The Value for Money Office is an independent statutory authority established under Act 1172 to regulate, monitor, and conduct value for money assessments across Ghana's public sector.",
+      btnText: "Learn About Our Mandate",
+      btnLink: "/about",
+      bgImage: "/hero-bg.jpg",
+    },
+    {
+      id: "slide-2",
+      headline1: "Statutory Independence.",
+      headline2: "Unwavering Fiscal Integrity.",
+      subheadline: "Except as otherwise provided by law, the Office is not subject to the direction or control of any person or authority in the performance of its statutory functions. (Section 12)",
+      btnText: "Read Our Institutional Values",
+      btnLink: "/about#values",
+      bgImage: "/hero-slide-2.jpg",
+    },
+    {
+      id: "slide-3",
+      headline1: "Protecting the Public Purse.",
+      headline2: "Guaranteeing Citizen Value.",
+      subheadline: "We provide a confidential, legally protected mechanism for citizens and entities to report contract inflation, cost irregularities, and the abuse of public resources.",
+      btnText: "Report a Concern",
+      btnLink: "/submit",
+      bgImage: "/hero-slide-3.jpg",
+    }
+  ],
+  stats: [
+    { id: "stat-1", label: "Assessments Conducted", value: "1,245" },
+    { id: "stat-2", label: "Contracts Flagged", value: "86" },
+    { id: "stat-3", label: "Active Investigations", value: "14" },
+    { id: "stat-4", label: "Total Savings Identified", value: "GH₵ 250M+" },
+  ],
+  publicActions: [
+    { 
+      id: "action-1", 
+      title: "Report a Concern", 
+      link: "/submit", 
+      desc: "Submit a confidential, legally protected report regarding contract inflation or misuse of public funds under Act 720 and Act 1172." 
+    },
+    { 
+      id: "action-2", 
+      title: "Verify a Clearance", 
+      link: "/clearance", 
+      desc: "Search the public statutory register to confirm if a major government contract has received an authentic Certificate of Clearance." 
+    },
+    { 
+      id: "action-3", 
+      title: "Check Debarments", 
+      link: "/sanctions", 
+      desc: "View the official gazetted register of contractors and suppliers currently banned from public procurement for cost inflation." 
+    },
+  ]
+};
+
+export const LS_HOMEPAGE_KEY = "vfmo_homepage";
+export const LS_HOMEPAGE_EVENT = "vfmo_homepage_changed";
+
+export function getHomepageData() {
+  try {
+    const saved = localStorage.getItem(LS_HOMEPAGE_KEY);
+    if (saved === null) return initialHomepageData;
+    const parsed = JSON.parse(saved);
+    // Simple check to ensure structure is intact
+    if (parsed && parsed.heroSlides && parsed.stats && parsed.publicActions) {
+      return parsed;
+    }
+    return initialHomepageData;
+  } catch (e) {
+    console.error("Failed to read homepage data", e);
+    return initialHomepageData;
+  }
+}
+
+export function saveHomepageData(data) {
+  localStorage.setItem(LS_HOMEPAGE_KEY, JSON.stringify(data));
+  window.dispatchEvent(new Event(LS_HOMEPAGE_EVENT));
+}
+
+export function resetHomepageData() {
+  localStorage.removeItem(LS_HOMEPAGE_KEY);
+  window.dispatchEvent(new Event(LS_HOMEPAGE_EVENT));
+}
